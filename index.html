@@ -24,14 +24,13 @@ main{max-width:980px;margin:-60px auto 40px;padding:0 16px}
 @media(max-width:720px){.grid{grid-template-columns:1fr}}
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow)}
 .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.tag{font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px;color:#fff}
+.tag{font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px;color:#fff;background:var(--mute)}
 .tag.old{background:var(--old)}.tag.new{background:var(--new)}
 .card h2{margin:0;font-size:18px}
-.drop{display:block;border:2px dashed var(--line);border-radius:16px;padding:28px 14px;text-align:center;cursor:pointer;transition:.2s;color:var(--mute)}
+.drop{display:flex;align-items:center;justify-content:center;gap:10px;border:2px dashed var(--line);border-radius:12px;padding:10px 14px;text-align:center;cursor:pointer;transition:.2s;color:var(--mute);font-size:13px}
 .drop:hover,.drop.over{border-color:var(--a);background:color-mix(in srgb,var(--a) 8%,transparent);color:var(--a)}
-.drop svg{width:38px;height:38px;margin-bottom:6px}
-.drop b{display:block;color:var(--ink);font-size:15px}
-.drop small{font-size:12px}
+.drop svg{width:20px;height:20px;flex:none}
+.drop b{color:var(--ink);font-size:13px;font-weight:600}
 input[type=file]{display:none}
 .ver,.in{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:14px}
 .ver{margin-top:12px}
@@ -67,7 +66,7 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
 <body>
 <div class="hero"><div class="wrap">
   <h1>📡 OTA Firmware Hub</h1>
-  <p>วางไฟล์ .bin เวอร์ชันเก่าและใหม่ แล้วให้ MCU ดึงไปอัปเดตผ่านลิงก์</p>
+  <p>วางไฟล์ .bin ช่องไหนก็ได้ ระบบจะเทียบเวอร์ชันให้เอง อันที่สูงกว่าเป็นเวอร์ชันใหม่ อันที่ต่ำกว่าเป็นเวอร์ชันเก่า</p>
   <span class="chip"><span class="dot off" id="dot"></span><span id="status">กำลังเชื่อมต่อ...</span></span>
 </div></div>
 
@@ -98,10 +97,10 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
 <div class="toast" id="toast"></div>
 
 <script>
-const SLOTS=[{key:"new",title:"เวอร์ชันใหม่",tag:"NEW",ph:"เช่น 1.2.0"},{key:"old",title:"เวอร์ชันเก่า",tag:"OLD",ph:"เช่น 1.1.0"}];
-const state={old:null,new:null};
+const SLOTS=[{key:"a",title:"ช่อง A"},{key:"b",title:"ช่อง B"}];
+const state={a:null,b:null};
 const $=s=>document.querySelector(s);
-const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2400)};
+const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)};
 const fmt=n=>n<1024?n+" B":n<1048576?(n/1024).toFixed(1)+" KB":(n/1048576).toFixed(2)+" MB";
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const LS={get:k=>{try{return localStorage.getItem(k)}catch{return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch{}},del:k=>{try{localStorage.removeItem(k)}catch{}}};
@@ -109,6 +108,28 @@ const cfg=()=>({owner:$("#s-owner").value.trim(),repo:$("#s-repo").value.trim(),
 const enc=p=>p.split("/").map(encodeURIComponent).join("/");
 const rawUrl=p=>{const c=cfg();return `https://raw.githubusercontent.com/${c.owner}/${c.repo}/${c.branch}/${enc(p)}`};
 const MAN="firmware/manifest.json";
+
+/* ---- version compare ---- */
+const nums=v=>(String(v||"").match(/\d+/g)||[]).map(Number);
+function cmpVer(x,y){
+  const a=nums(x.version),b=nums(y.version);
+  if(a.length||b.length){
+    for(let i=0;i<Math.max(a.length,b.length);i++){
+      const d=(a[i]||0)-(b[i]||0);
+      if(d)return d;
+    }
+  }
+  return (x.ts||0)-(y.ts||0); // เวอร์ชันเท่ากัน/ไม่มี → อันที่อัปโหลดทีหลังถือว่าใหม่กว่า
+}
+// คืนค่า {new:slotKey, old:slotKey} ตามเลขเวอร์ชัน
+function roles(){
+  const A=state.a,B=state.b;
+  if(A&&B)return cmpVer(A,B)>=0?{new:"a",old:"b"}:{new:"b",old:"a"};
+  if(A)return{new:"a",old:null};
+  if(B)return{new:"b",old:null};
+  return{new:null,old:null};
+}
+const roleOf=k=>{const r=roles();return r.new===k?"new":r.old===k?"old":null};
 
 /* ---- settings ---- */
 (()=>{
@@ -136,29 +157,35 @@ const b64=buf=>{let s="";const u=new Uint8Array(buf);for(let i=0;i<u.length;i+=0
 async function sha256(buf){const h=await crypto.subtle.digest("SHA-256",buf);return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,"0")).join("")}
 
 function mcu(x){return x?{version:x.version||null,url:rawUrl(x.path),size:x.size,sha256:x.sha}:null}
-function stored(x){return x?{...mcu(x),name:x.name,path:x.path,ts:x.ts}:null}
+function stored(x,k){return x?{...mcu(x),name:x.name,path:x.path,ts:x.ts,slot:k}:null}
+function manifestObj(full){
+  const r=roles(),f=full?stored:(x=>mcu(x));
+  return{new:r.new?f(state[r.new],r.new):null,old:r.old?f(state[r.old],r.old):null};
+}
 async function saveManifest(){
   const cur=await gh("GET",MAN);
-  const text=JSON.stringify({new:stored(state.new),old:stored(state.old)},null,2);
+  const text=JSON.stringify(manifestObj(true),null,2);
   await gh("PUT",MAN,{message:"update manifest",content:b64(new TextEncoder().encode(text)),sha:cur?cur.sha:undefined});
 }
 
 /* ---- UI ---- */
 $("#slots").innerHTML=SLOTS.map(s=>`
 <div class="card" id="c-${s.key}">
-  <div class="head"><h2>${s.title}</h2><span class="tag ${s.key}">${s.tag}</span></div>
+  <div class="head"><h2>${s.title}</h2><span class="tag" id="t-${s.key}">ว่าง</span></div>
   <label class="drop" id="d-${s.key}">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
-    <b>ลากไฟล์ .bin มาวางที่นี่</b><small>หรือคลิกเพื่อเลือกไฟล์</small>
+    <b>วางไฟล์ .bin ที่นี่</b><span>หรือคลิกเลือก</span>
     <input type="file" accept=".bin" id="f-${s.key}">
   </label>
-  <input class="ver" id="v-${s.key}" placeholder="หมายเลขเวอร์ชัน ${s.ph}">
+  <input class="ver" id="v-${s.key}" placeholder="หมายเลขเวอร์ชัน เช่น 1.2.0">
   <div class="bar" id="b-${s.key}"><i></i></div>
   <div class="file" id="i-${s.key}"></div>
 </div>`).join("");
 
 function render(k){
-  const d=state[k],box=$("#i-"+k);
+  const d=state[k],box=$("#i-"+k),t=$("#t-"+k),role=roleOf(k);
+  t.className="tag"+(role?" "+role:"");
+  t.textContent=role==="new"?"NEW · เวอร์ชันใหม่":role==="old"?"OLD · เวอร์ชันเก่า":"ว่าง";
   if(!d){box.classList.remove("show");box.innerHTML="";return}
   box.classList.add("show");
   const url=rawUrl(d.path);
@@ -171,8 +198,7 @@ function render(k){
 }
 function renderAll(){
   SLOTS.forEach(s=>render(s.key));
-  const m=x=>mcu(x);
-  $("#manifest").textContent=(state.new||state.old)?JSON.stringify({new:m(state.new),old:m(state.old)},null,2):"// อัปโหลดไฟล์ก่อน";
+  $("#manifest").textContent=(state.a||state.b)?JSON.stringify(manifestObj(false),null,2):"// อัปโหลดไฟล์ก่อน";
   const c=cfg();$("#manUrl").textContent=c.owner&&c.repo?rawUrl(MAN):"-";
 }
 function setStatus(t,ok){$("#status").textContent=t;$("#dot").classList.toggle("off",!ok)}
@@ -184,7 +210,15 @@ async function load(){
     const j=await gh("GET",MAN);
     let m={};
     if(j)m=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,"")),x=>x.charCodeAt(0))));
-    for(const k of ["new","old"]){const r=m[k];state[k]=r&&r.path?{name:r.name,size:r.size,sha:r.sha256,path:r.path,version:r.version||"",ts:r.ts||Date.now()}:null}
+    state.a=null;state.b=null;
+    const items=["new","old"].map(r=>m[r]).filter(r=>r&&r.path);
+    const used=new Set();
+    items.forEach(r=>{
+      let k=(r.slot==="a"||r.slot==="b")&&!used.has(r.slot)?r.slot:null;
+      if(!k)k=!used.has("a")?"a":"b";
+      used.add(k);
+      state[k]={name:r.name,size:r.size,sha:r.sha256,path:r.path,version:r.version||"",ts:r.ts||Date.now()};
+    });
     setStatus(c.token?"พร้อมใช้งาน":"อ่านอย่างเดียว (ยังไม่ใส่ Token)",!!c.token);
   }catch(e){setStatus("เชื่อมต่อ GitHub ไม่ได้: "+e.message,false)}
   renderAll();
@@ -194,17 +228,22 @@ async function handle(k,file){
   if(!file)return;
   if(!/\.bin$/i.test(file.name)){toast("รองรับเฉพาะไฟล์ .bin");return}
   if(!cfg().token){toast("ใส่ GitHub Token ในส่วนตั้งค่าก่อน");$("#settings").open=true;return}
+  // ถ้าไม่ได้กรอกเวอร์ชัน ลองอ่านจากชื่อไฟล์ เช่น firmware_v1.2.0.bin
+  const vin=$("#v-"+k);
+  if(!vin.value.trim()){const m=file.name.match(/(\d+(?:\.\d+)+)/);if(m)vin.value=m[1]}
   const bar=$("#b-"+k),fill=bar.firstElementChild;bar.style.display="block";fill.style.width="20%";
   try{
     const buf=await file.arrayBuffer(),sha=await sha256(buf);fill.style.width="40%";
     const path=`firmware/${k}/${file.name}`,prev=state[k];
     const ex=await gh("GET",path);
-    await gh("PUT",path,{message:`upload ${k}: ${file.name}`,content:b64(buf),sha:ex?ex.sha:undefined});
+    await gh("PUT",path,{message:`upload slot ${k}: ${file.name}`,content:b64(buf),sha:ex?ex.sha:undefined});
     fill.style.width="70%";
-    if(prev&&prev.path!==path){try{const p=await gh("GET",prev.path);if(p)await gh("DELETE",prev.path,{message:"remove old "+k,sha:p.sha})}catch{}}
-    state[k]={name:file.name,size:file.size,sha,path,version:$("#v-"+k).value.trim(),ts:Date.now()};
+    if(prev&&prev.path!==path){try{const p=await gh("GET",prev.path);if(p)await gh("DELETE",prev.path,{message:"remove replaced file",sha:p.sha})}catch{}}
+    state[k]={name:file.name,size:file.size,sha,path,version:vin.value.trim(),ts:Date.now()};
     await saveManifest();fill.style.width="100%";
-    renderAll();toast("อัปโหลดสำเร็จ ✓");
+    renderAll();
+    const r=roleOf(k);
+    toast(r==="new"?"อัปโหลดสำเร็จ ✓ เป็นเวอร์ชันใหม่":r==="old"?"อัปโหลดสำเร็จ ✓ เวอร์ชันต่ำกว่า จึงเป็นเวอร์ชันเก่า":"อัปโหลดสำเร็จ ✓");
   }catch(e){toast("อัปโหลดล้มเหลว: "+e.message)}
   setTimeout(()=>{bar.style.display="none";fill.style.width="0"},600);
 }
@@ -232,7 +271,7 @@ document.addEventListener("click",async e=>{
     if(!cfg().token){toast("ใส่ GitHub Token ก่อน");return}
     try{
       const p=await gh("GET",r.path);
-      if(p)await gh("DELETE",r.path,{message:"delete "+k,sha:p.sha});
+      if(p)await gh("DELETE",r.path,{message:"delete slot "+k,sha:p.sha});
       state[k]=null;await saveManifest();renderAll();toast("ลบแล้ว");
     }catch(x){toast("ลบไม่ได้: "+x.message)}
   }
