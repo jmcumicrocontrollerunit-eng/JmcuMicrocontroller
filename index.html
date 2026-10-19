@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>OTA Firmware Hub</title>
 <style>
-:root{--bg:#f4f6fb;--card:#ffffff;--ink:#141a2e;--mute:#6b7494;--line:#e3e7f2;--a:#5b6cff;--a2:#22d3ee;--ok:#10b981;--warn:#f59e0b;--old:#f59e0b;--new:#10b981;--shadow:0 10px 30px rgba(40,50,120,.08);
+:root{--bg:#f4f6fb;--card:#ffffff;--ink:#141a2e;--mute:#6b7494;--line:#e3e7f2;--a:#5b6cff;--a2:#22d3ee;--warn:#f59e0b;--old:#f59e0b;--new:#10b981;--shadow:0 10px 30px rgba(40,50,120,.08);
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0f1e;--card:#131a30;--ink:#eef1ff;--mute:#8b94b8;--line:#232c4a;--shadow:0 10px 30px rgba(0,0,0,.4)}}
 :root[data-theme="dark"]{--bg:#0b0f1e;--card:#131a30;--ink:#eef1ff;--mute:#8b94b8;--line:#232c4a;--shadow:0 10px 30px rgba(0,0,0,.4)}
@@ -14,25 +14,27 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans Thai","Prompt",system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
 .hero{background:linear-gradient(135deg,#4f46e5,#06b6d4);color:#fff;padding:36px 20px 90px}
 .wrap{max-width:980px;margin:0 auto}
-.hero h1{margin:0 0 6px;font-size:28px;display:flex;align-items:center;gap:12px}
+.hero h1{margin:0 0 6px;font-size:28px}
 .hero p{margin:0;opacity:.9;font-size:15px}
 .chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);padding:4px 12px;border-radius:99px;font-size:12px;margin-top:14px}
 .dot{width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 4px rgba(74,222,128,.3)}
+.dot.off{background:#f87171;box-shadow:0 0 0 4px rgba(248,113,113,.3)}
 main{max-width:980px;margin:-60px auto 40px;padding:0 16px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
 @media(max-width:720px){.grid{grid-template-columns:1fr}}
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow)}
 .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .tag{font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px;color:#fff}
 .tag.old{background:var(--old)}.tag.new{background:var(--new)}
 .card h2{margin:0;font-size:18px}
-.drop{border:2px dashed var(--line);border-radius:16px;padding:28px 14px;text-align:center;cursor:pointer;transition:.2s;color:var(--mute)}
+.drop{display:block;border:2px dashed var(--line);border-radius:16px;padding:28px 14px;text-align:center;cursor:pointer;transition:.2s;color:var(--mute)}
 .drop:hover,.drop.over{border-color:var(--a);background:color-mix(in srgb,var(--a) 8%,transparent);color:var(--a)}
 .drop svg{width:38px;height:38px;margin-bottom:6px}
 .drop b{display:block;color:var(--ink);font-size:15px}
 .drop small{font-size:12px}
 input[type=file]{display:none}
-.ver{width:100%;margin:12px 0 0;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:14px}
+.ver,.in{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:14px}
+.ver{margin-top:12px}
 .file{display:none;margin-top:14px}
 .file.show{display:block}
 .fname{display:flex;align-items:center;gap:10px;font-weight:600;word-break:break-all}
@@ -53,8 +55,12 @@ button.ghost:hover{color:#ef4444;border-color:#ef4444}
 .sec h3{margin:0 0 10px;font-size:15px}
 pre{margin:0;background:#0d1224;color:#cfe3ff;padding:16px;border-radius:14px;overflow-x:auto;font-size:12.5px;line-height:1.6;font-family:ui-monospace,Menlo,Consolas,monospace}
 .note{font-size:13px;color:var(--mute);line-height:1.6;margin-top:10px}
-.warn{background:color-mix(in srgb,var(--warn) 14%,transparent);border:1px solid color-mix(in srgb,var(--warn) 40%,transparent);color:var(--ink);border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.6;margin-bottom:18px;display:none}
-.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:#111827;color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;opacity:0;transition:.25s;pointer-events:none}
+.cfg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:720px){.cfg{grid-template-columns:1fr}}
+.cfg label{font-size:12px;color:var(--mute);display:block;margin-bottom:4px}
+.cfg .full{grid-column:1/-1}
+summary{cursor:pointer;font-weight:700;font-size:15px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:#111827;color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;opacity:0;transition:.25s;pointer-events:none;max-width:90vw}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
@@ -62,17 +68,30 @@ pre{margin:0;background:#0d1224;color:#cfe3ff;padding:16px;border-radius:14px;ov
 <div class="hero"><div class="wrap">
   <h1>📡 OTA Firmware Hub</h1>
   <p>วางไฟล์ .bin เวอร์ชันเก่าและใหม่ แล้วให้ MCU ดึงไปอัปเดตผ่านลิงก์</p>
-  <span class="chip"><span class="dot"></span><span id="status">กำลังเชื่อมต่อ...</span></span>
+  <span class="chip"><span class="dot off" id="dot"></span><span id="status">กำลังเชื่อมต่อ...</span></span>
 </div></div>
 
 <main>
-  <div class="warn" id="warn">⚠️ หน้านี้ยังเก็บไฟล์ไม่ได้ (ต้องเป็นเจ้าของหน้า / ล็อกอินอยู่) เปิดผ่านลิงก์ของคุณเองอีกครั้ง</div>
+  <details class="card" id="settings">
+    <summary>⚙️ ตั้งค่า GitHub</summary>
+    <div class="cfg">
+      <div><label>Owner</label><input class="in" id="s-owner"></div>
+      <div><label>Repository</label><input class="in" id="s-repo"></div>
+      <div><label>Branch</label><input class="in" id="s-branch" placeholder="main"></div>
+      <div class="full"><label>Personal Access Token (ต้องใช้ตอนอัปโหลด/ลบเท่านั้น)</label><input class="in" id="s-token" type="password" placeholder="github_pat_..." autocomplete="off"></div>
+    </div>
+    <div class="row"><button id="saveCfg">บันทึกการตั้งค่า</button><button class="ghost" id="clearTok">ลบ Token ออกจากเครื่องนี้</button></div>
+    <p class="note">สร้าง Token ที่ GitHub → Settings → Developer settings → Fine-grained tokens เลือกเฉพาะ repo นี้ และให้สิทธิ์ <b>Contents: Read and write</b> Token จะเก็บไว้ในเบราว์เซอร์เครื่องนี้เท่านั้น ไม่ถูกส่งไปที่อื่นนอกจาก api.github.com</p>
+  </details>
+
   <div class="grid" id="slots"></div>
 
   <div class="card sec">
     <h3>🧾 Manifest สำหรับ MCU</h3>
     <pre id="manifest">// อัปโหลดไฟล์ก่อน</pre>
     <div class="row"><button id="copyMan">คัดลอก JSON</button></div>
+    <h3 style="margin-top:18px">ลิงก์ manifest (ให้ MCU ดึงไฟล์นี้ไฟล์เดียว)</h3>
+    <div class="url"><code id="manUrl">-</code><button data-copy-id="manUrl">คัดลอก</button></div>
     <p class="note">MCU เปรียบเทียบ <code>version</code> ของตัวเอง กับ <code>new.version</code> ถ้าไม่ตรงให้ดาวน์โหลด <code>new.url</code> แล้วตรวจ SHA-256 ก่อนเขียนลง flash ส่วนไฟล์เวอร์ชันเก่าเก็บไว้สำหรับ rollback</p>
   </div>
 </main>
@@ -81,12 +100,50 @@ pre{margin:0;background:#0d1224;color:#cfe3ff;padding:16px;border-radius:14px;ov
 <script>
 const SLOTS=[{key:"new",title:"เวอร์ชันใหม่",tag:"NEW",ph:"เช่น 1.2.0"},{key:"old",title:"เวอร์ชันเก่า",tag:"OLD",ph:"เช่น 1.1.0"}];
 const state={old:null,new:null};
-let assets=null,db=null;
 const $=s=>document.querySelector(s);
-const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1800)};
+const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2400)};
 const fmt=n=>n<1024?n+" B":n<1048576?(n/1024).toFixed(1)+" KB":(n/1048576).toFixed(2)+" MB";
-const abs=u=>u&&u.startsWith("/")?location.origin+u:u;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const LS={get:k=>{try{return localStorage.getItem(k)}catch{return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch{}},del:k=>{try{localStorage.removeItem(k)}catch{}}};
+const cfg=()=>({owner:$("#s-owner").value.trim(),repo:$("#s-repo").value.trim(),branch:$("#s-branch").value.trim()||"main",token:$("#s-token").value.trim()});
+const enc=p=>p.split("/").map(encodeURIComponent).join("/");
+const rawUrl=p=>{const c=cfg();return `https://raw.githubusercontent.com/${c.owner}/${c.repo}/${c.branch}/${enc(p)}`};
+const MAN="firmware/manifest.json";
 
+/* ---- settings ---- */
+(()=>{
+  const h=location.hostname,g={owner:h.endsWith(".github.io")?h.split(".")[0]:"",repo:location.pathname.split("/")[1]||""};
+  $("#s-owner").value=LS.get("ota.owner")||g.owner;
+  $("#s-repo").value=LS.get("ota.repo")||g.repo;
+  $("#s-branch").value=LS.get("ota.branch")||"main";
+  $("#s-token").value=LS.get("ota.token")||"";
+  if(!$("#s-token").value)$("#settings").open=true;
+})();
+$("#saveCfg").onclick=()=>{const c=cfg();LS.set("ota.owner",c.owner);LS.set("ota.repo",c.repo);LS.set("ota.branch",c.branch);LS.set("ota.token",c.token);toast("บันทึกแล้ว");load()};
+$("#clearTok").onclick=()=>{LS.del("ota.token");$("#s-token").value="";toast("ลบ Token แล้ว");load()};
+
+/* ---- GitHub API ---- */
+async function gh(method,path,body){
+  const c=cfg();
+  const url=`https://api.github.com/repos/${c.owner}/${c.repo}/contents/${enc(path)}`+(method==="GET"?`?ref=${encodeURIComponent(c.branch)}&t=${Date.now()}`:"");
+  const r=await fetch(url,{method,headers:{Accept:"application/vnd.github+json",...(c.token?{Authorization:"Bearer "+c.token}:{}),...(body?{"Content-Type":"application/json"}:{})},body:body?JSON.stringify({...body,branch:c.branch}):undefined});
+  if(r.status===404&&method==="GET")return null;
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(j.message||("HTTP "+r.status));
+  return j;
+}
+const b64=buf=>{let s="";const u=new Uint8Array(buf);for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s)};
+async function sha256(buf){const h=await crypto.subtle.digest("SHA-256",buf);return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,"0")).join("")}
+
+function mcu(x){return x?{version:x.version||null,url:rawUrl(x.path),size:x.size,sha256:x.sha}:null}
+function stored(x){return x?{...mcu(x),name:x.name,path:x.path,ts:x.ts}:null}
+async function saveManifest(){
+  const cur=await gh("GET",MAN);
+  const text=JSON.stringify({new:stored(state.new),old:stored(state.old)},null,2);
+  await gh("PUT",MAN,{message:"update manifest",content:b64(new TextEncoder().encode(text)),sha:cur?cur.sha:undefined});
+}
+
+/* ---- UI ---- */
 $("#slots").innerHTML=SLOTS.map(s=>`
 <div class="card" id="c-${s.key}">
   <div class="head"><h2>${s.title}</h2><span class="tag ${s.key}">${s.tag}</span></div>
@@ -104,38 +161,51 @@ function render(k){
   const d=state[k],box=$("#i-"+k);
   if(!d){box.classList.remove("show");box.innerHTML="";return}
   box.classList.add("show");
-  const url=abs(d.url);
+  const url=rawUrl(d.path);
   box.innerHTML=`
   <div class="fname"><div class="ico">BIN</div><span>${esc(d.name)}</span></div>
-  <div class="meta"><span>ขนาด</span><span>${fmt(d.size)}</span><span>เวอร์ชัน</span><span>${esc(d.version||"-")}</span><span>SHA-256</span><code>${d.sha}</code><span>อัปโหลด</span><span>${new Date(d.ts).toLocaleString("th-TH")}</span></div>
+  <div class="meta"><span>ขนาด</span><span>${fmt(d.size)}</span><span>เวอร์ชัน</span><span>${esc(d.version||"-")}</span><span>SHA-256</span><code>${esc(d.sha)}</code><span>อัปโหลด</span><span>${new Date(d.ts).toLocaleString("th-TH")}</span></div>
   <div class="url"><code>${esc(url)}</code><button data-copy="${esc(url)}">คัดลอก</button></div>
   <div class="row"><button class="ghost" data-del="${k}">ลบไฟล์</button></div>`;
   $("#v-"+k).value=d.version||"";
 }
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-
-function manifest(){
-  const m=x=>x?{version:x.version||null,url:abs(x.url),size:x.size,sha256:x.sha}:null;
+function renderAll(){
+  SLOTS.forEach(s=>render(s.key));
+  const m=x=>mcu(x);
   $("#manifest").textContent=(state.new||state.old)?JSON.stringify({new:m(state.new),old:m(state.old)},null,2):"// อัปโหลดไฟล์ก่อน";
+  const c=cfg();$("#manUrl").textContent=c.owner&&c.repo?rawUrl(MAN):"-";
 }
+function setStatus(t,ok){$("#status").textContent=t;$("#dot").classList.toggle("off",!ok)}
 
-async function sha256(buf){const h=await crypto.subtle.digest("SHA-256",buf);return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,"0")).join("")}
+async function load(){
+  const c=cfg();
+  if(!c.owner||!c.repo){setStatus("ยังไม่ได้ตั้งค่า repo",false);return}
+  try{
+    const j=await gh("GET",MAN);
+    let m={};
+    if(j)m=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,"")),x=>x.charCodeAt(0))));
+    for(const k of ["new","old"]){const r=m[k];state[k]=r&&r.path?{name:r.name,size:r.size,sha:r.sha256,path:r.path,version:r.version||"",ts:r.ts||Date.now()}:null}
+    setStatus(c.token?"พร้อมใช้งาน":"อ่านอย่างเดียว (ยังไม่ใส่ Token)",!!c.token);
+  }catch(e){setStatus("เชื่อมต่อ GitHub ไม่ได้: "+e.message,false)}
+  renderAll();
+}
 
 async function handle(k,file){
   if(!file)return;
   if(!/\.bin$/i.test(file.name)){toast("รองรับเฉพาะไฟล์ .bin");return}
-  if(!assets||!db){toast("ยังเก็บไฟล์ไม่ได้ในตอนนี้");return}
-  const bar=$("#b-"+k),fill=bar.firstElementChild;bar.style.display="block";fill.style.width="30%";
+  if(!cfg().token){toast("ใส่ GitHub Token ในส่วนตั้งค่าก่อน");$("#settings").open=true;return}
+  const bar=$("#b-"+k),fill=bar.firstElementChild;bar.style.display="block";fill.style.width="20%";
   try{
-    const sha=await sha256(await file.arrayBuffer());fill.style.width="60%";
-    const old=state[k];
-    const up=await assets.upload(new Blob([file],{type:"text/plain"}));
-    fill.style.width="100%";
-    const rec={name:file.name,size:file.size,sha,id:up.id,url:up.url,version:$("#v-"+k).value.trim(),ts:Date.now()};
-    await db.doc("firmware/"+k).set(rec);
-    if(old&&old.id&&old.id!==up.id){try{await assets.delete(old.id)}catch(e){}}
-    toast("อัปโหลดสำเร็จ ✓");
-  }catch(e){toast("อัปโหลดล้มเหลว: "+(e.message||e.code||"error"))}
+    const buf=await file.arrayBuffer(),sha=await sha256(buf);fill.style.width="40%";
+    const path=`firmware/${k}/${file.name}`,prev=state[k];
+    const ex=await gh("GET",path);
+    await gh("PUT",path,{message:`upload ${k}: ${file.name}`,content:b64(buf),sha:ex?ex.sha:undefined});
+    fill.style.width="70%";
+    if(prev&&prev.path!==path){try{const p=await gh("GET",prev.path);if(p)await gh("DELETE",prev.path,{message:"remove old "+k,sha:p.sha})}catch{}}
+    state[k]={name:file.name,size:file.size,sha,path,version:$("#v-"+k).value.trim(),ts:Date.now()};
+    await saveManifest();fill.style.width="100%";
+    renderAll();toast("อัปโหลดสำเร็จ ✓");
+  }catch(e){toast("อัปโหลดล้มเหลว: "+e.message)}
   setTimeout(()=>{bar.style.display="none";fill.style.width="0"},600);
 }
 
@@ -145,27 +215,31 @@ SLOTS.forEach(({key:k})=>{
   ["dragenter","dragover"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.add("over")}));
   ["dragleave","drop"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove("over")}));
   dz.addEventListener("drop",ev=>handle(k,ev.dataTransfer.files[0]));
-  $("#v-"+k).onchange=async e=>{if(state[k]&&db){await db.doc("firmware/"+k).update({version:e.target.value.trim()})}};
+  $("#v-"+k).onchange=async e=>{
+    if(!state[k])return;
+    if(!cfg().token){toast("ใส่ GitHub Token ก่อน");return}
+    state[k].version=e.target.value.trim();
+    try{await saveManifest();renderAll();toast("บันทึกเวอร์ชันแล้ว")}catch(x){toast("บันทึกไม่ได้: "+x.message)}
+  };
 });
 
 document.addEventListener("click",async e=>{
-  const c=e.target.closest("[data-copy]");
-  if(c){try{await navigator.clipboard.writeText(c.dataset.copy);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}}
+  const c=e.target.closest("[data-copy]"),ci=e.target.closest("[data-copy-id]");
+  if(c||ci){try{await navigator.clipboard.writeText(c?c.dataset.copy:$("#"+ci.dataset.copyId).textContent);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}}
   const d=e.target.closest("[data-del]");
-  if(d&&confirm("ลบไฟล์นี้ถาวร?")){const k=d.dataset.del,r=state[k];try{await db.doc("firmware/"+k).delete();if(r&&r.id)await assets.delete(r.id);toast("ลบแล้ว")}catch(x){toast("ลบไม่ได้")}}
+  if(d&&confirm("ลบไฟล์นี้ถาวร?")){
+    const k=d.dataset.del,r=state[k];
+    if(!cfg().token){toast("ใส่ GitHub Token ก่อน");return}
+    try{
+      const p=await gh("GET",r.path);
+      if(p)await gh("DELETE",r.path,{message:"delete "+k,sha:p.sha});
+      state[k]=null;await saveManifest();renderAll();toast("ลบแล้ว");
+    }catch(x){toast("ลบไม่ได้: "+x.message)}
+  }
 });
 $("#copyMan").onclick=async()=>{try{await navigator.clipboard.writeText($("#manifest").textContent);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}};
 
-(async()=>{
-  try{
-    if(!window.claude){throw 0}
-    [assets,db]=await Promise.all([claude.use("assets"),claude.use("db")]);
-  }catch(e){}
-  if(!db){$("#status").textContent="ออฟไลน์";$("#warn").style.display="block";return}
-  $("#status").textContent=assets?"พร้อมใช้งาน":"อ่านอย่างเดียว";
-  if(!assets)$("#warn").style.display="block";
-  SLOTS.forEach(({key:k})=>db.doc("firmware/"+k).onSnapshot(s=>{state[k]=s.exists?s.data():null;render(k);manifest()}));
-})();
+load();
 </script>
 </body>
 </html>
