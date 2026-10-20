@@ -11,6 +11,16 @@
       "name": "DashTron_V2.0.2.ino.bin",
       "path": "firmware/ST7789/DashTron_V2.0.2.ino.bin",
       "ts": 1792465836877
+    },
+    {
+      "chip": "ILI9341",
+      "label": "ILI9341 v2.0.2",
+      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware/ILI9341/DashTron_V2.0.2.ino.bin",
+      "size": 1521648,
+      "sha256": "205b5c8868ac4352c42b712510822e56a4de384a48738321a27eb3b2c57bb9a4",
+      "name": "DashTron_V2.0.2.ino.bin",
+      "path": "firmware/ILI9341/DashTron_V2.0.2.ino.bin",
+      "ts": 1792465870534
     }
   ]
 }
