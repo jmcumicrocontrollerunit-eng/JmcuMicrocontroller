@@ -113,20 +113,36 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
   <datalist id="chipPresets"><option value="ST7789"><option value="ST7735"><option value="ST7796"><option value="ILI9341"><option value="ILI9342"><option value="ILI9486"><option value="ILI9488"><option value="GC9A01"></datalist>
   <div class="grid" id="slots"></div>
 
+  <div class="card sec" id="c-ota">
+    <div class="head"><h2>🔄 OTA Update (พาร์ทิชันแยก)</h2><span class="tag" id="t-ota">ว่าง</span></div>
+    <label style="font-size:12px;color:var(--mute);display:block;margin-bottom:4px">Flash Address</label>
+    <input class="ver chipin" id="a-ota" value="0x2B0000" autocomplete="off" spellcheck="false" style="font-family:ui-monospace,Menlo,Consolas,monospace">
+    <label class="drop" id="d-ota">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+      <b>วางไฟล์ OTA .bin ที่นี่</b><span>หรือคลิกเลือก</span>
+      <input type="file" accept=".bin" id="f-ota">
+    </label>
+    <div class="bar" id="b-ota"><i></i></div>
+    <div class="file" id="i-ota"></div>
+    <p class="note">ไฟล์นี้แยกจากไฟล์หลักทั้ง 2 ชิป ไม่ผูกกับชิปขับจอ และเขียนลงที่ Flash Address ด้านบน</p>
+  </div>
+
   <div class="card sec">
     <h3>🧾 Manifest สำหรับ MCU</h3>
     <pre id="manifest">// อัปโหลดไฟล์ก่อน</pre>
     <div class="row"><button id="copyMan">คัดลอก JSON</button></div>
     <h3 style="margin-top:18px">ลิงก์ manifest (ให้ ESP32 CYD ดึงลิงก์นี้ลิงก์เดียว)</h3>
     <div class="url"><code id="manUrl">-</code><button data-copy-id="manUrl">คัดลอก</button></div>
-    <p class="note">ESP32 อ่าน <code>version</code> และรายการ <code>variants</code> แล้วแสดงเป็นเมนู เช่น <code>ST7789 v2.0.2</code> / <code>ILI9341 v2.0.2</code> (ใช้ฟิลด์ <code>label</code> ได้เลย) ผู้ใช้เลือกชิปที่ตรงกับจอ จากนั้นดาวน์โหลด <code>url</code> ของชิปนั้น และตรวจ <code>sha256</code> ก่อนเขียนลง flash</p>
+    <p class="note">ESP32 อ่าน <code>version</code> และรายการ <code>variants</code> แล้วแสดงเป็นเมนู เช่น <code>ST7789 v2.0.2</code> / <code>ILI9341 v2.0.2</code> (ใช้ฟิลด์ <code>label</code> ได้เลย) ผู้ใช้เลือกชิปที่ตรงกับจอ จากนั้นดาวน์โหลด <code>url</code> ของชิปนั้น และตรวจ <code>sha256</code> ก่อนเขียนลง flash<br>ไฟล์ OTA อยู่ในฟิลด์ <code>ota</code> แยกต่างหาก มี <code>address</code> (เช่น <code>0x2B0000</code>), <code>url</code>, <code>size</code>, <code>sha256</code> ใช้เขียนลงพาร์ทิชันนั้นโดยตรง</p>
   </div>
 </main>
 <div class="toast" id="toast"></div>
 
 <script>
 const SLOTS=[{key:"a",title:"ไฟล์ที่ 1",def:"ST7789"},{key:"b",title:"ไฟล์ที่ 2",def:"ILI9341"}];
-const state={a:null,b:null,version:""};
+const state={a:null,b:null,ota:null,version:""};
+const OTA_DEF="0x2B0000";
+const cleanAddr=v=>{const m=String(v||"").trim().match(/^(?:0x)?([0-9a-f]+)$/i);return m?"0x"+m[1].toUpperCase():""};
 const $=s=>document.querySelector(s);
 const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)};
 const fmt=n=>n<1024?n+" B":n<1048576?(n/1024).toFixed(1)+" KB":(n/1048576).toFixed(2)+" MB";
@@ -177,7 +193,10 @@ function manifestObj(){
     path:x.path,
     ts:x.ts
   }));
-  return{product:"DashTron",version:v||null,variants};
+  const o=state.ota;
+  const out={product:"DashTron",version:v||null,variants};
+  if(o)out.ota={name:o.name,address:o.address,url:rawUrl(o.path),size:o.size,sha256:o.sha,path:o.path,ts:o.ts};
+  return out;
 }
 async function saveManifest(){
   const cur=await gh("GET",MAN);
@@ -213,10 +232,23 @@ function render(k){
   <details class="more"><summary>รายละเอียด</summary><div class="meta"><span>ชิป</span><span>${esc(d.chip)}</span><span>SHA-256</span><code>${esc(d.sha)}</code></div></details>`;
   $("#n-"+k).value=d.chip;
 }
+function renderOta(){
+  const d=state.ota,box=$("#i-ota"),t=$("#t-ota");
+  t.className="tag"+(d?" new":"");
+  t.textContent=d?d.address:"ว่าง";
+  if(!d){box.classList.remove("show");box.innerHTML="";return}
+  box.classList.add("show");
+  const url=rawUrl(d.path);
+  box.innerHTML=`
+  <div class="fname"><div class="ico">OTA</div><div class="nm"><span title="${esc(d.name)}">${esc(d.name)}</span><small>${fmt(d.size)} · ${new Date(d.ts).toLocaleString("th-TH",{dateStyle:"short",timeStyle:"short"})}</small></div><button class="ghost x" data-del="ota">ลบ</button></div>
+  <div class="url"><code>${esc(url)}</code><button data-copy="${esc(url)}">คัดลอก</button></div>
+  <details class="more"><summary>รายละเอียด</summary><div class="meta"><span>Address</span><span>${esc(d.address)}</span><span>SHA-256</span><code>${esc(d.sha)}</code></div></details>`;
+  $("#a-ota").value=d.address;
+}
 function renderAll(){
-  SLOTS.forEach(s=>render(s.key));
+  SLOTS.forEach(s=>render(s.key));renderOta();
   $("#v-all").value=state.version||"";
-  $("#manifest").textContent=(state.a||state.b)?JSON.stringify(manifestObj(),null,2):"// อัปโหลดไฟล์ก่อน";
+  $("#manifest").textContent=(state.a||state.b||state.ota)?JSON.stringify(manifestObj(),null,2):"// อัปโหลดไฟล์ก่อน";
   const c=cfg();$("#manUrl").textContent=c.owner&&c.repo?rawUrl(MAN):"-";
 }
 function setStatus(t,ok){$("#status").textContent=t;$("#dot").classList.toggle("off",!ok)}
@@ -228,7 +260,8 @@ async function load(){
     const j=await gh("GET",MAN);
     let m={};
     if(j)m=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,"")),x=>x.charCodeAt(0))));
-    state.a=null;state.b=null;state.version=m.version||"";
+    state.a=null;state.b=null;state.ota=null;state.version=m.version||"";
+    if(m.ota&&m.ota.path)state.ota={name:m.ota.name||m.ota.path.split("/").pop(),address:cleanAddr(m.ota.address)||OTA_DEF,size:m.ota.size,sha:m.ota.sha256,path:m.ota.path,ts:m.ota.ts||Date.now()};
     (Array.isArray(m.variants)?m.variants:[]).filter(r=>r&&r.path).slice(0,2).forEach((r,i)=>{
       const k=SLOTS[i].key;
       state[k]={chip:r.chip||SLOTS[i].def,name:r.name||r.path.split("/").pop(),size:r.size,sha:r.sha256,path:r.path,ts:r.ts||Date.now()};
@@ -266,6 +299,44 @@ async function handle(k,file){
   setTimeout(()=>{bar.style.display="none";fill.style.width="0"},600);
 }
 
+async function handleOta(file){
+  if(!file)return;
+  if(!/\.bin$/i.test(file.name)){toast("รองรับเฉพาะไฟล์ .bin");return}
+  if(!needToken())return;
+  const address=cleanAddr($("#a-ota").value);
+  if(!address){toast("Flash Address ไม่ถูกต้อง (เช่น 0x2B0000)");return}
+  const bar=$("#b-ota"),fill=bar.firstElementChild;bar.style.display="block";fill.style.width="20%";
+  try{
+    const buf=await file.arrayBuffer(),sha=await sha256(buf);fill.style.width="40%";
+    const path=`firmware/ota/${file.name}`,prev=state.ota;
+    const ex=await gh("GET",path);
+    await gh("PUT",path,{message:`upload ota: ${file.name}`,content:b64(buf),sha:ex?ex.sha:undefined});
+    fill.style.width="70%";
+    if(prev&&prev.path!==path){try{const p=await gh("GET",prev.path);if(p)await gh("DELETE",prev.path,{message:"remove replaced ota file",sha:p.sha})}catch{}}
+    state.ota={name:file.name,address,size:file.size,sha,path,ts:Date.now()};
+    await saveManifest();fill.style.width="100%";
+    renderAll();
+    toast("อัปโหลด OTA สำเร็จ ✓ "+address);
+  }catch(e){toast("อัปโหลดล้มเหลว: "+e.message)}
+  setTimeout(()=>{bar.style.display="none";fill.style.width="0"},600);
+}
+(()=>{
+  const dz=$("#d-ota"),inp=$("#f-ota");
+  inp.onchange=()=>{handleOta(inp.files[0]);inp.value=""};
+  ["dragenter","dragover"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.add("over")}));
+  ["dragleave","drop"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove("over")}));
+  dz.addEventListener("drop",ev=>handleOta(ev.dataTransfer.files[0]));
+  $("#a-ota").onchange=async e=>{
+    const v=cleanAddr(e.target.value);
+    if(!v){toast("Flash Address ไม่ถูกต้อง");e.target.value=state.ota?state.ota.address:OTA_DEF;return}
+    e.target.value=v;
+    if(!state.ota||v===state.ota.address)return;
+    if(!needToken()){e.target.value=state.ota.address;return}
+    state.ota.address=v;
+    try{await saveManifest();renderAll();toast("บันทึก Address แล้ว")}catch(x){toast("บันทึกไม่ได้: "+x.message)}
+  };
+})();
+
 SLOTS.forEach(({key:k})=>{
   const dz=$("#d-"+k),inp=$("#f-"+k);
   inp.onchange=()=>{handle(k,inp.files[0]);inp.value=""};
@@ -287,7 +358,7 @@ SLOTS.forEach(({key:k})=>{
 // เวอร์ชันเดียวของทั้งชุด
 $("#v-all").onchange=async e=>{
   state.version=e.target.value.trim();
-  if(!state.a&&!state.b){renderAll();return}
+  if(!state.a&&!state.b&&!state.ota){renderAll();return}
   if(!needToken())return;
   try{await saveManifest();renderAll();toast("บันทึกเวอร์ชันแล้ว")}catch(x){toast("บันทึกไม่ได้: "+x.message)}
 };
@@ -301,7 +372,7 @@ document.addEventListener("click",async e=>{
     if(!needToken())return;
     try{
       const p=await gh("GET",r.path);
-      if(p)await gh("DELETE",r.path,{message:"delete "+r.chip,sha:p.sha});
+      if(p)await gh("DELETE",r.path,{message:"delete "+(r.chip||"ota"),sha:p.sha});
       state[k]=null;await saveManifest();renderAll();toast("ลบแล้ว");
     }catch(x){toast("ลบไม่ได้: "+x.message)}
   }
