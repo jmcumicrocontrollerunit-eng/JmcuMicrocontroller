@@ -10,16 +10,7 @@
       "sha256": "aef3e016c5e31be5bf48c4a278f3fa4b0923835599f63884b8117374c87952a2",
       "name": "DashTron_ST7789.ino.bin",
       "path": "firmware/ST7789/DashTron_ST7789.ino.bin",
-      "ts": 1792587633698,
-      "ota": {
-        "name": "DashTron_UpdaterST7789.ino.bin",
-        "address": "0x2B0000",
-        "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware/ST7789/ota/DashTron_UpdaterST7789.ino.bin",
-        "size": 1077504,
-        "sha256": "f112cb0e899fa7696630102cf6afd4641adfb91add5bdfcf4e03401254a49c15",
-        "path": "firmware/ST7789/ota/DashTron_UpdaterST7789.ino.bin",
-        "ts": 1792587507992
-      }
+      "ts": 1792587633698
     },
     {
       "chip": "ILI9341",
