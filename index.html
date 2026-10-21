@@ -27,33 +27,46 @@ main{max-width:980px;margin:-60px auto 40px;padding:0 16px}
 .tag{font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px;color:#fff;background:var(--mute)}
 .tag.old{background:var(--old)}.tag.new{background:var(--new)}
 .card h2{margin:0;font-size:18px}
-.drop{display:flex;align-items:center;justify-content:center;gap:10px;border:2px dashed var(--line);border-radius:12px;padding:10px 14px;text-align:center;cursor:pointer;transition:.2s;color:var(--mute);font-size:13px}
+.lb{font-size:12px;color:var(--mute);display:block;margin-bottom:4px}
+
+/* ช่องวางไฟล์: ความสูงคงที่ ไม่ขยายตอนใส่ไฟล์ */
+.drop{position:relative;overflow:hidden;display:flex;align-items:center;min-height:58px;border:2px dashed var(--line);border-radius:12px;padding:8px 12px;cursor:pointer;transition:border-color .2s,background .2s,color .2s;color:var(--mute);font-size:13px}
 .drop:hover,.drop.over{border-color:var(--a);background:color-mix(in srgb,var(--a) 8%,transparent);color:var(--a)}
-.drop svg{width:20px;height:20px;flex:none}
-.drop b{color:var(--ink);font-size:13px;font-weight:600}
+.drop .em{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;text-align:center;flex-wrap:wrap}
+.drop .em svg{width:20px;height:20px;flex:none}
+.drop .em b{color:var(--ink);font-size:13px;font-weight:600}
+.drop .fl{display:none;align-items:center;gap:8px;width:100%;min-width:0;color:var(--ink)}
+.drop.has{border-style:solid;border-color:color-mix(in srgb,var(--new) 55%,var(--line))}
+.drop.has .em{display:none}
+.drop.has .fl{display:flex}
+.drop .ico{width:32px;height:32px;font-size:10px;border-radius:9px}
+.drop .nm{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.drop .nm span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;font-weight:600}
+.drop .nm small{font-weight:500;color:var(--mute);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drop .x{flex:none;padding:5px 9px;font-size:12px}
+.drop .bar{position:absolute;left:0;right:0;bottom:0;height:4px;margin:0;border-radius:0}
 input[type=file]{display:none}
+
 .ver,.in{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:14px}
 .ver{margin-top:12px}
-.file{display:none;margin-top:10px}
-.file.show{display:block}
-.fname{display:flex;align-items:center;gap:10px;font-weight:600;min-width:0}
-.fname .nm{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.fname .nm span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
-.fname .nm small{font-weight:500;color:var(--mute);font-size:11px}
-.fname .x{flex:none;padding:5px 10px;font-size:12px}
-details.more{margin-top:10px}
+.sub{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px 0 6px;font-size:12px;font-weight:700;color:var(--mute)}
+.sub .ad{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.in.addr{width:112px;padding:4px 8px;font-size:12px;border-radius:8px;font-family:ui-monospace,Menlo,Consolas,monospace}
+details.more{margin-top:12px}
 details.more summary{font-size:12px;font-weight:600;color:var(--mute)}
-details.more .meta{margin:8px 0 0}
+.mh{font-size:12px;font-weight:700;margin:10px 0 0}
 .ico{flex:none;width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
-.meta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;font-size:12px;margin:12px 0}
+.meta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;font-size:12px;margin:6px 0 0}
 .meta span:nth-child(odd){color:var(--mute)}
 .meta code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;word-break:break-all}
+.none{font-size:12px;color:var(--mute);margin:8px 0 0}
 .url{display:flex;gap:8px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:6px 8px;min-width:0;margin-top:10px}
 .url code{flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:ui-monospace,Menlo,monospace}
 button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;background:var(--a);color:#fff;transition:.15s}
 button:hover{filter:brightness(1.1)}
 button.ghost{background:transparent;color:var(--mute);border:1px solid var(--line)}
-button.ghost:hover{color:#ef4444;border-color:#ef4444}
+button.ghost:hover{color:#ef4444;border-color:#ef4444;filter:none}
+button.ghost.cp:hover{color:var(--a);border-color:var(--a)}
 .row{display:flex;gap:8px;margin-top:12px}
 .bar{height:6px;border-radius:9px;background:var(--line);overflow:hidden;margin-top:12px;display:none}
 .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--a2));transition:width .2s}
@@ -66,21 +79,11 @@ pre{margin:0;background:#0d1224;color:#cfe3ff;padding:16px;border-radius:14px;ov
 .cfg label{font-size:12px;color:var(--mute);display:block;margin-bottom:4px}
 .cfg .full{grid-column:1/-1}
 summary{cursor:pointer;font-weight:700;font-size:15px}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.pill{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:99px;padding:7px 14px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:8px}
-.pill:hover{border-color:var(--a);filter:none}
-.pill.on{background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;border-color:transparent}
-.pill small{font-weight:600;opacity:.75;font-size:11px}
-.addchip{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.addchip .in{flex:1;min-width:180px}
-.empty{text-align:center;color:var(--mute);padding:26px 10px;font-size:14px}
-.cur{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.cur h3{margin:0}
 .relcard{margin-top:18px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
 @media(max-width:720px){.relcard{grid-template-columns:1fr}}
 .relcard h3{margin:0;font-size:15px}
 .relcard .ver{margin-top:0;font-size:18px;font-weight:700;font-family:ui-monospace,Menlo,Consolas,monospace}
-.chipin{font-weight:700;margin-top:0;margin-bottom:12px}
+.chipin{font-weight:700;margin-top:0}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:#111827;color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;opacity:0;transition:.25s;pointer-events:none;max-width:90vw}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 </style>
@@ -88,7 +91,7 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
 <body>
 <div class="hero"><div class="wrap">
   <h1>📟 DashTron</h1>
-  <p>เวอร์ชันเดียว ไฟล์ 2 ชิปขับจอ วางไฟล์ของแต่ละชิป ตั้งเลขเวอร์ชันครั้งเดียว แล้วให้ ESP32 CYD เลือกติดตั้งตามชิปที่จอใช้</p>
+  <p>เวอร์ชันเดียว 2 ชิปขับจอ แต่ละชิปมีไฟล์หลักและไฟล์ Update (OTA) ผูกคู่กัน ตั้งเลขเวอร์ชันครั้งเดียว แล้วให้ ESP32 CYD เลือกติดตั้งตามชิปที่จอใช้</p>
   <span class="chip"><span class="dot off" id="dot"></span><span id="status">กำลังเชื่อมต่อ...</span></span>
 </div></div>
 
@@ -113,35 +116,26 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
   <datalist id="chipPresets"><option value="ST7789"><option value="ST7735"><option value="ST7796"><option value="ILI9341"><option value="ILI9342"><option value="ILI9486"><option value="ILI9488"><option value="GC9A01"></datalist>
   <div class="grid" id="slots"></div>
 
-  <div class="card sec" id="c-ota">
-    <div class="head"><h2>🔄 OTA Update (พาร์ทิชันแยก)</h2><span class="tag" id="t-ota">ว่าง</span></div>
-    <label style="font-size:12px;color:var(--mute);display:block;margin-bottom:4px">Flash Address</label>
-    <input class="ver chipin" id="a-ota" value="0x2B0000" autocomplete="off" spellcheck="false" style="font-family:ui-monospace,Menlo,Consolas,monospace">
-    <label class="drop" id="d-ota">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
-      <b>วางไฟล์ OTA .bin ที่นี่</b><span>หรือคลิกเลือก</span>
-      <input type="file" accept=".bin" id="f-ota">
-    </label>
-    <div class="bar" id="b-ota"><i></i></div>
-    <div class="file" id="i-ota"></div>
-    <p class="note">ไฟล์นี้แยกจากไฟล์หลักทั้ง 2 ชิป ไม่ผูกกับชิปขับจอ และเขียนลงที่ Flash Address ด้านบน</p>
-  </div>
-
   <div class="card sec">
     <h3>🧾 Manifest สำหรับ MCU</h3>
     <pre id="manifest">// อัปโหลดไฟล์ก่อน</pre>
     <div class="row"><button id="copyMan">คัดลอก JSON</button></div>
     <h3 style="margin-top:18px">ลิงก์ manifest (ให้ ESP32 CYD ดึงลิงก์นี้ลิงก์เดียว)</h3>
     <div class="url"><code id="manUrl">-</code><button data-copy-id="manUrl">คัดลอก</button></div>
-    <p class="note">ESP32 อ่าน <code>version</code> และรายการ <code>variants</code> แล้วแสดงเป็นเมนู เช่น <code>ST7789 v2.0.2</code> / <code>ILI9341 v2.0.2</code> (ใช้ฟิลด์ <code>label</code> ได้เลย) ผู้ใช้เลือกชิปที่ตรงกับจอ จากนั้นดาวน์โหลด <code>url</code> ของชิปนั้น และตรวจ <code>sha256</code> ก่อนเขียนลง flash<br>ไฟล์ OTA อยู่ในฟิลด์ <code>ota</code> แยกต่างหาก มี <code>address</code> (เช่น <code>0x2B0000</code>), <code>url</code>, <code>size</code>, <code>sha256</code> ใช้เขียนลงพาร์ทิชันนั้นโดยตรง</p>
+    <p class="note">ESP32 อ่าน <code>version</code> และรายการ <code>variants</code> แล้วแสดงเป็นเมนู เช่น <code>ST7789 v2.0.2</code> / <code>ILI9341 v2.0.2</code> (ใช้ฟิลด์ <code>label</code> ได้เลย) ผู้ใช้เลือกชิปที่ตรงกับจอ จากนั้นดาวน์โหลด <code>url</code> ของชิปนั้น และตรวจ <code>sha256</code> ก่อนเขียนลง flash<br>ไฟล์ OTA ของชิปนั้นอยู่ในฟิลด์ <code>ota</code> ภายในรายการชิปเดียวกัน มี <code>address</code> (เช่น <code>0x2B0000</code>), <code>url</code>, <code>size</code>, <code>sha256</code> ใช้เขียนลงพาร์ทิชันนั้นโดยตรง</p>
   </div>
 </main>
 <div class="toast" id="toast"></div>
 
 <script>
-const SLOTS=[{key:"a",title:"ไฟล์ที่ 1",def:"ST7789"},{key:"b",title:"ไฟล์ที่ 2",def:"ILI9341"}];
-const state={a:null,b:null,ota:null,version:""};
+const SLOTS=[{key:"a",title:"ชุดที่ 1",def:"ST7789"},{key:"b",title:"ชุดที่ 2",def:"ILI9341"}];
+const KINDS=[
+  {k:"main",label:"📦 ไฟล์หลัก",icon:"BIN",ph:"วางไฟล์หลัก .bin ที่นี่"},
+  {k:"ota", label:"🔄 ไฟล์ Update (OTA)",icon:"OTA",ph:"วางไฟล์ OTA .bin ที่นี่"}
+];
 const OTA_DEF="0x2B0000";
+const mk=s=>({chip:s.def,main:null,ota:null,addr:OTA_DEF});
+const state={a:mk(SLOTS[0]),b:mk(SLOTS[1]),version:""};
 const cleanAddr=v=>{const m=String(v||"").trim().match(/^(?:0x)?([0-9a-f]+)$/i);return m?"0x"+m[1].toUpperCase():""};
 const $=s=>document.querySelector(s);
 const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)};
@@ -154,6 +148,9 @@ const rawUrl=p=>{const c=cfg();return `https://raw.githubusercontent.com/${c.own
 const MAN="firmware/manifest.json";
 const cleanChip=n=>String(n||"").trim().replace(/[^A-Za-z0-9_-]/g,"").toUpperCase();
 const needToken=()=>{if(cfg().token)return true;toast("ใส่ GitHub Token ในส่วนตั้งค่าก่อน");$("#settings").open=true;return false};
+const hasAny=k=>!!(state[k].main||state[k].ota);
+const otherKey=k=>SLOTS.find(s=>s.key!==k).key;
+const dateStr=ts=>new Date(ts).toLocaleString("th-TH",{dateStyle:"short",timeStyle:"short"});
 
 /* ---- settings ---- */
 (()=>{
@@ -183,20 +180,14 @@ async function sha256(buf){const h=await crypto.subtle.digest("SHA-256",buf);ret
 /* ---- manifest ---- */
 function manifestObj(){
   const v=state.version||"";
-  const variants=SLOTS.map(s=>state[s.key]).filter(Boolean).map(x=>({
-    chip:x.chip,
-    label:x.chip+(v?" v"+v:""),
-    url:rawUrl(x.path),
-    size:x.size,
-    sha256:x.sha,
-    name:x.name,
-    path:x.path,
-    ts:x.ts
-  }));
-  const o=state.ota;
-  const out={product:"DashTron",version:v||null,variants};
-  if(o)out.ota={name:o.name,address:o.address,url:rawUrl(o.path),size:o.size,sha256:o.sha,path:o.path,ts:o.ts};
-  return out;
+  const variants=SLOTS.filter(s=>hasAny(s.key)).map(s=>{
+    const x=state[s.key];
+    const o={chip:x.chip,label:x.chip+(v?" v"+v:"")};
+    if(x.main)Object.assign(o,{url:rawUrl(x.main.path),size:x.main.size,sha256:x.main.sha,name:x.main.name,path:x.main.path,ts:x.main.ts});
+    if(x.ota)o.ota={name:x.ota.name,address:x.addr,url:rawUrl(x.ota.path),size:x.ota.size,sha256:x.ota.sha,path:x.ota.path,ts:x.ota.ts};
+    return o;
+  });
+  return {product:"DashTron",version:v||null,variants};
 }
 async function saveManifest(){
   const cur=await gh("GET",MAN);
@@ -205,50 +196,57 @@ async function saveManifest(){
 }
 
 /* ---- UI ---- */
+const UP_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>';
+const dropHtml=(k,kd)=>`
+  <div class="drop" id="d-${k}-${kd.k}">
+    <input type="file" accept=".bin" id="f-${k}-${kd.k}">
+    <div class="em">${UP_ICON}<b>${kd.ph}</b><span>หรือคลิกเลือก</span></div>
+    <div class="fl" id="i-${k}-${kd.k}"></div>
+    <div class="bar" id="b-${k}-${kd.k}"><i></i></div>
+  </div>`;
+
 $("#slots").innerHTML=SLOTS.map(s=>`
 <div class="card" id="c-${s.key}">
   <div class="head"><h2>${s.title}</h2><span class="tag" id="t-${s.key}">ว่าง</span></div>
-  <label style="font-size:12px;color:var(--mute);display:block;margin-bottom:4px">ชิปขับจอของไฟล์นี้</label>
+  <label class="lb">ชิปขับจอ (ไฟล์หลักและไฟล์ OTA ในการ์ดนี้ผูกกับชิปนี้)</label>
   <input class="ver chipin" id="n-${s.key}" list="chipPresets" value="${s.def}" autocomplete="off" spellcheck="false">
-  <label class="drop" id="d-${s.key}">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
-    <b>วางไฟล์ .bin ที่นี่</b><span>หรือคลิกเลือก</span>
-    <input type="file" accept=".bin" id="f-${s.key}">
-  </label>
-  <div class="bar" id="b-${s.key}"><i></i></div>
-  <div class="file" id="i-${s.key}"></div>
+  <div class="sub"><span>${KINDS[0].label}</span></div>
+  ${dropHtml(s.key,KINDS[0])}
+  <div class="sub"><span>${KINDS[1].label}</span><span class="ad">Address <input class="in addr" id="a-${s.key}" value="${OTA_DEF}" autocomplete="off" spellcheck="false"></span></div>
+  ${dropHtml(s.key,KINDS[1])}
+  <details class="more"><summary>ลิงก์ / SHA-256</summary><div id="m-${s.key}"></div></details>
 </div>`).join("");
 
-function render(k){
-  const d=state[k],box=$("#i-"+k),t=$("#t-"+k);
-  t.className="tag"+(d?" new":"");
-  t.textContent=d?(d.chip+(state.version?" · v"+state.version:"")):"ว่าง";
-  if(!d){box.classList.remove("show");box.innerHTML="";return}
-  box.classList.add("show");
+function renderDrop(k,kd){
+  const d=state[k][kd.k],dz=$(`#d-${k}-${kd.k}`),box=$(`#i-${k}-${kd.k}`);
+  dz.classList.toggle("has",!!d);
+  if(!d){box.innerHTML="";return}
   const url=rawUrl(d.path);
-  box.innerHTML=`
-  <div class="fname"><div class="ico">BIN</div><div class="nm"><span title="${esc(d.name)}">${esc(d.name)}</span><small>${fmt(d.size)} · ${new Date(d.ts).toLocaleString("th-TH",{dateStyle:"short",timeStyle:"short"})}</small></div><button class="ghost x" data-del="${k}">ลบ</button></div>
-  <div class="url"><code>${esc(url)}</code><button data-copy="${esc(url)}">คัดลอก</button></div>
-  <details class="more"><summary>รายละเอียด</summary><div class="meta"><span>ชิป</span><span>${esc(d.chip)}</span><span>SHA-256</span><code>${esc(d.sha)}</code></div></details>`;
-  $("#n-"+k).value=d.chip;
+  box.innerHTML=`<div class="ico">${kd.icon}</div><div class="nm"><span title="${esc(d.name)}">${esc(d.name)}</span><small>${fmt(d.size)} · ${dateStr(d.ts)} · คลิกเพื่อเปลี่ยนไฟล์</small></div><button type="button" class="ghost cp x" data-copy="${esc(url)}" title="คัดลอกลิงก์">ลิงก์</button><button type="button" class="ghost x" data-del="${k}:${kd.k}" title="ลบไฟล์">ลบ</button>`;
 }
-function renderOta(){
-  const d=state.ota,box=$("#i-ota"),t=$("#t-ota");
-  t.className="tag"+(d?" new":"");
-  t.textContent=d?d.address:"ว่าง";
-  if(!d){box.classList.remove("show");box.innerHTML="";return}
-  box.classList.add("show");
-  const url=rawUrl(d.path);
-  box.innerHTML=`
-  <div class="fname"><div class="ico">OTA</div><div class="nm"><span title="${esc(d.name)}">${esc(d.name)}</span><small>${fmt(d.size)} · ${new Date(d.ts).toLocaleString("th-TH",{dateStyle:"short",timeStyle:"short"})}</small></div><button class="ghost x" data-del="ota">ลบ</button></div>
-  <div class="url"><code>${esc(url)}</code><button data-copy="${esc(url)}">คัดลอก</button></div>
-  <details class="more"><summary>รายละเอียด</summary><div class="meta"><span>Address</span><span>${esc(d.address)}</span><span>SHA-256</span><code>${esc(d.sha)}</code></div></details>`;
-  $("#a-ota").value=d.address;
+function renderMeta(k){
+  const x=state[k];
+  const parts=KINDS.filter(kd=>x[kd.k]).map(kd=>{
+    const d=x[kd.k],url=rawUrl(d.path);
+    return `<div class="mh">${kd.label}</div>
+    <div class="meta"><span>ไฟล์</span><code>${esc(d.name)}</code>${kd.k==="ota"?`<span>Address</span><code>${esc(x.addr)}</code>`:""}<span>SHA-256</span><code>${esc(d.sha)}</code></div>
+    <div class="url"><code>${esc(url)}</code><button type="button" data-copy="${esc(url)}">คัดลอก</button></div>`;
+  });
+  $("#m-"+k).innerHTML=parts.length?parts.join(""):'<p class="none">ยังไม่มีไฟล์</p>';
+}
+function render(k){
+  const x=state[k],t=$("#t-"+k);
+  t.className="tag"+(hasAny(k)?" new":"");
+  t.textContent=hasAny(k)?(x.chip+(state.version?" · v"+state.version:"")):"ว่าง";
+  KINDS.forEach(kd=>renderDrop(k,kd));
+  renderMeta(k);
+  $("#n-"+k).value=x.chip;
+  $("#a-"+k).value=x.addr;
 }
 function renderAll(){
-  SLOTS.forEach(s=>render(s.key));renderOta();
+  SLOTS.forEach(s=>render(s.key));
   $("#v-all").value=state.version||"";
-  $("#manifest").textContent=(state.a||state.b||state.ota)?JSON.stringify(manifestObj(),null,2):"// อัปโหลดไฟล์ก่อน";
+  $("#manifest").textContent=SLOTS.some(s=>hasAny(s.key))?JSON.stringify(manifestObj(),null,2):"// อัปโหลดไฟล์ก่อน";
   const c=cfg();$("#manUrl").textContent=c.owner&&c.repo?rawUrl(MAN):"-";
 }
 function setStatus(t,ok){$("#status").textContent=t;$("#dot").classList.toggle("off",!ok)}
@@ -260,105 +258,99 @@ async function load(){
     const j=await gh("GET",MAN);
     let m={};
     if(j)m=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,"")),x=>x.charCodeAt(0))));
-    state.a=null;state.b=null;state.ota=null;state.version=m.version||"";
-    if(m.ota&&m.ota.path)state.ota={name:m.ota.name||m.ota.path.split("/").pop(),address:cleanAddr(m.ota.address)||OTA_DEF,size:m.ota.size,sha:m.ota.sha256,path:m.ota.path,ts:m.ota.ts||Date.now()};
-    (Array.isArray(m.variants)?m.variants:[]).filter(r=>r&&r.path).slice(0,2).forEach((r,i)=>{
-      const k=SLOTS[i].key;
-      state[k]={chip:r.chip||SLOTS[i].def,name:r.name||r.path.split("/").pop(),size:r.size,sha:r.sha256,path:r.path,ts:r.ts||Date.now()};
+    SLOTS.forEach(s=>{state[s.key]=mk(s)});
+    state.version=m.version||"";
+    const used={};
+    (Array.isArray(m.variants)?m.variants:[]).filter(r=>r&&(r.path||(r.ota&&r.ota.path))).slice(0,2).forEach(r=>{
+      const chip=cleanChip(r.chip);
+      const slot=SLOTS.find(s=>!used[s.key]&&s.def===chip)||SLOTS.find(s=>!used[s.key]);
+      if(!slot)return;
+      used[slot.key]=true;
+      const st=state[slot.key];
+      if(chip)st.chip=chip;
+      if(r.path)st.main={name:r.name||r.path.split("/").pop(),size:r.size,sha:r.sha256,path:r.path,ts:r.ts||Date.now()};
+      if(r.ota&&r.ota.path){
+        st.ota={name:r.ota.name||r.ota.path.split("/").pop(),size:r.ota.size,sha:r.ota.sha256,path:r.ota.path,ts:r.ota.ts||Date.now()};
+        st.addr=cleanAddr(r.ota.address)||OTA_DEF;
+      }
     });
     setStatus(c.token?"พร้อมใช้งาน":"อ่านอย่างเดียว (ยังไม่ใส่ Token)",!!c.token);
   }catch(e){setStatus("เชื่อมต่อ GitHub ไม่ได้: "+e.message,false)}
   renderAll();
 }
 
-async function handle(k,file){
+async function handle(k,kind,file){
   if(!file)return;
   if(!/\.bin$/i.test(file.name)){toast("รองรับเฉพาะไฟล์ .bin");return}
   if(!needToken())return;
   const chip=cleanChip($("#n-"+k).value);
   if(!chip){toast("ใส่ชื่อชิปขับจอของไฟล์นี้ก่อน");return}
-  const other=SLOTS.find(s=>s.key!==k).key;
-  if(state[other]&&state[other].chip===chip){toast("ชื่อชิปซ้ำกับอีกไฟล์ กรุณาตั้งชื่อให้ต่างกัน");return}
+  const o=otherKey(k);
+  if(hasAny(o)&&state[o].chip===chip){toast("ชื่อชิปซ้ำกับอีกชุด กรุณาตั้งชื่อให้ต่างกัน");return}
+  let addr=state[k].addr;
+  if(kind==="ota"){addr=cleanAddr($("#a-"+k).value);if(!addr){toast("Flash Address ไม่ถูกต้อง (เช่น 0x2B0000)");return}}
   // ถ้ายังไม่ได้กรอกเวอร์ชัน ลองอ่านจากชื่อไฟล์ เช่น firmware_v2.0.2.bin
   const vin=$("#v-all");
   if(!vin.value.trim()){const m=file.name.match(/(\d+(?:\.\d+)+)/);if(m)vin.value=m[1]}
   state.version=vin.value.trim();
-  const bar=$("#b-"+k),fill=bar.firstElementChild;bar.style.display="block";fill.style.width="20%";
+  const bar=$(`#b-${k}-${kind}`),fill=bar.firstElementChild;bar.style.display="block";fill.style.width="20%";
   try{
     const buf=await file.arrayBuffer(),sha=await sha256(buf);fill.style.width="40%";
-    const path=`firmware/${chip}/${file.name}`,prev=state[k];
+    const path=kind==="ota"?`firmware/${chip}/ota/${file.name}`:`firmware/${chip}/${file.name}`,prev=state[k][kind];
     const ex=await gh("GET",path);
-    await gh("PUT",path,{message:`upload ${chip}: ${file.name}`,content:b64(buf),sha:ex?ex.sha:undefined});
+    await gh("PUT",path,{message:`upload ${chip} ${kind}: ${file.name}`,content:b64(buf),sha:ex?ex.sha:undefined});
     fill.style.width="70%";
     if(prev&&prev.path!==path){try{const p=await gh("GET",prev.path);if(p)await gh("DELETE",prev.path,{message:"remove replaced file",sha:p.sha})}catch{}}
-    state[k]={chip,name:file.name,size:file.size,sha,path,ts:Date.now()};
+    state[k].chip=chip;
+    state[k].addr=addr;
+    state[k][kind]={name:file.name,size:file.size,sha,path,ts:Date.now()};
     await saveManifest();fill.style.width="100%";
     renderAll();
-    toast(`อัปโหลดสำเร็จ ✓ ${chip}`+(state.version?" v"+state.version:""));
+    toast(`อัปโหลดสำเร็จ ✓ ${chip}${kind==="ota"?" OTA "+addr:""}`+(state.version?" v"+state.version:""));
   }catch(e){toast("อัปโหลดล้มเหลว: "+e.message)}
   setTimeout(()=>{bar.style.display="none";fill.style.width="0"},600);
 }
-
-async function handleOta(file){
-  if(!file)return;
-  if(!/\.bin$/i.test(file.name)){toast("รองรับเฉพาะไฟล์ .bin");return}
-  if(!needToken())return;
-  const address=cleanAddr($("#a-ota").value);
-  if(!address){toast("Flash Address ไม่ถูกต้อง (เช่น 0x2B0000)");return}
-  const bar=$("#b-ota"),fill=bar.firstElementChild;bar.style.display="block";fill.style.width="20%";
-  try{
-    const buf=await file.arrayBuffer(),sha=await sha256(buf);fill.style.width="40%";
-    const path=`firmware/ota/${file.name}`,prev=state.ota;
-    const ex=await gh("GET",path);
-    await gh("PUT",path,{message:`upload ota: ${file.name}`,content:b64(buf),sha:ex?ex.sha:undefined});
-    fill.style.width="70%";
-    if(prev&&prev.path!==path){try{const p=await gh("GET",prev.path);if(p)await gh("DELETE",prev.path,{message:"remove replaced ota file",sha:p.sha})}catch{}}
-    state.ota={name:file.name,address,size:file.size,sha,path,ts:Date.now()};
-    await saveManifest();fill.style.width="100%";
-    renderAll();
-    toast("อัปโหลด OTA สำเร็จ ✓ "+address);
-  }catch(e){toast("อัปโหลดล้มเหลว: "+e.message)}
-  setTimeout(()=>{bar.style.display="none";fill.style.width="0"},600);
-}
-(()=>{
-  const dz=$("#d-ota"),inp=$("#f-ota");
-  inp.onchange=()=>{handleOta(inp.files[0]);inp.value=""};
-  ["dragenter","dragover"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.add("over")}));
-  ["dragleave","drop"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove("over")}));
-  dz.addEventListener("drop",ev=>handleOta(ev.dataTransfer.files[0]));
-  $("#a-ota").onchange=async e=>{
-    const v=cleanAddr(e.target.value);
-    if(!v){toast("Flash Address ไม่ถูกต้อง");e.target.value=state.ota?state.ota.address:OTA_DEF;return}
-    e.target.value=v;
-    if(!state.ota||v===state.ota.address)return;
-    if(!needToken()){e.target.value=state.ota.address;return}
-    state.ota.address=v;
-    try{await saveManifest();renderAll();toast("บันทึก Address แล้ว")}catch(x){toast("บันทึกไม่ได้: "+x.message)}
-  };
-})();
 
 SLOTS.forEach(({key:k})=>{
-  const dz=$("#d-"+k),inp=$("#f-"+k);
-  inp.onchange=()=>{handle(k,inp.files[0]);inp.value=""};
-  ["dragenter","dragover"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.add("over")}));
-  ["dragleave","drop"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove("over")}));
-  dz.addEventListener("drop",ev=>handle(k,ev.dataTransfer.files[0]));
-  // แก้ชื่อชิปหลังอัปโหลดแล้ว → อัปเดต manifest
+  KINDS.forEach(kd=>{
+    const dz=$(`#d-${k}-${kd.k}`),inp=$(`#f-${k}-${kd.k}`);
+    inp.onchange=()=>{handle(k,kd.k,inp.files[0]);inp.value=""};
+    dz.addEventListener("click",ev=>{if(ev.target.closest("button")||ev.target===inp)return;inp.click()});
+    ["dragenter","dragover"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.add("over")}));
+    ["dragleave","drop"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove("over")}));
+    dz.addEventListener("drop",ev=>handle(k,kd.k,ev.dataTransfer.files[0]));
+  });
+
+  // แก้ชื่อชิปหลังอัปโหลดแล้ว → อัปเดต manifest (มีผลกับทั้งไฟล์หลักและ OTA ของชุดนี้)
   $("#n-"+k).onchange=async e=>{
     const v=cleanChip(e.target.value);
-    e.target.value=v||(state[k]?state[k].chip:SLOTS.find(s=>s.key===k).def);
-    if(!state[k]||!v||v===state[k].chip)return;
-    const other=SLOTS.find(s=>s.key!==k).key;
-    if(state[other]&&state[other].chip===v){toast("ชื่อชิปซ้ำกับอีกไฟล์");e.target.value=state[k].chip;return}
+    e.target.value=v||state[k].chip;
+    if(!v||v===state[k].chip)return;
+    const o=otherKey(k);
+    if(hasAny(o)&&state[o].chip===v){toast("ชื่อชิปซ้ำกับอีกชุด");e.target.value=state[k].chip;return}
+    if(!hasAny(k)){state[k].chip=v;return}
     if(!needToken()){e.target.value=state[k].chip;return}
     state[k].chip=v;
     try{await saveManifest();renderAll();toast("บันทึกชื่อชิปแล้ว")}catch(x){toast("บันทึกไม่ได้: "+x.message)}
   };
+
+  // แก้ Flash Address ของ OTA
+  $("#a-"+k).onchange=async e=>{
+    const v=cleanAddr(e.target.value);
+    if(!v){toast("Flash Address ไม่ถูกต้อง");e.target.value=state[k].addr;return}
+    e.target.value=v;
+    if(v===state[k].addr)return;
+    if(!state[k].ota){state[k].addr=v;return}
+    if(!needToken()){e.target.value=state[k].addr;return}
+    state[k].addr=v;
+    try{await saveManifest();renderAll();toast("บันทึก Address แล้ว")}catch(x){toast("บันทึกไม่ได้: "+x.message)}
+  };
 });
+
 // เวอร์ชันเดียวของทั้งชุด
 $("#v-all").onchange=async e=>{
   state.version=e.target.value.trim();
-  if(!state.a&&!state.b&&!state.ota){renderAll();return}
+  if(!SLOTS.some(s=>hasAny(s.key))){renderAll();return}
   if(!needToken())return;
   try{await saveManifest();renderAll();toast("บันทึกเวอร์ชันแล้ว")}catch(x){toast("บันทึกไม่ได้: "+x.message)}
 };
@@ -368,17 +360,19 @@ document.addEventListener("click",async e=>{
   if(c||ci){try{await navigator.clipboard.writeText(c?c.dataset.copy:$("#"+ci.dataset.copyId).textContent);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}}
   const d=e.target.closest("[data-del]");
   if(d&&confirm("ลบไฟล์นี้ถาวร?")){
-    const k=d.dataset.del,r=state[k];
+    const [k,kind]=d.dataset.del.split(":"),r=state[k][kind];
+    if(!r)return;
     if(!needToken())return;
     try{
       const p=await gh("GET",r.path);
-      if(p)await gh("DELETE",r.path,{message:"delete "+(r.chip||"ota"),sha:p.sha});
-      state[k]=null;await saveManifest();renderAll();toast("ลบแล้ว");
+      if(p)await gh("DELETE",r.path,{message:`delete ${state[k].chip} ${kind}`,sha:p.sha});
+      state[k][kind]=null;await saveManifest();renderAll();toast("ลบแล้ว");
     }catch(x){toast("ลบไม่ได้: "+x.message)}
   }
 });
 $("#copyMan").onclick=async()=>{try{await navigator.clipboard.writeText($("#manifest").textContent);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}};
 
+renderAll();
 load();
 </script>
 </body>
