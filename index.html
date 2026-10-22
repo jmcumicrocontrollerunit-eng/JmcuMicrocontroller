@@ -29,6 +29,14 @@ main{max-width:980px;margin:-60px auto 40px;padding:0 16px}
 .card h2{margin:0;font-size:18px}
 .lb{font-size:12px;color:var(--mute);display:block;margin-bottom:4px}
 
+/* แท็บ */
+.tabs{display:flex;gap:8px;margin-top:18px}
+.tabs button.tab{flex:1;background:var(--card);color:var(--mute);border:1px solid var(--line);padding:12px 14px;font-size:14px;border-radius:14px;box-shadow:var(--shadow)}
+.tabs button.tab.on{background:var(--a);color:#fff;border-color:var(--a)}
+.tabs button.tab[data-tab="test"].on{background:var(--warn);border-color:var(--warn)}
+.panel[hidden]{display:none}
+.banner{margin-top:18px;padding:12px 16px;border-radius:14px;border:1px dashed var(--warn);background:color-mix(in srgb,var(--warn) 10%,transparent);font-size:13px;line-height:1.6;color:var(--ink)}
+
 /* ช่องวางไฟล์: ความสูงคงที่ ไม่ขยายตอนใส่ไฟล์ */
 .drop{position:relative;overflow:hidden;display:flex;align-items:center;min-height:58px;border:2px dashed var(--line);border-radius:12px;padding:8px 12px;cursor:pointer;transition:border-color .2s,background .2s,color .2s;color:var(--mute);font-size:13px}
 .drop:hover,.drop.over{border-color:var(--a);background:color-mix(in srgb,var(--a) 8%,transparent);color:var(--a)}
@@ -91,7 +99,7 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
 <body>
 <div class="hero"><div class="wrap">
   <h1>📟 DashTron</h1>
-  <p>เวอร์ชันเดียว 2 ชิปขับจอ แต่ละชิปมีไฟล์หลักและไฟล์ Update (OTA) ผูกคู่กัน ตั้งเลขเวอร์ชันครั้งเดียว แล้วให้ ESP32 CYD เลือกติดตั้งตามชิปที่จอใช้</p>
+  <p>เวอร์ชันเดียว 2 ชิปขับจอ แต่ละชิปมีไฟล์หลักและไฟล์ Update (OTA) ผูกคู่กัน ตั้งเลขเวอร์ชันครั้งเดียว แล้วให้ ESP32 CYD เลือกติดตั้งตามชิปที่จอใช้ มีทั้งชุดโปรแกรมหลักและชุดทดลองใช้งาน (แยก Manifest จากกัน)</p>
   <span class="chip"><span class="dot off" id="dot"></span><span id="status">กำลังเชื่อมต่อ...</span></span>
 </div></div>
 
@@ -108,22 +116,15 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
     <p class="note">สร้าง Token ที่ GitHub → Settings → Developer settings → Fine-grained tokens เลือกเฉพาะ repo นี้ และให้สิทธิ์ <b>Contents: Read and write</b> Token จะเก็บไว้ในเบราว์เซอร์เครื่องนี้เท่านั้น ไม่ถูกส่งไปที่อื่นนอกจาก api.github.com</p>
   </details>
 
-  <div class="card relcard">
-    <h3>🏷️ เวอร์ชันของชุดนี้ (ใช้ร่วมกันทั้ง 2 ชิป)</h3>
-    <input class="ver" id="v-all" placeholder="เช่น 2.0.2" autocomplete="off">
+  <div class="tabs">
+    <button type="button" class="tab on" data-tab="main">📦 โปรแกรมหลัก</button>
+    <button type="button" class="tab" data-tab="test">🧪 ทดลองใช้งาน</button>
   </div>
 
   <datalist id="chipPresets"><option value="ST7789"><option value="ST7735"><option value="ST7796"><option value="ILI9341"><option value="ILI9342"><option value="ILI9486"><option value="ILI9488"><option value="GC9A01"></datalist>
-  <div class="grid" id="slots"></div>
 
-  <div class="card sec">
-    <h3>🧾 Manifest สำหรับ MCU</h3>
-    <pre id="manifest">// อัปโหลดไฟล์ก่อน</pre>
-    <div class="row"><button id="copyMan">คัดลอก JSON</button></div>
-    <h3 style="margin-top:18px">ลิงก์ manifest (ให้ ESP32 CYD ดึงลิงก์นี้ลิงก์เดียว)</h3>
-    <div class="url"><code id="manUrl">-</code><button data-copy-id="manUrl">คัดลอก</button></div>
-    <p class="note">ESP32 อ่าน <code>version</code> และรายการ <code>variants</code> แล้วแสดงเป็นเมนู เช่น <code>ST7789 v2.0.2</code> / <code>ILI9341 v2.0.2</code> (ใช้ฟิลด์ <code>label</code> ได้เลย) ผู้ใช้เลือกชิปที่ตรงกับจอ จากนั้นดาวน์โหลด <code>url</code> ของชิปนั้น และตรวจ <code>sha256</code> ก่อนเขียนลง flash<br>ไฟล์ OTA ของชิปนั้นอยู่ในฟิลด์ <code>ota</code> ภายในรายการชิปเดียวกัน มี <code>address</code> (เช่น <code>0x2B0000</code>), <code>url</code>, <code>size</code>, <code>sha256</code> ใช้เขียนลงพาร์ทิชันนั้นโดยตรง</p>
-  </div>
+  <section class="panel" id="p-main"></section>
+  <section class="panel" id="p-test" hidden></section>
 </main>
 <div class="toast" id="toast"></div>
 
@@ -134,8 +135,11 @@ const KINDS=[
   {k:"ota", label:"🔄 ไฟล์ Update (OTA)",icon:"OTA",ph:"วางไฟล์ OTA .bin ที่นี่"}
 ];
 const OTA_DEF="0x2B0000";
-const mk=s=>({chip:s.def,main:null,ota:null,addr:OTA_DEF});
-const state={a:mk(SLOTS[0]),b:mk(SLOTS[1]),version:""};
+/* แต่ละ channel มีโฟลเดอร์ไฟล์และ manifest เป็นของตัวเอง ไม่ปนกัน */
+const CHANNELS=[
+  {id:"main",ota:true,dir:"firmware",     man:"firmware/manifest.json",     channel:null,   verLabel:"🏷️ เวอร์ชันของชุดนี้ (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest สำหรับ MCU",manLinkTitle:"ลิงก์ manifest (ให้ ESP32 CYD ดึงลิงก์นี้ลิงก์เดียว)"},
+  {id:"test",ota:false,dir:"firmware-test",man:"firmware-test/manifest.json",channel:"test",verLabel:"🏷️ เวอร์ชันชุดทดลองใช้งาน (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest ชุดทดลองใช้งาน",manLinkTitle:"ลิงก์ manifest ชุดทดลองใช้งาน (แยกจากโปรแกรมหลัก)"}
+];
 const cleanAddr=v=>{const m=String(v||"").trim().match(/^(?:0x)?([0-9a-f]+)$/i);return m?"0x"+m[1].toUpperCase():""};
 const $=s=>document.querySelector(s);
 const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)};
@@ -145,10 +149,8 @@ const LS={get:k=>{try{return localStorage.getItem(k)}catch{return null}},set:(k,
 const cfg=()=>({owner:$("#s-owner").value.trim(),repo:$("#s-repo").value.trim(),branch:$("#s-branch").value.trim()||"main",token:$("#s-token").value.trim()});
 const enc=p=>p.split("/").map(encodeURIComponent).join("/");
 const rawUrl=p=>{const c=cfg();return `https://raw.githubusercontent.com/${c.owner}/${c.repo}/${c.branch}/${enc(p)}`};
-const MAN="firmware/manifest.json";
 const cleanChip=n=>String(n||"").trim().replace(/[^A-Za-z0-9_-]/g,"").toUpperCase();
 const needToken=()=>{if(cfg().token)return true;toast("ใส่ GitHub Token ในส่วนตั้งค่าก่อน");$("#settings").open=true;return false};
-const hasAny=k=>!!(state[k].main||state[k].ota);
 const otherKey=k=>SLOTS.find(s=>s.key!==k).key;
 const dateStr=ts=>new Date(ts).toLocaleString("th-TH",{dateStyle:"short",timeStyle:"short"});
 
@@ -161,8 +163,6 @@ const dateStr=ts=>new Date(ts).toLocaleString("th-TH",{dateStyle:"short",timeSty
   $("#s-token").value=LS.get("ota.token")||"";
   if(!$("#s-token").value)$("#settings").open=true;
 })();
-$("#saveCfg").onclick=()=>{const c=cfg();LS.set("ota.owner",c.owner);LS.set("ota.repo",c.repo);LS.set("ota.branch",c.branch);LS.set("ota.token",c.token);toast("บันทึกแล้ว");load()};
-$("#clearTok").onclick=()=>{LS.del("ota.token");$("#s-token").value="";toast("ลบ Token แล้ว");load()};
 
 /* ---- GitHub API ---- */
 async function gh(method,path,body){
@@ -177,203 +177,262 @@ async function gh(method,path,body){
 const b64=buf=>{let s="";const u=new Uint8Array(buf);for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s)};
 async function sha256(buf){const h=await crypto.subtle.digest("SHA-256",buf);return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,"0")).join("")}
 
-/* ---- manifest ---- */
-function manifestObj(){
-  const v=state.version||"";
-  const variants=SLOTS.filter(s=>hasAny(s.key)).map(s=>{
-    const x=state[s.key];
-    const o={chip:x.chip,label:x.chip+(v?" v"+v:"")};
-    if(x.main)Object.assign(o,{url:rawUrl(x.main.path),size:x.main.size,sha256:x.main.sha,name:x.main.name,path:x.main.path,ts:x.main.ts});
-    if(x.ota)o.ota={name:x.ota.name,address:x.addr,url:rawUrl(x.ota.path),size:x.ota.size,sha256:x.ota.sha,path:x.ota.path,ts:x.ota.ts};
-    return o;
-  });
-  return {product:"DashTron",version:v||null,variants};
-}
-async function saveManifest(){
-  const cur=await gh("GET",MAN);
-  const text=JSON.stringify(manifestObj(),null,2);
-  await gh("PUT",MAN,{message:"update manifest",content:b64(new TextEncoder().encode(text)),sha:cur?cur.sha:undefined});
-}
-
-/* ---- UI ---- */
 const UP_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>';
-const dropHtml=(k,kd)=>`
-  <div class="drop" id="d-${k}-${kd.k}">
-    <input type="file" accept=".bin" id="f-${k}-${kd.k}">
-    <div class="em">${UP_ICON}<b>${kd.ph}</b><span>หรือคลิกเลือก</span></div>
-    <div class="fl" id="i-${k}-${kd.k}"></div>
-    <div class="bar" id="b-${k}-${kd.k}"><i></i></div>
+
+/* ---- หนึ่ง channel = เวอร์ชัน + 2 ชิป + manifest ของตัวเอง ---- */
+const mounts={};
+function mount(C){
+  const P=C.id;
+  const kinds=KINDS.filter(kd=>kd.k!=="ota"||C.ota);
+  const q=s=>$(`#${P}-${s}`);
+  const mk=s=>({chip:s.def,main:null,ota:null,addr:OTA_DEF});
+  const state={a:mk(SLOTS[0]),b:mk(SLOTS[1]),version:""};
+  const hasAny=k=>!!(state[k].main||state[k].ota);
+
+  $("#p-"+P).innerHTML=`
+  ${C.channel==="test"?`<div class="banner">🧪 ชุดนี้เป็นไฟล์ทดลองใช้งาน เก็บแยกในโฟลเดอร์ <code>${C.dir}/</code> และมี manifest ของตัวเอง (<code>${C.man}</code>) ไม่กระทบไฟล์โปรแกรมหลักและลิงก์ manifest ของโปรแกรมหลัก</div>`:""}
+  <div class="card relcard">
+    <h3>${C.verLabel}</h3>
+    <input class="ver" id="${P}-v" placeholder="เช่น 2.0.2" autocomplete="off">
+  </div>
+  <div class="grid" id="${P}-slots"></div>
+  <div class="card sec">
+    <h3>${C.manTitle}</h3>
+    <pre id="${P}-manifest">// อัปโหลดไฟล์ก่อน</pre>
+    <div class="row"><button id="${P}-copyMan">คัดลอก JSON</button></div>
+    <h3 style="margin-top:18px">${C.manLinkTitle}</h3>
+    <div class="url"><code id="${P}-manUrl">-</code><button data-copy-id="${P}-manUrl">คัดลอก</button></div>
+    <p class="note">ESP32 อ่าน <code>version</code> และรายการ <code>variants</code> แล้วแสดงเป็นเมนู เช่น <code>ST7789 v2.0.2</code> / <code>ILI9341 v2.0.2</code> (ใช้ฟิลด์ <code>label</code> ได้เลย) ผู้ใช้เลือกชิปที่ตรงกับจอ จากนั้นดาวน์โหลด <code>url</code> ของชิปนั้น และตรวจ <code>sha256</code> ก่อนเขียนลง flash${C.ota?`<br>ไฟล์ OTA ของชิปนั้นอยู่ในฟิลด์ <code>ota</code> ภายในรายการชิปเดียวกัน มี <code>address</code> (เช่น <code>0x2B0000</code>), <code>url</code>, <code>size</code>, <code>sha256</code> ใช้เขียนลงพาร์ทิชันนั้นโดยตรง`:""}</p>
   </div>`;
 
-$("#slots").innerHTML=SLOTS.map(s=>`
-<div class="card" id="c-${s.key}">
-  <div class="head"><h2>${s.title}</h2><span class="tag" id="t-${s.key}">ว่าง</span></div>
-  <label class="lb">ชิปขับจอ (ไฟล์หลักและไฟล์ OTA ในการ์ดนี้ผูกกับชิปนี้)</label>
-  <input class="ver chipin" id="n-${s.key}" list="chipPresets" value="${s.def}" autocomplete="off" spellcheck="false">
-  <div class="sub"><span>${KINDS[0].label}</span></div>
-  ${dropHtml(s.key,KINDS[0])}
-  <div class="sub"><span>${KINDS[1].label}</span><span class="ad">Address <input class="in addr" id="a-${s.key}" value="${OTA_DEF}" autocomplete="off" spellcheck="false"></span></div>
-  ${dropHtml(s.key,KINDS[1])}
-  <details class="more"><summary>ลิงก์ / SHA-256</summary><div id="m-${s.key}"></div></details>
-</div>`).join("");
+  const dropHtml=(k,kd)=>`
+  <div class="drop" id="${P}-d-${k}-${kd.k}">
+    <input type="file" accept=".bin" id="${P}-f-${k}-${kd.k}">
+    <div class="em">${UP_ICON}<b>${kd.ph}</b><span>หรือคลิกเลือก</span></div>
+    <div class="fl" id="${P}-i-${k}-${kd.k}"></div>
+    <div class="bar" id="${P}-b-${k}-${kd.k}"><i></i></div>
+  </div>`;
 
-function renderDrop(k,kd){
-  const d=state[k][kd.k],dz=$(`#d-${k}-${kd.k}`),box=$(`#i-${k}-${kd.k}`);
-  dz.classList.toggle("has",!!d);
-  if(!d){box.innerHTML="";return}
-  const url=rawUrl(d.path);
-  box.innerHTML=`<div class="ico">${kd.icon}</div><div class="nm"><span title="${esc(d.name)}">${esc(d.name)}</span><small>${fmt(d.size)} · ${dateStr(d.ts)} · คลิกเพื่อเปลี่ยนไฟล์</small></div><button type="button" class="ghost cp x" data-copy="${esc(url)}" title="คัดลอกลิงก์">ลิงก์</button><button type="button" class="ghost x" data-del="${k}:${kd.k}" title="ลบไฟล์">ลบ</button>`;
-}
-function renderMeta(k){
-  const x=state[k];
-  const parts=KINDS.filter(kd=>x[kd.k]).map(kd=>{
-    const d=x[kd.k],url=rawUrl(d.path);
-    return `<div class="mh">${kd.label}</div>
-    <div class="meta"><span>ไฟล์</span><code>${esc(d.name)}</code>${kd.k==="ota"?`<span>Address</span><code>${esc(x.addr)}</code>`:""}<span>SHA-256</span><code>${esc(d.sha)}</code></div>
-    <div class="url"><code>${esc(url)}</code><button type="button" data-copy="${esc(url)}">คัดลอก</button></div>`;
+  q("slots").innerHTML=SLOTS.map(s=>`
+  <div class="card" id="${P}-c-${s.key}">
+    <div class="head"><h2>${s.title}</h2><span class="tag" id="${P}-t-${s.key}">ว่าง</span></div>
+    <label class="lb">ชิปขับจอ (${C.ota?"ไฟล์หลักและไฟล์ OTA":"ไฟล์"}ในการ์ดนี้ผูกกับชิปนี้)</label>
+    <input class="ver chipin" id="${P}-n-${s.key}" list="chipPresets" value="${s.def}" autocomplete="off" spellcheck="false">
+    <div class="sub"><span>${KINDS[0].label}</span></div>
+    ${dropHtml(s.key,KINDS[0])}
+    ${C.ota?`<div class="sub"><span>${KINDS[1].label}</span><span class="ad">Address <input class="in addr" id="${P}-a-${s.key}" value="${OTA_DEF}" autocomplete="off" spellcheck="false"></span></div>
+    ${dropHtml(s.key,KINDS[1])}`:""}
+    <details class="more"><summary>ลิงก์ / SHA-256</summary><div id="${P}-m-${s.key}"></div></details>
+  </div>`).join("");
+
+  /* ---- manifest ---- */
+  function manifestObj(){
+    const v=state.version||"";
+    const variants=SLOTS.filter(s=>hasAny(s.key)).map(s=>{
+      const x=state[s.key];
+      const o={chip:x.chip,label:x.chip+(v?" v"+v:"")};
+      if(x.main)Object.assign(o,{url:rawUrl(x.main.path),size:x.main.size,sha256:x.main.sha,name:x.main.name,path:x.main.path,ts:x.main.ts});
+      if(x.ota)o.ota={name:x.ota.name,address:x.addr,url:rawUrl(x.ota.path),size:x.ota.size,sha256:x.ota.sha,path:x.ota.path,ts:x.ota.ts};
+      return o;
+    });
+    return {product:"DashTron",...(C.channel?{channel:C.channel}:{}),version:v||null,variants};
+  }
+  async function saveManifest(){
+    const cur=await gh("GET",C.man);
+    const text=JSON.stringify(manifestObj(),null,2);
+    await gh("PUT",C.man,{message:`update ${C.id} manifest`,content:b64(new TextEncoder().encode(text)),sha:cur?cur.sha:undefined});
+  }
+
+  /* ---- UI ---- */
+  function renderDrop(k,kd){
+    const d=state[k][kd.k],dz=$(`#${P}-d-${k}-${kd.k}`),box=$(`#${P}-i-${k}-${kd.k}`);
+    dz.classList.toggle("has",!!d);
+    if(!d){box.innerHTML="";return}
+    const url=rawUrl(d.path);
+    box.innerHTML=`<div class="ico">${kd.icon}</div><div class="nm"><span title="${esc(d.name)}">${esc(d.name)}</span><small>${fmt(d.size)} · ${dateStr(d.ts)} · คลิกเพื่อเปลี่ยนไฟล์</small></div><button type="button" class="ghost cp x" data-copy="${esc(url)}" title="คัดลอกลิงก์">ลิงก์</button><button type="button" class="ghost x" data-del="${P}:${k}:${kd.k}" title="ลบไฟล์">ลบ</button>`;
+  }
+  function renderMeta(k){
+    const x=state[k];
+    const parts=kinds.filter(kd=>x[kd.k]).map(kd=>{
+      const d=x[kd.k],url=rawUrl(d.path);
+      return `<div class="mh">${kd.label}</div>
+      <div class="meta"><span>ไฟล์</span><code>${esc(d.name)}</code>${kd.k==="ota"?`<span>Address</span><code>${esc(x.addr)}</code>`:""}<span>SHA-256</span><code>${esc(d.sha)}</code></div>
+      <div class="url"><code>${esc(url)}</code><button type="button" data-copy="${esc(url)}">คัดลอก</button></div>`;
+    });
+    q("m-"+k).innerHTML=parts.length?parts.join(""):'<p class="none">ยังไม่มีไฟล์</p>';
+  }
+  function render(k){
+    const x=state[k],t=q("t-"+k);
+    t.className="tag"+(hasAny(k)?" new":"");
+    t.textContent=hasAny(k)?(x.chip+(state.version?" · v"+state.version:"")):"ว่าง";
+    kinds.forEach(kd=>renderDrop(k,kd));
+    renderMeta(k);
+    q("n-"+k).value=x.chip;
+    if(C.ota)q("a-"+k).value=x.addr;
+  }
+  function renderAll(){
+    SLOTS.forEach(s=>render(s.key));
+    q("v").value=state.version||"";
+    q("manifest").textContent=SLOTS.some(s=>hasAny(s.key))?JSON.stringify(manifestObj(),null,2):"// อัปโหลดไฟล์ก่อน";
+    const c=cfg();q("manUrl").textContent=c.owner&&c.repo?rawUrl(C.man):"-";
+  }
+
+  /* คืนข้อความ error (หรือ null ถ้าสำเร็จ) */
+  async function load(){
+    const c=cfg();
+    if(!c.owner||!c.repo){renderAll();return null}
+    let err=null;
+    try{
+      const j=await gh("GET",C.man);
+      let m={};
+      if(j)m=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,"")),x=>x.charCodeAt(0))));
+      SLOTS.forEach(s=>{state[s.key]=mk(s)});
+      state.version=m.version||"";
+      const used={};
+      (Array.isArray(m.variants)?m.variants:[]).filter(r=>r&&(r.path||(r.ota&&r.ota.path))).slice(0,2).forEach(r=>{
+        const chip=cleanChip(r.chip);
+        const slot=SLOTS.find(s=>!used[s.key]&&s.def===chip)||SLOTS.find(s=>!used[s.key]);
+        if(!slot)return;
+        used[slot.key]=true;
+        const st=state[slot.key];
+        if(chip)st.chip=chip;
+        if(r.path)st.main={name:r.name||r.path.split("/").pop(),size:r.size,sha:r.sha256,path:r.path,ts:r.ts||Date.now()};
+        if(C.ota&&r.ota&&r.ota.path){
+          st.ota={name:r.ota.name||r.ota.path.split("/").pop(),size:r.ota.size,sha:r.ota.sha256,path:r.ota.path,ts:r.ota.ts||Date.now()};
+          st.addr=cleanAddr(r.ota.address)||OTA_DEF;
+        }
+      });
+    }catch(e){err=e.message}
+    renderAll();
+    return err;
+  }
+
+  async function handle(k,kind,file){
+    if(!file)return;
+    if(!/\.bin$/i.test(file.name)){toast("รองรับเฉพาะไฟล์ .bin");return}
+    if(!needToken())return;
+    const chip=cleanChip(q("n-"+k).value);
+    if(!chip){toast("ใส่ชื่อชิปขับจอของไฟล์นี้ก่อน");return}
+    const o=otherKey(k);
+    if(hasAny(o)&&state[o].chip===chip){toast("ชื่อชิปซ้ำกับอีกชุด กรุณาตั้งชื่อให้ต่างกัน");return}
+    let addr=state[k].addr;
+    if(kind==="ota"){addr=cleanAddr(q("a-"+k).value);if(!addr){toast("Flash Address ไม่ถูกต้อง (เช่น 0x2B0000)");return}}
+    // ถ้ายังไม่ได้กรอกเวอร์ชัน ลองอ่านจากชื่อไฟล์ เช่น firmware_v2.0.2.bin
+    const vin=q("v");
+    if(!vin.value.trim()){const m=file.name.match(/(\d+(?:\.\d+)+)/);if(m)vin.value=m[1]}
+    state.version=vin.value.trim();
+    const bar=$(`#${P}-b-${k}-${kind}`),fill=bar.firstElementChild;bar.style.display="block";fill.style.width="20%";
+    try{
+      const buf=await file.arrayBuffer(),sha=await sha256(buf);fill.style.width="40%";
+      const path=kind==="ota"?`${C.dir}/${chip}/ota/${file.name}`:`${C.dir}/${chip}/${file.name}`,prev=state[k][kind];
+      const ex=await gh("GET",path);
+      await gh("PUT",path,{message:`upload ${C.id} ${chip} ${kind}: ${file.name}`,content:b64(buf),sha:ex?ex.sha:undefined});
+      fill.style.width="70%";
+      if(prev&&prev.path!==path){try{const p=await gh("GET",prev.path);if(p)await gh("DELETE",prev.path,{message:"remove replaced file",sha:p.sha})}catch{}}
+      state[k].chip=chip;
+      state[k].addr=addr;
+      state[k][kind]={name:file.name,size:file.size,sha,path,ts:Date.now()};
+      await saveManifest();fill.style.width="100%";
+      renderAll();
+      toast(`อัปโหลดสำเร็จ ✓ ${C.channel?"[ทดลอง] ":""}${chip}${kind==="ota"?" OTA "+addr:""}`+(state.version?" v"+state.version:""));
+    }catch(e){toast("อัปโหลดล้มเหลว: "+e.message)}
+    setTimeout(()=>{bar.style.display="none";fill.style.width="0"},600);
+  }
+
+  async function del(k,kind){
+    const r=state[k][kind];
+    if(!r)return;
+    if(!needToken())return;
+    try{
+      const p=await gh("GET",r.path);
+      if(p)await gh("DELETE",r.path,{message:`delete ${C.id} ${state[k].chip} ${kind}`,sha:p.sha});
+      state[k][kind]=null;await saveManifest();renderAll();toast("ลบแล้ว");
+    }catch(x){toast("ลบไม่ได้: "+x.message)}
+  }
+
+  SLOTS.forEach(({key:k})=>{
+    kinds.forEach(kd=>{
+      const dz=$(`#${P}-d-${k}-${kd.k}`),inp=$(`#${P}-f-${k}-${kd.k}`);
+      inp.onchange=()=>{handle(k,kd.k,inp.files[0]);inp.value=""};
+      dz.addEventListener("click",ev=>{if(ev.target.closest("button")||ev.target===inp)return;inp.click()});
+      ["dragenter","dragover"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.add("over")}));
+      ["dragleave","drop"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove("over")}));
+      dz.addEventListener("drop",ev=>handle(k,kd.k,ev.dataTransfer.files[0]));
+    });
+
+    // แก้ชื่อชิปหลังอัปโหลดแล้ว → อัปเดต manifest (มีผลกับทั้งไฟล์หลักและ OTA ของชุดนี้)
+    q("n-"+k).onchange=async e=>{
+      const v=cleanChip(e.target.value);
+      e.target.value=v||state[k].chip;
+      if(!v||v===state[k].chip)return;
+      const o=otherKey(k);
+      if(hasAny(o)&&state[o].chip===v){toast("ชื่อชิปซ้ำกับอีกชุด");e.target.value=state[k].chip;return}
+      if(!hasAny(k)){state[k].chip=v;return}
+      if(!needToken()){e.target.value=state[k].chip;return}
+      state[k].chip=v;
+      try{await saveManifest();renderAll();toast("บันทึกชื่อชิปแล้ว")}catch(x){toast("บันทึกไม่ได้: "+x.message)}
+    };
+
+    // แก้ Flash Address ของ OTA
+    if(C.ota)q("a-"+k).onchange=async e=>{
+      const v=cleanAddr(e.target.value);
+      if(!v){toast("Flash Address ไม่ถูกต้อง");e.target.value=state[k].addr;return}
+      e.target.value=v;
+      if(v===state[k].addr)return;
+      if(!state[k].ota){state[k].addr=v;return}
+      if(!needToken()){e.target.value=state[k].addr;return}
+      state[k].addr=v;
+      try{await saveManifest();renderAll();toast("บันทึก Address แล้ว")}catch(x){toast("บันทึกไม่ได้: "+x.message)}
+    };
   });
-  $("#m-"+k).innerHTML=parts.length?parts.join(""):'<p class="none">ยังไม่มีไฟล์</p>';
-}
-function render(k){
-  const x=state[k],t=$("#t-"+k);
-  t.className="tag"+(hasAny(k)?" new":"");
-  t.textContent=hasAny(k)?(x.chip+(state.version?" · v"+state.version:"")):"ว่าง";
-  KINDS.forEach(kd=>renderDrop(k,kd));
-  renderMeta(k);
-  $("#n-"+k).value=x.chip;
-  $("#a-"+k).value=x.addr;
-}
-function renderAll(){
-  SLOTS.forEach(s=>render(s.key));
-  $("#v-all").value=state.version||"";
-  $("#manifest").textContent=SLOTS.some(s=>hasAny(s.key))?JSON.stringify(manifestObj(),null,2):"// อัปโหลดไฟล์ก่อน";
-  const c=cfg();$("#manUrl").textContent=c.owner&&c.repo?rawUrl(MAN):"-";
-}
-function setStatus(t,ok){$("#status").textContent=t;$("#dot").classList.toggle("off",!ok)}
 
-async function load(){
+  // เวอร์ชันเดียวของทั้งชุด
+  q("v").onchange=async e=>{
+    state.version=e.target.value.trim();
+    if(!SLOTS.some(s=>hasAny(s.key))){renderAll();return}
+    if(!needToken())return;
+    try{await saveManifest();renderAll();toast("บันทึกเวอร์ชันแล้ว")}catch(x){toast("บันทึกไม่ได้: "+x.message)}
+  };
+  q("copyMan").onclick=async()=>{try{await navigator.clipboard.writeText(q("manifest").textContent);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}};
+
+  renderAll();
+  mounts[P]={load,del};
+}
+
+CHANNELS.forEach(mount);
+
+/* ---- รวม ---- */
+function setStatus(t,ok){$("#status").textContent=t;$("#dot").classList.toggle("off",!ok)}
+async function loadAll(){
   const c=cfg();
   if(!c.owner||!c.repo){setStatus("ยังไม่ได้ตั้งค่า repo",false);return}
-  try{
-    const j=await gh("GET",MAN);
-    let m={};
-    if(j)m=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,"")),x=>x.charCodeAt(0))));
-    SLOTS.forEach(s=>{state[s.key]=mk(s)});
-    state.version=m.version||"";
-    const used={};
-    (Array.isArray(m.variants)?m.variants:[]).filter(r=>r&&(r.path||(r.ota&&r.ota.path))).slice(0,2).forEach(r=>{
-      const chip=cleanChip(r.chip);
-      const slot=SLOTS.find(s=>!used[s.key]&&s.def===chip)||SLOTS.find(s=>!used[s.key]);
-      if(!slot)return;
-      used[slot.key]=true;
-      const st=state[slot.key];
-      if(chip)st.chip=chip;
-      if(r.path)st.main={name:r.name||r.path.split("/").pop(),size:r.size,sha:r.sha256,path:r.path,ts:r.ts||Date.now()};
-      if(r.ota&&r.ota.path){
-        st.ota={name:r.ota.name||r.ota.path.split("/").pop(),size:r.ota.size,sha:r.ota.sha256,path:r.ota.path,ts:r.ota.ts||Date.now()};
-        st.addr=cleanAddr(r.ota.address)||OTA_DEF;
-      }
-    });
-    setStatus(c.token?"พร้อมใช้งาน":"อ่านอย่างเดียว (ยังไม่ใส่ Token)",!!c.token);
-  }catch(e){setStatus("เชื่อมต่อ GitHub ไม่ได้: "+e.message,false)}
-  renderAll();
+  const errs=await Promise.all(CHANNELS.map(ch=>mounts[ch.id].load()));
+  const e=errs.find(Boolean);
+  if(e)setStatus("เชื่อมต่อ GitHub ไม่ได้: "+e,false);
+  else setStatus(c.token?"พร้อมใช้งาน":"อ่านอย่างเดียว (ยังไม่ใส่ Token)",!!c.token);
 }
+$("#saveCfg").onclick=()=>{const c=cfg();LS.set("ota.owner",c.owner);LS.set("ota.repo",c.repo);LS.set("ota.branch",c.branch);LS.set("ota.token",c.token);toast("บันทึกแล้ว");loadAll()};
+$("#clearTok").onclick=()=>{LS.del("ota.token");$("#s-token").value="";toast("ลบ Token แล้ว");loadAll()};
 
-async function handle(k,kind,file){
-  if(!file)return;
-  if(!/\.bin$/i.test(file.name)){toast("รองรับเฉพาะไฟล์ .bin");return}
-  if(!needToken())return;
-  const chip=cleanChip($("#n-"+k).value);
-  if(!chip){toast("ใส่ชื่อชิปขับจอของไฟล์นี้ก่อน");return}
-  const o=otherKey(k);
-  if(hasAny(o)&&state[o].chip===chip){toast("ชื่อชิปซ้ำกับอีกชุด กรุณาตั้งชื่อให้ต่างกัน");return}
-  let addr=state[k].addr;
-  if(kind==="ota"){addr=cleanAddr($("#a-"+k).value);if(!addr){toast("Flash Address ไม่ถูกต้อง (เช่น 0x2B0000)");return}}
-  // ถ้ายังไม่ได้กรอกเวอร์ชัน ลองอ่านจากชื่อไฟล์ เช่น firmware_v2.0.2.bin
-  const vin=$("#v-all");
-  if(!vin.value.trim()){const m=file.name.match(/(\d+(?:\.\d+)+)/);if(m)vin.value=m[1]}
-  state.version=vin.value.trim();
-  const bar=$(`#b-${k}-${kind}`),fill=bar.firstElementChild;bar.style.display="block";fill.style.width="20%";
-  try{
-    const buf=await file.arrayBuffer(),sha=await sha256(buf);fill.style.width="40%";
-    const path=kind==="ota"?`firmware/${chip}/ota/${file.name}`:`firmware/${chip}/${file.name}`,prev=state[k][kind];
-    const ex=await gh("GET",path);
-    await gh("PUT",path,{message:`upload ${chip} ${kind}: ${file.name}`,content:b64(buf),sha:ex?ex.sha:undefined});
-    fill.style.width="70%";
-    if(prev&&prev.path!==path){try{const p=await gh("GET",prev.path);if(p)await gh("DELETE",prev.path,{message:"remove replaced file",sha:p.sha})}catch{}}
-    state[k].chip=chip;
-    state[k].addr=addr;
-    state[k][kind]={name:file.name,size:file.size,sha,path,ts:Date.now()};
-    await saveManifest();fill.style.width="100%";
-    renderAll();
-    toast(`อัปโหลดสำเร็จ ✓ ${chip}${kind==="ota"?" OTA "+addr:""}`+(state.version?" v"+state.version:""));
-  }catch(e){toast("อัปโหลดล้มเหลว: "+e.message)}
-  setTimeout(()=>{bar.style.display="none";fill.style.width="0"},600);
-}
-
-SLOTS.forEach(({key:k})=>{
-  KINDS.forEach(kd=>{
-    const dz=$(`#d-${k}-${kd.k}`),inp=$(`#f-${k}-${kd.k}`);
-    inp.onchange=()=>{handle(k,kd.k,inp.files[0]);inp.value=""};
-    dz.addEventListener("click",ev=>{if(ev.target.closest("button")||ev.target===inp)return;inp.click()});
-    ["dragenter","dragover"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.add("over")}));
-    ["dragleave","drop"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove("over")}));
-    dz.addEventListener("drop",ev=>handle(k,kd.k,ev.dataTransfer.files[0]));
-  });
-
-  // แก้ชื่อชิปหลังอัปโหลดแล้ว → อัปเดต manifest (มีผลกับทั้งไฟล์หลักและ OTA ของชุดนี้)
-  $("#n-"+k).onchange=async e=>{
-    const v=cleanChip(e.target.value);
-    e.target.value=v||state[k].chip;
-    if(!v||v===state[k].chip)return;
-    const o=otherKey(k);
-    if(hasAny(o)&&state[o].chip===v){toast("ชื่อชิปซ้ำกับอีกชุด");e.target.value=state[k].chip;return}
-    if(!hasAny(k)){state[k].chip=v;return}
-    if(!needToken()){e.target.value=state[k].chip;return}
-    state[k].chip=v;
-    try{await saveManifest();renderAll();toast("บันทึกชื่อชิปแล้ว")}catch(x){toast("บันทึกไม่ได้: "+x.message)}
-  };
-
-  // แก้ Flash Address ของ OTA
-  $("#a-"+k).onchange=async e=>{
-    const v=cleanAddr(e.target.value);
-    if(!v){toast("Flash Address ไม่ถูกต้อง");e.target.value=state[k].addr;return}
-    e.target.value=v;
-    if(v===state[k].addr)return;
-    if(!state[k].ota){state[k].addr=v;return}
-    if(!needToken()){e.target.value=state[k].addr;return}
-    state[k].addr=v;
-    try{await saveManifest();renderAll();toast("บันทึก Address แล้ว")}catch(x){toast("บันทึกไม่ได้: "+x.message)}
-  };
+/* แท็บ */
+document.querySelectorAll(".tabs .tab").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tabs .tab").forEach(x=>x.classList.toggle("on",x===b));
+  CHANNELS.forEach(ch=>{$("#p-"+ch.id).hidden=ch.id!==b.dataset.tab});
+  LS.set("ota.tab",b.dataset.tab);
 });
-
-// เวอร์ชันเดียวของทั้งชุด
-$("#v-all").onchange=async e=>{
-  state.version=e.target.value.trim();
-  if(!SLOTS.some(s=>hasAny(s.key))){renderAll();return}
-  if(!needToken())return;
-  try{await saveManifest();renderAll();toast("บันทึกเวอร์ชันแล้ว")}catch(x){toast("บันทึกไม่ได้: "+x.message)}
-};
+(()=>{const t=LS.get("ota.tab");const b=t&&document.querySelector(`.tabs .tab[data-tab="${t}"]`);if(b)b.click()})();
 
 document.addEventListener("click",async e=>{
   const c=e.target.closest("[data-copy]"),ci=e.target.closest("[data-copy-id]");
   if(c||ci){try{await navigator.clipboard.writeText(c?c.dataset.copy:$("#"+ci.dataset.copyId).textContent);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}}
   const d=e.target.closest("[data-del]");
   if(d&&confirm("ลบไฟล์นี้ถาวร?")){
-    const [k,kind]=d.dataset.del.split(":"),r=state[k][kind];
-    if(!r)return;
-    if(!needToken())return;
-    try{
-      const p=await gh("GET",r.path);
-      if(p)await gh("DELETE",r.path,{message:`delete ${state[k].chip} ${kind}`,sha:p.sha});
-      state[k][kind]=null;await saveManifest();renderAll();toast("ลบแล้ว");
-    }catch(x){toast("ลบไม่ได้: "+x.message)}
+    const [ch,k,kind]=d.dataset.del.split(":");
+    mounts[ch].del(k,kind);
   }
 });
-$("#copyMan").onclick=async()=>{try{await navigator.clipboard.writeText($("#manifest").textContent);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}};
 
-renderAll();
-load();
+loadAll();
 </script>
 </body>
 </html>
