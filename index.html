@@ -132,13 +132,18 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
 const SLOTS=[{key:"a",title:"ชุดที่ 1",def:"ST7789"},{key:"b",title:"ชุดที่ 2",def:"ILI9341"}];
 const KINDS=[
   {k:"main",label:"📦 ไฟล์หลัก",icon:"BIN",ph:"วางไฟล์หลัก .bin ที่นี่"},
-  {k:"ota", label:"🔄 ไฟล์ Update (OTA)",icon:"OTA",ph:"วางไฟล์ OTA .bin ที่นี่"}
+  {k:"ota", label:"🔄 ไฟล์ Update (OTA)",icon:"OTA",ph:"วางไฟล์ OTA .bin ที่นี่"},
+  {k:"part",label:"🧩 Partition table",icon:"PT",ph:"วาง partitions.bin (Huge APP)",addr:"0x8000",fn:"partitions.bin"},
+  {k:"boot0",label:"♻️ boot_app0 (ล้าง otadata)",icon:"B0",ph:"วาง boot_app0.bin",addr:"0xE000",fn:"boot_app0.bin"},
+  {k:"bl",label:"🥾 Bootloader (ชิปว่างเท่านั้น ไม่บังคับ)",icon:"BL",ph:"วาง bootloader.bin",addr:"0x1000",fn:"bootloader.bin"}
 ];
+const MAIN_ADDR="0x10000";
+const BOOT_APP0_B64="AQAAAP///////////////////////////////5qYQ0f//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////wAAAAD///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8=";
 const OTA_DEF="0x2B0000";
 /* แต่ละ channel มีโฟลเดอร์ไฟล์และ manifest เป็นของตัวเอง ไม่ปนกัน */
 const CHANNELS=[
-  {id:"main",ota:true,dir:"firmware",     man:"firmware/manifest.json",     channel:null,   verLabel:"🏷️ เวอร์ชันของชุดนี้ (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest สำหรับ MCU",manLinkTitle:"ลิงก์ manifest (ให้ ESP32 CYD ดึงลิงก์นี้ลิงก์เดียว)"},
-  {id:"test",ota:false,dir:"firmware-test",man:"firmware-test/manifest.json",channel:"test",verLabel:"🏷️ เวอร์ชันชุดทดลองใช้งาน (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest ชุดทดลองใช้งาน",manLinkTitle:"ลิงก์ manifest ชุดทดลองใช้งาน (แยกจากโปรแกรมหลัก)"}
+  {id:"main",ota:true,kinds:["main","ota"],dir:"firmware",     man:"firmware/manifest.json",     channel:null,   verLabel:"🏷️ เวอร์ชันของชุดนี้ (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest สำหรับ MCU",manLinkTitle:"ลิงก์ manifest (ให้ ESP32 CYD ดึงลิงก์นี้ลิงก์เดียว)"},
+  {id:"test",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-test",man:"firmware-test/manifest.json",channel:"test",verLabel:"🏷️ เวอร์ชันชุดทดลองใช้งาน (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest ชุดทดลองใช้งาน",manLinkTitle:"ลิงก์ manifest ชุดทดลองใช้งาน (แยกจากโปรแกรมหลัก)"}
 ];
 const cleanAddr=v=>{const m=String(v||"").trim().match(/^(?:0x)?([0-9a-f]+)$/i);return m?"0x"+m[1].toUpperCase():""};
 const $=s=>document.querySelector(s);
@@ -183,11 +188,11 @@ const UP_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 const mounts={};
 function mount(C){
   const P=C.id;
-  const kinds=KINDS.filter(kd=>kd.k!=="ota"||C.ota);
+  const kinds=KINDS.filter(kd=>C.kinds.includes(kd.k));
   const q=s=>$(`#${P}-${s}`);
-  const mk=s=>({chip:s.def,main:null,ota:null,addr:OTA_DEF});
-  const state={a:mk(SLOTS[0]),b:mk(SLOTS[1]),version:""};
-  const hasAny=k=>!!(state[k].main||state[k].ota);
+  const mk=s=>({chip:s.def,main:null,ota:null,part:null,boot0:null,bl:null,addr:OTA_DEF});
+  const state={a:mk(SLOTS[0]),b:mk(SLOTS[1]),version:"",pkg:null};
+  const hasAny=k=>kinds.some(kd=>!!state[k][kd.k]);
 
   $("#p-"+P).innerHTML=`
   ${C.channel==="test"?`<div class="banner">🧪 ชุดนี้เป็นไฟล์ทดลองใช้งาน เก็บแยกในโฟลเดอร์ <code>${C.dir}/</code> และมี manifest ของตัวเอง (<code>${C.man}</code>) ไม่กระทบไฟล์โปรแกรมหลักและลิงก์ manifest ของโปรแกรมหลัก</div>`:""}
@@ -196,6 +201,17 @@ function mount(C){
     <input class="ver" id="${P}-v" placeholder="เช่น 2.0.2" autocomplete="off">
   </div>
   <div class="grid" id="${P}-slots"></div>
+  ${C.pkg?`<div class="card sec">
+    <h3>🗜️ ชุดโปรเจ็คทดลอง (.zip)</h3>
+    <div class="drop" id="${P}-d-pkg">
+      <input type="file" accept=".zip,application/zip,application/x-zip-compressed" id="${P}-f-pkg">
+      <div class="em">${UP_ICON}<b>วางไฟล์ dashtron_test.zip ที่นี่</b><span>หรือคลิกเลือก</span></div>
+      <div class="fl" id="${P}-i-pkg"></div>
+      <div class="bar" id="${P}-b-pkg"><i></i></div>
+    </div>
+    <details class="more"><summary>ลิงก์ / SHA-256</summary><div id="${P}-m-pkg"></div></details>
+    <p class="note">เก็บไฟล์ .zip ไว้ในโฟลเดอร์ <code>${C.dir}/</code> พร้อมลิงก์ดาวน์โหลดและ SHA-256 และบันทึกไว้ในฟิลด์ <code>package</code> ของ manifest ชุดทดลอง (ไม่กระทบ <code>variants</code> ที่ ESP32 ใช้)</p>
+  </div>`:""}
   <div class="card sec">
     <h3>${C.manTitle}</h3>
     <pre id="${P}-manifest">// อัปโหลดไฟล์ก่อน</pre>
@@ -220,8 +236,10 @@ function mount(C){
     <input class="ver chipin" id="${P}-n-${s.key}" list="chipPresets" value="${s.def}" autocomplete="off" spellcheck="false">
     <div class="sub"><span>${KINDS[0].label}</span></div>
     ${dropHtml(s.key,KINDS[0])}
-    ${C.ota?`<div class="sub"><span>${KINDS[1].label}</span><span class="ad">Address <input class="in addr" id="${P}-a-${s.key}" value="${OTA_DEF}" autocomplete="off" spellcheck="false"></span></div>
-    ${dropHtml(s.key,KINDS[1])}`:""}
+    ${kinds.slice(1).map(kd=>kd.k==="ota"
+      ?`<div class="sub"><span>${kd.label}</span><span class="ad">Address <input class="in addr" id="${P}-a-${s.key}" value="${OTA_DEF}" autocomplete="off" spellcheck="false"></span></div>${dropHtml(s.key,kd)}`
+      :`<div class="sub"><span>${kd.label}</span><span class="ad"><code>${kd.addr}</code>${kd.k==="boot0"?`<button type="button" class="ghost cp x" data-gen="${P}:${s.key}">สร้างให้อัตโนมัติ</button>`:""}</span></div>${dropHtml(s.key,kd)}`).join("")}
+    ${C.channel==="test"?`<p class="note" id="${P}-w-${s.key}" style="display:none;color:var(--warn)"></p>`:""}
     <details class="more"><summary>ลิงก์ / SHA-256</summary><div id="${P}-m-${s.key}"></div></details>
   </div>`).join("");
 
@@ -233,9 +251,18 @@ function mount(C){
       const o={chip:x.chip,label:x.chip+(v?" v"+v:"")};
       if(x.main)Object.assign(o,{url:rawUrl(x.main.path),size:x.main.size,sha256:x.main.sha,name:x.main.name,path:x.main.path,ts:x.main.ts});
       if(x.ota)o.ota={name:x.ota.name,address:x.addr,url:rawUrl(x.ota.path),size:x.ota.size,sha256:x.ota.sha,path:x.ota.path,ts:x.ota.ts};
+      if(C.channel==="test"){
+        /* Web Flasher เขียนทุกไฟล์ตาม address (เรียงจากน้อยไปมาก) เพื่อให้ตารางพาร์ทิชัน+otadata ตรงกับแอพ */
+        const fl=kinds.filter(kd=>x[kd.k]).map(kd=>({kind:kd.k,address:kd.k==="main"?MAIN_ADDR:kd.addr,d:x[kd.k]}))
+          .sort((a,b)=>parseInt(a.address,16)-parseInt(b.address,16))
+          .map(f=>({kind:f.kind,name:f.d.name,address:f.address,url:rawUrl(f.d.path),size:f.d.size,sha256:f.d.sha,path:f.d.path,ts:f.d.ts}));
+        if(fl.length)o.files=fl;
+      }
       return o;
     });
-    return {product:"DashTron",...(C.channel?{channel:C.channel}:{}),version:v||null,variants};
+    const man={product:"DashTron",...(C.channel?{channel:C.channel}:{}),version:v||null,variants};
+    if(C.pkg&&state.pkg){const d=state.pkg;man.package={name:d.name,url:rawUrl(d.path),size:d.size,sha256:d.sha,path:d.path,ts:d.ts}}
+    return man;
   }
   async function saveManifest(){
     const cur=await gh("GET",C.man);
@@ -256,7 +283,7 @@ function mount(C){
     const parts=kinds.filter(kd=>x[kd.k]).map(kd=>{
       const d=x[kd.k],url=rawUrl(d.path);
       return `<div class="mh">${kd.label}</div>
-      <div class="meta"><span>ไฟล์</span><code>${esc(d.name)}</code>${kd.k==="ota"?`<span>Address</span><code>${esc(x.addr)}</code>`:""}<span>SHA-256</span><code>${esc(d.sha)}</code></div>
+      <div class="meta"><span>ไฟล์</span><code>${esc(d.name)}</code>${kd.k==="ota"?`<span>Address</span><code>${esc(x.addr)}</code>`:kd.addr?`<span>Address</span><code>${kd.addr}</code>`:kd.k==="main"&&C.channel==="test"?`<span>Address</span><code>${MAIN_ADDR}</code>`:""}<span>SHA-256</span><code>${esc(d.sha)}</code></div>
       <div class="url"><code>${esc(url)}</code><button type="button" data-copy="${esc(url)}">คัดลอก</button></div>`;
     });
     q("m-"+k).innerHTML=parts.length?parts.join(""):'<p class="none">ยังไม่มีไฟล์</p>';
@@ -269,11 +296,30 @@ function mount(C){
     renderMeta(k);
     q("n-"+k).value=x.chip;
     if(C.ota)q("a-"+k).value=x.addr;
+    const w=$(`#${P}-w-${k}`);
+    if(w){
+      const miss=[];
+      if(x.main&&!x.part)miss.push("Partition table");
+      if(x.main&&!x.boot0)miss.push("boot_app0");
+      w.style.display=miss.length?"block":"none";
+      w.textContent=miss.length?"⚠️ ยังไม่มี "+miss.join(" และ ")+" — ถ้าลงแค่ไฟล์แอพ ชิปที่มีตารางพาร์ทิชันเล็กกว่าแอพจะบูตไม่ขึ้น (Image length doesn't fit in partition)":"";
+    }
+  }
+  function renderPkg(){
+    if(!C.pkg)return;
+    const d=state.pkg,dz=$(`#${P}-d-pkg`),box=$(`#${P}-i-pkg`),meta=$(`#${P}-m-pkg`);
+    dz.classList.toggle("has",!!d);
+    if(!d){box.innerHTML="";meta.innerHTML='<p class="none">ยังไม่มีไฟล์</p>';return}
+    const url=rawUrl(d.path);
+    box.innerHTML=`<div class="ico">ZIP</div><div class="nm"><span title="${esc(d.name)}">${esc(d.name)}</span><small>${fmt(d.size)} · ${dateStr(d.ts)} · คลิกเพื่อเปลี่ยนไฟล์</small></div><button type="button" class="ghost cp x" data-copy="${esc(url)}" title="คัดลอกลิงก์">ลิงก์</button><button type="button" class="ghost x" data-del="${P}:pkg:zip" title="ลบไฟล์">ลบ</button>`;
+    meta.innerHTML=`<div class="meta"><span>ไฟล์</span><code>${esc(d.name)}</code><span>SHA-256</span><code>${esc(d.sha)}</code></div>
+    <div class="url"><code>${esc(url)}</code><button type="button" data-copy="${esc(url)}">คัดลอก</button></div>`;
   }
   function renderAll(){
     SLOTS.forEach(s=>render(s.key));
+    renderPkg();
     q("v").value=state.version||"";
-    q("manifest").textContent=SLOTS.some(s=>hasAny(s.key))?JSON.stringify(manifestObj(),null,2):"// อัปโหลดไฟล์ก่อน";
+    q("manifest").textContent=(SLOTS.some(s=>hasAny(s.key))||state.pkg)?JSON.stringify(manifestObj(),null,2):"// อัปโหลดไฟล์ก่อน";
     const c=cfg();q("manUrl").textContent=c.owner&&c.repo?rawUrl(C.man):"-";
   }
 
@@ -288,8 +334,9 @@ function mount(C){
       if(j)m=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,"")),x=>x.charCodeAt(0))));
       SLOTS.forEach(s=>{state[s.key]=mk(s)});
       state.version=m.version||"";
+      state.pkg=(C.pkg&&m.package&&m.package.path)?{name:m.package.name||m.package.path.split("/").pop(),size:m.package.size,sha:m.package.sha256,path:m.package.path,ts:m.package.ts||Date.now()}:null;
       const used={};
-      (Array.isArray(m.variants)?m.variants:[]).filter(r=>r&&(r.path||(r.ota&&r.ota.path))).slice(0,2).forEach(r=>{
+      (Array.isArray(m.variants)?m.variants:[]).filter(r=>r&&(r.path||(r.ota&&r.ota.path)||(Array.isArray(r.files)&&r.files.length))).slice(0,2).forEach(r=>{
         const chip=cleanChip(r.chip);
         const slot=SLOTS.find(s=>!used[s.key]&&s.def===chip)||SLOTS.find(s=>!used[s.key]);
         if(!slot)return;
@@ -297,6 +344,10 @@ function mount(C){
         const st=state[slot.key];
         if(chip)st.chip=chip;
         if(r.path)st.main={name:r.name||r.path.split("/").pop(),size:r.size,sha:r.sha256,path:r.path,ts:r.ts||Date.now()};
+        if(Array.isArray(r.files))r.files.forEach(f=>{
+          const kd=kinds.find(z=>z.k===f.kind)||kinds.find(z=>z.k!=="main"&&z.addr&&cleanAddr(z.addr)===cleanAddr(f.address))||(cleanAddr(f.address)===cleanAddr(MAIN_ADDR)?kinds[0]:null);
+          if(kd&&f.path)st[kd.k]={name:f.name||f.path.split("/").pop(),size:f.size,sha:f.sha256,path:f.path,ts:f.ts||Date.now()};
+        });
         if(C.ota&&r.ota&&r.ota.path){
           st.ota={name:r.ota.name||r.ota.path.split("/").pop(),size:r.ota.size,sha:r.ota.sha256,path:r.ota.path,ts:r.ota.ts||Date.now()};
           st.addr=cleanAddr(r.ota.address)||OTA_DEF;
@@ -319,12 +370,13 @@ function mount(C){
     if(kind==="ota"){addr=cleanAddr(q("a-"+k).value);if(!addr){toast("Flash Address ไม่ถูกต้อง (เช่น 0x2B0000)");return}}
     // ถ้ายังไม่ได้กรอกเวอร์ชัน ลองอ่านจากชื่อไฟล์ เช่น firmware_v2.0.2.bin
     const vin=q("v");
-    if(!vin.value.trim()){const m=file.name.match(/(\d+(?:\.\d+)+)/);if(m)vin.value=m[1]}
+    if(kind==="main"&&!vin.value.trim()){const m=file.name.match(/(\d+(?:\.\d+)+)/);if(m)vin.value=m[1]}
     state.version=vin.value.trim();
     const bar=$(`#${P}-b-${k}-${kind}`),fill=bar.firstElementChild;bar.style.display="block";fill.style.width="20%";
     try{
       const buf=await file.arrayBuffer(),sha=await sha256(buf);fill.style.width="40%";
       const path=kind==="ota"?`${C.dir}/${chip}/ota/${file.name}`:`${C.dir}/${chip}/${file.name}`,prev=state[k][kind];
+      if(kind!=="main"&&kind!=="ota"){const clash=kinds.some(z=>z.k!==kind&&state[k][z.k]&&state[k][z.k].path===path);if(clash)throw new Error("ชื่อไฟล์ซ้ำกับไฟล์อื่นในชุดนี้")}
       const ex=await gh("GET",path);
       await gh("PUT",path,{message:`upload ${C.id} ${chip} ${kind}: ${file.name}`,content:b64(buf),sha:ex?ex.sha:undefined});
       fill.style.width="70%";
@@ -334,12 +386,40 @@ function mount(C){
       state[k][kind]={name:file.name,size:file.size,sha,path,ts:Date.now()};
       await saveManifest();fill.style.width="100%";
       renderAll();
-      toast(`อัปโหลดสำเร็จ ✓ ${C.channel?"[ทดลอง] ":""}${chip}${kind==="ota"?" OTA "+addr:""}`+(state.version?" v"+state.version:""));
+      toast(`อัปโหลดสำเร็จ ✓ ${C.channel?"[ทดลอง] ":""}${chip} ${kind==="ota"?"OTA "+addr:kind}`+(state.version?" v"+state.version:""));
+    }catch(e){toast("อัปโหลดล้มเหลว: "+e.message)}
+    setTimeout(()=>{bar.style.display="none";fill.style.width="0"},600);
+  }
+
+  async function handlePkg(file){
+    if(!file)return;
+    if(!/\.zip$/i.test(file.name)){toast("รองรับเฉพาะไฟล์ .zip");return}
+    if(!needToken())return;
+    const bar=$(`#${P}-b-pkg`),fill=bar.firstElementChild;bar.style.display="block";fill.style.width="20%";
+    try{
+      const buf=await file.arrayBuffer(),sha=await sha256(buf);fill.style.width="40%";
+      const path=`${C.dir}/${file.name}`,prev=state.pkg;
+      const ex=await gh("GET",path);
+      await gh("PUT",path,{message:`upload ${C.id} package: ${file.name}`,content:b64(buf),sha:ex?ex.sha:undefined});
+      fill.style.width="70%";
+      if(prev&&prev.path!==path){try{const p=await gh("GET",prev.path);if(p)await gh("DELETE",prev.path,{message:"remove replaced package",sha:p.sha})}catch{}}
+      state.pkg={name:file.name,size:file.size,sha,path,ts:Date.now()};
+      await saveManifest();fill.style.width="100%";
+      renderAll();toast("อัปโหลดสำเร็จ ✓ [ทดลอง] "+file.name);
     }catch(e){toast("อัปโหลดล้มเหลว: "+e.message)}
     setTimeout(()=>{bar.style.display="none";fill.style.width="0"},600);
   }
 
   async function del(k,kind){
+    if(k==="pkg"){
+      const r=state.pkg;if(!r||!needToken())return;
+      try{
+        const p=await gh("GET",r.path);
+        if(p)await gh("DELETE",r.path,{message:`delete ${C.id} package`,sha:p.sha});
+        state.pkg=null;await saveManifest();renderAll();toast("ลบแล้ว");
+      }catch(x){toast("ลบไม่ได้: "+x.message)}
+      return;
+    }
     const r=state[k][kind];
     if(!r)return;
     if(!needToken())return;
@@ -386,6 +466,15 @@ function mount(C){
     };
   });
 
+  if(C.pkg){
+    const dz=$(`#${P}-d-pkg`),inp=$(`#${P}-f-pkg`);
+    inp.onchange=()=>{handlePkg(inp.files[0]);inp.value=""};
+    dz.addEventListener("click",ev=>{if(ev.target.closest("button")||ev.target===inp)return;inp.click()});
+    ["dragenter","dragover"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.add("over")}));
+    ["dragleave","drop"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove("over")}));
+    dz.addEventListener("drop",ev=>handlePkg(ev.dataTransfer.files[0]));
+  }
+
   // เวอร์ชันเดียวของทั้งชุด
   q("v").onchange=async e=>{
     state.version=e.target.value.trim();
@@ -396,7 +485,9 @@ function mount(C){
   q("copyMan").onclick=async()=>{try{await navigator.clipboard.writeText(q("manifest").textContent);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}};
 
   renderAll();
-  mounts[P]={load,del};
+  /* boot_app0.bin ตัวจริงจาก core ESP32 3.3.12 (8192 bytes) ใช้รีเซ็ต otadata ให้บูตจาก app0 */
+  const genBoot=k=>handle(k,"boot0",new File([Uint8Array.from(atob(BOOT_APP0_B64),c=>c.charCodeAt(0))],"boot_app0.bin",{type:"application/octet-stream"}));
+  mounts[P]={load,del,genBoot};
 }
 
 CHANNELS.forEach(mount);
@@ -422,6 +513,10 @@ document.querySelectorAll(".tabs .tab").forEach(b=>b.onclick=()=>{
 });
 (()=>{const t=LS.get("ota.tab");const b=t&&document.querySelector(`.tabs .tab[data-tab="${t}"]`);if(b)b.click()})();
 
+document.addEventListener("click",e=>{
+  const g=e.target.closest("[data-gen]");
+  if(g){const [ch,k]=g.dataset.gen.split(":");mounts[ch].genBoot(k)}
+});
 document.addEventListener("click",async e=>{
   const c=e.target.closest("[data-copy]"),ci=e.target.closest("[data-copy-id]");
   if(c||ci){try{await navigator.clipboard.writeText(c?c.dataset.copy:$("#"+ci.dataset.copyId).textContent);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}}
