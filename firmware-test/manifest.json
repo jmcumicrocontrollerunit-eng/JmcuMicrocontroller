@@ -24,6 +24,16 @@
           "ts": 1792738183211
         },
         {
+          "kind": "boot0",
+          "name": "boot_app0.bin",
+          "address": "0xE000",
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-test/ST7789/boot_app0.bin",
+          "size": 8192,
+          "sha256": "f94c5d786a7a8fab06ac5d10e33bf37711a6697636dc037559ea19cc410a17f0",
+          "path": "firmware-test/ST7789/boot_app0.bin",
+          "ts": 1792738190655
+        },
+        {
           "kind": "main",
           "name": "DashTron_V3.ino.bin",
           "address": "0x10000",
