@@ -5,12 +5,6 @@
     {
       "chip": "ILI9341",
       "label": "ILI9341 v3.0.0",
-      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware/ILI9341/DashTron_V3.ino.bin",
-      "size": 1541216,
-      "sha256": "2432eb930f128e59b4b8d4cb4ef2c2e360e6bce804f3a46a45929af11f852f0e",
-      "name": "DashTron_V3.ino.bin",
-      "path": "firmware/ILI9341/DashTron_V3.ino.bin",
-      "ts": 1792732719872,
       "ota": {
         "name": "DashTron_UpdaterILI9341.ino.bin",
         "address": "0x2B0000",
