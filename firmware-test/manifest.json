@@ -12,16 +12,6 @@
       "name": "DashTron_Test.ino.bin",
       "path": "firmware-test/ST7789/DashTron_Test.ino.bin",
       "ts": 1792731388726
-    },
-    {
-      "chip": "ILI9341",
-      "label": "ILI9341",
-      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-test/ILI9341/DashTron_Test.ino.bin",
-      "size": 1636288,
-      "sha256": "474a685fdcf4683b5957a9ef51502e82a726eea278c60c1defd9c6e9402b54a3",
-      "name": "DashTron_Test.ino.bin",
-      "path": "firmware-test/ILI9341/DashTron_Test.ino.bin",
-      "ts": 1792731126627
     }
   ]
 }
