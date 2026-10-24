@@ -1,10 +1,10 @@
 {
   "product": "DashTron",
-  "version": "3.0.0",
+  "version": "2.0.3",
   "variants": [
     {
       "chip": "ST7789",
-      "label": "ST7789 v3.0.0",
+      "label": "ST7789 v2.0.3",
       "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware/ST7789/DashTron_V3.ino.bin",
       "size": 1541184,
       "sha256": "d60ffd487c2ac159677eed2b5f5df1b62e0c039d376551334543dcdfba05add5",
@@ -23,7 +23,7 @@
     },
     {
       "chip": "ILI9341",
-      "label": "ILI9341 v3.0.0",
+      "label": "ILI9341 v2.0.3",
       "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware/ILI9341/DashTron_V3.ino.bin",
       "size": 1541216,
       "sha256": "f87e91f3ead165ff1fca058b01857d076f0746e9d188f7c1af96c6e0381f7594",
