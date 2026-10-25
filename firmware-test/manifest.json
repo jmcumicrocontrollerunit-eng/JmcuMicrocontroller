@@ -6,12 +6,6 @@
     {
       "chip": "ST7789",
       "label": "ST7789",
-      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-test/ST7789/DashTron_V3.ino.bin",
-      "size": 1636240,
-      "sha256": "a617ddadab723887eaadb8404dea6e9d1d3a8ace16997a3f6af720171a754a77",
-      "name": "DashTron_V3.ino.bin",
-      "path": "firmware-test/ST7789/DashTron_V3.ino.bin",
-      "ts": 1792738175172,
       "files": [
         {
           "kind": "bl",
@@ -42,16 +36,6 @@
           "sha256": "f94c5d786a7a8fab06ac5d10e33bf37711a6697636dc037559ea19cc410a17f0",
           "path": "firmware-test/ST7789/boot_app0.bin",
           "ts": 1792738190655
-        },
-        {
-          "kind": "main",
-          "name": "DashTron_V3.ino.bin",
-          "address": "0x10000",
-          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-test/ST7789/DashTron_V3.ino.bin",
-          "size": 1636240,
-          "sha256": "a617ddadab723887eaadb8404dea6e9d1d3a8ace16997a3f6af720171a754a77",
-          "path": "firmware-test/ST7789/DashTron_V3.ino.bin",
-          "ts": 1792738175172
         }
       ]
     },
