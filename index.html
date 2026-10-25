@@ -99,7 +99,7 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
 <body>
 <div class="hero"><div class="wrap">
   <h1>📟 DashTron</h1>
-  <p>เวอร์ชันเดียว 2 ชิปขับจอ แต่ละชิปมีไฟล์หลักและไฟล์ Update (OTA) ผูกคู่กัน ตั้งเลขเวอร์ชันครั้งเดียว แล้วให้ ESP32 CYD เลือกติดตั้งตามชิปที่จอใช้ มีทั้งชุดโปรแกรมหลักและชุดทดลองใช้งาน (แยก Manifest จากกัน)</p>
+  <p>เวอร์ชันเดียว 2 ชิปขับจอ แต่ละชิปมีไฟล์หลักและไฟล์ Update (OTA) ผูกคู่กัน ตั้งเลขเวอร์ชันครั้งเดียว แล้วให้ ESP32 CYD เลือกติดตั้งตามชิปที่จอใช้ มีทั้งชุดโปรแกรมหลัก ชุดทดลองใช้งาน และ Installer (แยก Manifest จากกัน)</p>
   <span class="chip"><span class="dot off" id="dot"></span><span id="status">กำลังเชื่อมต่อ...</span></span>
 </div></div>
 
@@ -119,12 +119,14 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
   <div class="tabs">
     <button type="button" class="tab on" data-tab="main">📦 โปรแกรมหลัก</button>
     <button type="button" class="tab" data-tab="test">🧪 ทดลองใช้งาน</button>
+    <button type="button" class="tab" data-tab="installer">💾 Installer</button>
   </div>
 
   <datalist id="chipPresets"><option value="ST7789"><option value="ST7735"><option value="ST7796"><option value="ILI9341"><option value="ILI9342"><option value="ILI9486"><option value="ILI9488"><option value="GC9A01"></datalist>
 
   <section class="panel" id="p-main"></section>
   <section class="panel" id="p-test" hidden></section>
+  <section class="panel" id="p-installer" hidden></section>
 </main>
 <div class="toast" id="toast"></div>
 
@@ -143,7 +145,8 @@ const OTA_DEF="0x2B0000";
 /* แต่ละ channel มีโฟลเดอร์ไฟล์และ manifest เป็นของตัวเอง ไม่ปนกัน */
 const CHANNELS=[
   {id:"main",ota:true,kinds:["main","ota"],dir:"firmware",     man:"firmware/manifest.json",     channel:null,   verLabel:"🏷️ เวอร์ชันของชุดนี้ (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest สำหรับ MCU",manLinkTitle:"ลิงก์ manifest (ให้ ESP32 CYD ดึงลิงก์นี้ลิงก์เดียว)"},
-  {id:"test",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-test",man:"firmware-test/manifest.json",channel:"test",verLabel:"🏷️ เวอร์ชันชุดทดลองใช้งาน (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest ชุดทดลองใช้งาน",manLinkTitle:"ลิงก์ manifest ชุดทดลองใช้งาน (แยกจากโปรแกรมหลัก)"}
+  {id:"test",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-test",man:"firmware-test/manifest.json",channel:"test",verLabel:"🏷️ เวอร์ชันชุดทดลองใช้งาน (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest ชุดทดลองใช้งาน",manLinkTitle:"ลิงก์ manifest ชุดทดลองใช้งาน (แยกจากโปรแกรมหลัก)",tag:"ทดลอง",pkgTitle:"🗜️ ชุดโปรเจ็คทดลอง (.zip)",pkgFile:"dashtron_test.zip",banner:"🧪 ชุดนี้เป็นไฟล์ทดลองใช้งาน เก็บแยกในโฟลเดอร์"},
+  {id:"installer",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-installer",man:"firmware-installer/manifest.json",channel:"installer",verLabel:"🏷️ เวอร์ชัน Installer (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest Installer",manLinkTitle:"ลิงก์ manifest Installer (แยกจากโปรแกรมหลักและชุดทดลองใช้งาน)",tag:"Installer",pkgTitle:"🗜️ ชุด Installer (.zip)",pkgFile:"dashtron_installer.zip",banner:"💾 ชุดนี้เป็นไฟล์ Installer เก็บแยกในโฟลเดอร์"}
 ];
 const cleanAddr=v=>{const m=String(v||"").trim().match(/^(?:0x)?([0-9a-f]+)$/i);return m?"0x"+m[1].toUpperCase():""};
 const $=s=>document.querySelector(s);
@@ -195,22 +198,22 @@ function mount(C){
   const hasAny=k=>kinds.some(kd=>!!state[k][kd.k]);
 
   $("#p-"+P).innerHTML=`
-  ${C.channel==="test"?`<div class="banner">🧪 ชุดนี้เป็นไฟล์ทดลองใช้งาน เก็บแยกในโฟลเดอร์ <code>${C.dir}/</code> และมี manifest ของตัวเอง (<code>${C.man}</code>) ไม่กระทบไฟล์โปรแกรมหลักและลิงก์ manifest ของโปรแกรมหลัก</div>`:""}
+  ${C.channel?`<div class="banner">${C.banner} <code>${C.dir}/</code> และมี manifest ของตัวเอง (<code>${C.man}</code>) ไม่กระทบ manifest ของชุดอื่น</div>`:""}
   <div class="card relcard">
     <h3>${C.verLabel}</h3>
     <input class="ver" id="${P}-v" placeholder="เช่น 2.0.2" autocomplete="off">
   </div>
   <div class="grid" id="${P}-slots"></div>
   ${C.pkg?`<div class="card sec">
-    <h3>🗜️ ชุดโปรเจ็คทดลอง (.zip)</h3>
+    <h3>${C.pkgTitle}</h3>
     <div class="drop" id="${P}-d-pkg">
       <input type="file" accept=".zip,application/zip,application/x-zip-compressed" id="${P}-f-pkg">
-      <div class="em">${UP_ICON}<b>วางไฟล์ dashtron_test.zip ที่นี่</b><span>หรือคลิกเลือก</span></div>
+      <div class="em">${UP_ICON}<b>วางไฟล์ ${C.pkgFile} ที่นี่</b><span>หรือคลิกเลือก</span></div>
       <div class="fl" id="${P}-i-pkg"></div>
       <div class="bar" id="${P}-b-pkg"><i></i></div>
     </div>
     <details class="more"><summary>ลิงก์ / SHA-256</summary><div id="${P}-m-pkg"></div></details>
-    <p class="note">เก็บไฟล์ .zip ไว้ในโฟลเดอร์ <code>${C.dir}/</code> พร้อมลิงก์ดาวน์โหลดและ SHA-256 และบันทึกไว้ในฟิลด์ <code>package</code> ของ manifest ชุดทดลอง (ไม่กระทบ <code>variants</code> ที่ ESP32 ใช้)</p>
+    <p class="note">เก็บไฟล์ .zip ไว้ในโฟลเดอร์ <code>${C.dir}/</code> พร้อมลิงก์ดาวน์โหลดและ SHA-256 และบันทึกไว้ในฟิลด์ <code>package</code> ของ manifest ชุดนี้ (ไม่กระทบ <code>variants</code> ที่ ESP32 ใช้)</p>
   </div>`:""}
   <div class="card sec">
     <h3>${C.manTitle}</h3>
@@ -239,7 +242,7 @@ function mount(C){
     ${kinds.slice(1).map(kd=>kd.k==="ota"
       ?`<div class="sub"><span>${kd.label}</span><span class="ad">Address <input class="in addr" id="${P}-a-${s.key}" value="${OTA_DEF}" autocomplete="off" spellcheck="false"></span></div>${dropHtml(s.key,kd)}`
       :`<div class="sub"><span>${kd.label}</span><span class="ad"><code>${kd.addr}</code>${kd.k==="boot0"?`<button type="button" class="ghost cp x" data-gen="${P}:${s.key}">สร้างให้อัตโนมัติ</button>`:""}</span></div>${dropHtml(s.key,kd)}`).join("")}
-    ${C.channel==="test"?`<p class="note" id="${P}-w-${s.key}" style="display:none;color:var(--warn)"></p>`:""}
+    ${C.channel?`<p class="note" id="${P}-w-${s.key}" style="display:none;color:var(--warn)"></p>`:""}
     <details class="more"><summary>ลิงก์ / SHA-256</summary><div id="${P}-m-${s.key}"></div></details>
   </div>`).join("");
 
@@ -251,7 +254,7 @@ function mount(C){
       const o={chip:x.chip,label:x.chip+(v?" v"+v:"")};
       if(x.main)Object.assign(o,{url:rawUrl(x.main.path),size:x.main.size,sha256:x.main.sha,name:x.main.name,path:x.main.path,ts:x.main.ts});
       if(x.ota)o.ota={name:x.ota.name,address:x.addr,url:rawUrl(x.ota.path),size:x.ota.size,sha256:x.ota.sha,path:x.ota.path,ts:x.ota.ts};
-      if(C.channel==="test"){
+      if(C.channel){
         /* Web Flasher เขียนทุกไฟล์ตาม address (เรียงจากน้อยไปมาก) เพื่อให้ตารางพาร์ทิชัน+otadata ตรงกับแอพ */
         const fl=kinds.filter(kd=>x[kd.k]).map(kd=>({kind:kd.k,address:kd.k==="main"?MAIN_ADDR:kd.addr,d:x[kd.k]}))
           .sort((a,b)=>parseInt(a.address,16)-parseInt(b.address,16))
@@ -283,7 +286,7 @@ function mount(C){
     const parts=kinds.filter(kd=>x[kd.k]).map(kd=>{
       const d=x[kd.k],url=rawUrl(d.path);
       return `<div class="mh">${kd.label}</div>
-      <div class="meta"><span>ไฟล์</span><code>${esc(d.name)}</code>${kd.k==="ota"?`<span>Address</span><code>${esc(x.addr)}</code>`:kd.addr?`<span>Address</span><code>${kd.addr}</code>`:kd.k==="main"&&C.channel==="test"?`<span>Address</span><code>${MAIN_ADDR}</code>`:""}<span>SHA-256</span><code>${esc(d.sha)}</code></div>
+      <div class="meta"><span>ไฟล์</span><code>${esc(d.name)}</code>${kd.k==="ota"?`<span>Address</span><code>${esc(x.addr)}</code>`:kd.addr?`<span>Address</span><code>${kd.addr}</code>`:kd.k==="main"&&C.channel?`<span>Address</span><code>${MAIN_ADDR}</code>`:""}<span>SHA-256</span><code>${esc(d.sha)}</code></div>
       <div class="url"><code>${esc(url)}</code><button type="button" data-copy="${esc(url)}">คัดลอก</button></div>`;
     });
     q("m-"+k).innerHTML=parts.length?parts.join(""):'<p class="none">ยังไม่มีไฟล์</p>';
@@ -386,7 +389,7 @@ function mount(C){
       state[k][kind]={name:file.name,size:file.size,sha,path,ts:Date.now()};
       await saveManifest();fill.style.width="100%";
       renderAll();
-      toast(`อัปโหลดสำเร็จ ✓ ${C.channel?"[ทดลอง] ":""}${chip} ${kind==="ota"?"OTA "+addr:kind}`+(state.version?" v"+state.version:""));
+      toast(`อัปโหลดสำเร็จ ✓ ${C.tag?"["+C.tag+"] ":""}${chip} ${kind==="ota"?"OTA "+addr:kind}`+(state.version?" v"+state.version:""));
     }catch(e){toast("อัปโหลดล้มเหลว: "+e.message)}
     setTimeout(()=>{bar.style.display="none";fill.style.width="0"},600);
   }
@@ -405,7 +408,7 @@ function mount(C){
       if(prev&&prev.path!==path){try{const p=await gh("GET",prev.path);if(p)await gh("DELETE",prev.path,{message:"remove replaced package",sha:p.sha})}catch{}}
       state.pkg={name:file.name,size:file.size,sha,path,ts:Date.now()};
       await saveManifest();fill.style.width="100%";
-      renderAll();toast("อัปโหลดสำเร็จ ✓ [ทดลอง] "+file.name);
+      renderAll();toast("อัปโหลดสำเร็จ ✓ ["+C.tag+"] "+file.name);
     }catch(e){toast("อัปโหลดล้มเหลว: "+e.message)}
     setTimeout(()=>{bar.style.display="none";fill.style.width="0"},600);
   }
