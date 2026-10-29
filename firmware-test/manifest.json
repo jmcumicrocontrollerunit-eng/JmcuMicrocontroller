@@ -1,0 +1,29 @@
+{
+  "product": "DashTron",
+  "channel": "test",
+  "version": null,
+  "variants": [
+    {
+      "chip": "ILI9341",
+      "label": "ILI9341",
+      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-test/ILI9341/DashTron_V3.ino.bin",
+      "size": 1759632,
+      "sha256": "bda6e30d7e1e85db852861a9b8b7a9db173ebc0767b201d172bf556cf92507b4",
+      "name": "DashTron_V3.ino.bin",
+      "path": "firmware-test/ILI9341/DashTron_V3.ino.bin",
+      "ts": 1793266636302,
+      "files": [
+        {
+          "kind": "main",
+          "name": "DashTron_V3.ino.bin",
+          "address": "0x10000",
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-test/ILI9341/DashTron_V3.ino.bin",
+          "size": 1759632,
+          "sha256": "bda6e30d7e1e85db852861a9b8b7a9db173ebc0767b201d172bf556cf92507b4",
+          "path": "firmware-test/ILI9341/DashTron_V3.ino.bin",
+          "ts": 1793266636302
+        }
+      ]
+    }
+  ]
+}
