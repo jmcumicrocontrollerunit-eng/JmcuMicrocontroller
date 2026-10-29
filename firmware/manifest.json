@@ -1,0 +1,16 @@
+{
+  "product": "DashTron",
+  "version": null,
+  "variants": [
+    {
+      "chip": "ST7789",
+      "label": "ST7789",
+      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware/ST7789/DashTron.ino.bin",
+      "size": 1779904,
+      "sha256": "c425bad0442eb52b2db42b44e89f19a36d16c1311d2fcaf7ce50856ca70e8839",
+      "name": "DashTron.ino.bin",
+      "path": "firmware/ST7789/DashTron.ino.bin",
+      "ts": 1793270723768
+    }
+  ]
+}
