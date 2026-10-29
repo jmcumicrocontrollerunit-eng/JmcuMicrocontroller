@@ -1,0 +1,15 @@
+{
+  "product": "DashTron",
+  "type": "package-verify",
+  "v": 2,
+  "verify": {
+    "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/codes/codes.json",
+    "path": "codes/codes.json",
+    "algo": "sha256",
+    "salt": "dashtron-pkg-v2",
+    "input": "salt|ID|CODE",
+    "output": "hex-lowercase",
+    "normalize": "uppercase, keep A-Z and 0-9 only (ID and CODE)",
+    "code_length": 16
+  }
+}
