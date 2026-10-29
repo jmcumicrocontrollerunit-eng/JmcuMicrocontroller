@@ -4,6 +4,28 @@
   "version": null,
   "variants": [
     {
+      "chip": "ST7789",
+      "label": "ST7789",
+      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-test/ST7789/DashTron_V3.ino.bin",
+      "size": 1759584,
+      "sha256": "75226df62d572d173e3fe93dfeb1b6caae0e1099e1a4c98582935b4c9999affb",
+      "name": "DashTron_V3.ino.bin",
+      "path": "firmware-test/ST7789/DashTron_V3.ino.bin",
+      "ts": 1793266731151,
+      "files": [
+        {
+          "kind": "main",
+          "name": "DashTron_V3.ino.bin",
+          "address": "0x10000",
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-test/ST7789/DashTron_V3.ino.bin",
+          "size": 1759584,
+          "sha256": "75226df62d572d173e3fe93dfeb1b6caae0e1099e1a4c98582935b4c9999affb",
+          "path": "firmware-test/ST7789/DashTron_V3.ino.bin",
+          "ts": 1793266731151
+        }
+      ]
+    },
+    {
       "chip": "ILI9341",
       "label": "ILI9341",
       "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-test/ILI9341/DashTron_V3.ino.bin",
