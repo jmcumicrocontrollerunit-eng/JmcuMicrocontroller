@@ -124,7 +124,7 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
     <button type="button" class="tab on" data-tab="main">📦 โปรแกรมหลัก</button>
     <button type="button" class="tab" data-tab="test">🧪 ทดลองใช้งาน</button>
     <button type="button" class="tab" data-tab="installer">💾 Installer</button>
-    <button type="button" class="tab" data-tab="codes">🔑 รหัสดาวน์โหลด</button>
+    <button type="button" class="tab" data-tab="codes">🔑 รหัสยืนยันแพ็คเกจ</button>
   </div>
 
   <datalist id="chipPresets"><option value="ST7789"><option value="ST7735"><option value="ST7796"><option value="ILI9341"><option value="ILI9342"><option value="ILI9486"><option value="ILI9488"><option value="GC9A01"></datalist>
@@ -133,25 +133,61 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
   <section class="panel" id="p-test" hidden></section>
   <section class="panel" id="p-installer" hidden></section>
   <section class="panel" id="p-codes" hidden>
-    <div class="banner">🔑 ออกรหัสดาวน์โหลดให้ลูกค้า — รหัสจะถูกบันทึกเป็นไฟล์ <code>codes/codes.json</code> ใน repo นี้ (เก็บเฉพาะค่าแฮช ไม่เก็บรหัสจริง) หน้า "ซื้อเวอร์ชันเต็ม" ของ WebTools จะอ่านไฟล์นี้เพื่อตรวจรหัส · <b>เมื่อลูกค้าติดตั้งเสร็จ ให้กด "ลบรหัส"</b> รหัสนั้นจะใช้ไม่ได้อีก</div>
+    <div class="banner">🔑 <b>รหัสยืนยันแพ็คเกจ</b> — ใส่ ID ของบอร์ด CYD + ชื่อเจ้าของ แล้วกดสร้างรหัส นำรหัสไปใส่ในบอร์ด จากนั้นบอร์ดจะดึงไฟล์ <code>codes/codes.json</code> จากลิงก์เว็บนี้มาตรวจว่า <b>ID + รหัส</b> ตรงกันหรือไม่ ถ้าตรงจะปลดล็อคการใช้งานทันที · รหัสผูกกับ ID เดียว (ใช้กับบอร์ดอื่นไม่ได้) · ไฟล์เก็บเฉพาะค่าแฮช ไม่เก็บรหัสจริง · ถ้าต้องการเพิกถอน กด "ลบ" ที่รายการด้านล่าง</div>
 
     <div class="card sec">
-      <h3>🆕 สร้างรหัส</h3>
-      <div class="cfg">
-        <div><label>ชิป (เว้นว่าง = ใช้ได้ทุกชิป)</label><input class="in" id="g-chip" list="chipPresets" placeholder="เช่น ST7789" autocomplete="off"></div>
-        <div><label>จำนวน (1–20)</label><input class="in" id="g-count" type="number" min="1" max="20" value="1"></div>
-        <div><label>โน้ต (ชื่อลูกค้า/ออเดอร์)</label><input class="in" id="g-note" maxlength="60" autocomplete="off"></div>
+      <h3>🆕 สร้างรหัสยืนยัน</h3>
+      <div id="g-rows"></div>
+      <div class="row">
+        <button type="button" class="ghost cp" id="g-add" title="เพิ่มช่องใหม่">＋ เพิ่มช่อง</button>
+        <button type="button" id="g-genall">สร้างรหัสทุกช่อง</button>
       </div>
-      <div class="row"><button id="g-gen">สร้างรหัส</button></div>
-      <pre id="g-new" style="display:none;margin-top:12px"></pre>
-      <div class="row" id="g-newrow" style="display:none"><button class="ghost cp" id="g-copyall">คัดลอกทั้งหมด</button></div>
-      <p class="note">ใช้ Token ของ GitHub ที่ตั้งไว้ด้านบน (ต้องกรอกก่อนสร้าง/ลบรหัส) · รหัสจริงเก็บไว้ดูได้เฉพาะในเบราว์เซอร์เครื่องนี้ ถ้าล้างข้อมูลเบราว์เซอร์จะดูรหัสเดิมไม่ได้ (แต่ยังลบได้)</p>
+      <p class="note">ใช้ GitHub Token ที่ตั้งไว้ด้านบน · เพิ่มช่องได้ไม่จำกัด · ถ้า ID ซ้ำกับที่มีอยู่ ระบบจะออกรหัสใหม่ทับของเดิม (รหัสเก่าใช้ไม่ได้) · รหัสจริงดูย้อนหลังได้เฉพาะในเบราว์เซอร์เครื่องนี้</p>
     </div>
 
     <div class="card sec">
-      <h3>📋 รหัสที่ยังใช้ได้อยู่ <span id="g-cnt" style="color:var(--mute);font-weight:500"></span></h3>
-      <div class="row" style="margin-top:0"><button id="g-refresh">รีเฟรช</button></div>
+      <h3>📋 บอร์ดที่ออกรหัสแล้ว <span id="g-cnt" style="color:var(--mute);font-weight:500"></span></h3>
+      <div class="row" style="margin-top:0"><input class="in" id="g-search" placeholder="ค้นหาชื่อเจ้าของ / ID" autocomplete="off" style="flex:1"><button type="button" id="g-refresh">รีเฟรช</button></div>
       <div id="g-list" class="note">—</div>
+    </div>
+
+    <div class="card sec">
+      <details class="more" style="margin-top:0">
+        <summary>🧪 ทดสอบตรวจสอบ / วิธีให้ CYD ตรวจ</summary>
+        <div class="cfg">
+          <div><label>ID บอร์ด</label><input class="in" id="t-id" autocomplete="off" spellcheck="false"></div>
+          <div><label>รหัสยืนยัน</label><input class="in" id="t-code" autocomplete="off" spellcheck="false"></div>
+          <div style="align-self:end"><button type="button" id="t-go">ตรวจสอบ</button></div>
+        </div>
+        <p class="note" id="t-res">จำลองสิ่งที่บอร์ดทำ: อ่าน codes.json แล้วเทียบแฮช</p>
+        <div class="mh">ลิงก์ที่ให้บอร์ดอ่าน</div>
+        <div class="url"><code id="g-url">-</code><button type="button" data-copy-id="g-url">คัดลอก</button></div>
+        <p class="note">ขั้นตอนฝั่งบอร์ด: ① ดึง JSON จากลิงก์ด้านบน ② หา entry ที่ <code>id</code> ตรงกับ ID ของตัวเอง ③ คำนวณ <code>SHA-256("dashtron-pkg-v2|" + ID + "|" + CODE)</code> เป็น hex ตัวพิมพ์เล็ก (ID และ CODE ตัดอักขระที่ไม่ใช่ A-Z/0-9 ออกและแปลงเป็นพิมพ์ใหญ่) ④ ถ้าเท่ากับ <code>h</code> → ปลดล็อค · หลังออกรหัส/ลบรหัส อาจต้องรอสูงสุดราว 5 นาทีกว่า raw.githubusercontent.com จะอัปเดต</p>
+        <pre>#include &lt;WiFiClientSecure.h&gt;
+#include &lt;HTTPClient.h&gt;
+#include &lt;ArduinoJson.h&gt;   // v7
+#include &lt;mbedtls/sha256.h&gt;
+
+String normStr(String s){ s.toUpperCase(); String o; for(char c: s) if(isalnum((unsigned char)c)) o+=c; return o; }
+String sha256Hex(const String&amp; s){
+  uint8_t d[32]; mbedtls_sha256((const unsigned char*)s.c_str(), s.length(), d, 0);
+  char h[65]; for(int i=0;i&lt;32;i++) sprintf(h+i*2,"%02x",d[i]); return String(h);
+}
+// boardId เช่น eFuse MAC 12 หลัก: sprintf(b,"%012llX",ESP.getEfuseMac());
+bool verifyPackage(String boardId, String code, const char* url){
+  String id=normStr(boardId), want=sha256Hex("dashtron-pkg-v2|"+id+"|"+normStr(code));
+  WiFiClientSecure c; c.setInsecure();            // ควรใส่ root CA ถ้าต้องการความปลอดภัยเต็ม
+  HTTPClient http; http.begin(c,url);
+  if(http.GET()!=200){ http.end(); return false; }
+  JsonDocument f; f["codes"][0]["id"]=true; f["codes"][0]["h"]=true;
+  JsonDocument doc;
+  DeserializationError e=deserializeJson(doc,http.getStream(),DeserializationOption::Filter(f));
+  http.end(); if(e) return false;
+  for(JsonObject o: doc["codes"].as&lt;JsonArray&gt;())
+    if(id==(const char*)o["id"] &amp;&amp; want==(const char*)o["h"]) return true;
+  return false;
+}</pre>
+      </details>
     </div>
   </section>
 </main>
@@ -567,36 +603,34 @@ document.addEventListener("click",async e=>{
 
 loadAll();
 
-/* ================= แท็บ รหัสดาวน์โหลด (เก็บแฮชใน codes/codes.json ของ repo) ================= */
+/* ================= แท็บ รหัสยืนยันแพ็คเกจ (เก็บแฮชใน codes/codes.json ของ repo) ================= */
 (()=>{
   const g=id=>document.getElementById(id);
   const CODES_PATH="codes/codes.json";
-  /* ต้องตรงกับ WebTools (full.html) ทุกตัวอักษร */
-  const HASH_SALT="dashtron-codes-v1",HASH_ITER=100000;
+  /* ต้องตรงกับฝั่งบอร์ด CYD ทุกตัวอักษร: SHA-256( SALT | ID | CODE ) */
+  const SALT="dashtron-pkg-v2";
   const ALPHA="ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // ตัด 0/O/1/I/L
+  const CODE_LEN=16;
   const norm=v=>String(v||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
   const pretty=c=>c.match(/.{1,4}/g).join("-");
-  async function hashCode(code){
-    const key=await crypto.subtle.importKey("raw",new TextEncoder().encode(norm(code)),"PBKDF2",false,["deriveBits"]);
-    const bits=await crypto.subtle.deriveBits({name:"PBKDF2",hash:"SHA-256",salt:new TextEncoder().encode(HASH_SALT),iterations:HASH_ITER},key,256);
-    return [...new Uint8Array(bits)].map(b=>b.toString(16).padStart(2,"0")).join("");
-  }
-  function genCode(){ // สุ่มแบบไม่เอนเอียง
+  async function hashCode(id,code){return sha256(new TextEncoder().encode(SALT+"|"+norm(id)+"|"+norm(code)))}
+  function genCode(){ // สุ่มแบบไม่เอนเอียง (rejection sampling)
     let out="";
-    while(out.length<12){const r=crypto.getRandomValues(new Uint8Array(24));for(const b of r){if(b<248&&out.length<12)out+=ALPHA[b%31]}}
+    while(out.length<CODE_LEN){const r=crypto.getRandomValues(new Uint8Array(32));for(const b of r){if(b<248&&out.length<CODE_LEN)out+=ALPHA[b%31]}}
     return out;
   }
   /* เก็บรหัสจริงไว้ในเครื่องนี้เท่านั้น (hash → code) */
-  const plain=()=>{try{return JSON.parse(LS.get("gate.plain")||"{}")}catch{return{}}};
-  const savePlain=o=>LS.set("gate.plain",JSON.stringify(o));
+  const plain=()=>{try{return JSON.parse(LS.get("gate.plain2")||"{}")}catch{return{}}};
+  const savePlain=o=>LS.set("gate.plain2",JSON.stringify(o));
 
   const repo=()=>cfg();
   async function readFile(){
     const c=repo();if(!c.owner||!c.repo)throw new Error("ตั้งค่า Owner / Repository ก่อน");
     const j=await ghApi("GET",CODES_PATH,null,c);
-    if(!j)return{sha:undefined,data:{v:1,codes:[]}};
+    if(!j)return{sha:undefined,data:{v:2,codes:[]}};
     const txt=new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,"")),x=>x.charCodeAt(0)));
     const data=JSON.parse(txt||"{}");if(!Array.isArray(data.codes))data.codes=[];
+    data.v=2;
     return{sha:j.sha,data};
   }
   /* อ่าน → แก้ → บันทึก (ถ้าชนกันกับการแก้พร้อมกัน ลองใหม่ 1 ครั้ง) */
@@ -611,42 +645,119 @@ loadAll();
       }catch(e){if(i===1||!/sha|match|conflict|409|422/i.test(e.message))throw e}
     }
   }
+
+  /* ---------- ช่องกรอก (กด + เพิ่มได้ไม่จำกัด) ---------- */
+  let rowSeq=0;
+  const rows=g("g-rows");
+  function addRow(){
+    const n=++rowSeq,d=document.createElement("div");
+    d.className="card";d.dataset.row=n;d.style.cssText="margin-top:10px;padding:14px";
+    d.innerHTML=`<div class="cfg" style="margin-top:0">
+      <div><label>👤 ชื่อเจ้าของ</label><input class="in r-owner" maxlength="60" autocomplete="off" placeholder="เช่น คุณสมชาย / ออเดอร์ #123"></div>
+      <div><label>🆔 ID ของบอร์ด</label><input class="in r-id" maxlength="40" autocomplete="off" spellcheck="false" placeholder="เช่น A1B2C3D4E5F6" style="font-family:ui-monospace,Menlo,Consolas,monospace"></div>
+      <div style="align-self:end;display:flex;gap:8px"><button type="button" class="r-gen" style="flex:1">สร้างรหัส</button><button type="button" class="ghost r-rm" title="ลบช่องนี้">✕</button></div>
+    </div>
+    <div class="url r-out" style="display:none"><code class="r-code" style="font-size:15px;font-weight:700;letter-spacing:.5px"></code><button type="button" class="r-copy">คัดลอกรหัส</button></div>`;
+    rows.appendChild(d);
+    syncRm();
+    return d;
+  }
+  function syncRm(){const all=rows.querySelectorAll("[data-row]");all.forEach(r=>r.querySelector(".r-rm").style.visibility=all.length>1?"visible":"hidden")}
+  g("g-add").onclick=()=>{const r=addRow();r.querySelector(".r-owner").focus()};
+
+  async function generate(rowEls){
+    const items=[],seen=new Set();
+    for(const r of rowEls){
+      const owner=r.querySelector(".r-owner").value.trim().slice(0,60),id=norm(r.querySelector(".r-id").value);
+      if(!owner){toast("ใส่ชื่อเจ้าของก่อน");r.querySelector(".r-owner").focus();return}
+      if(id.length<4||id.length>40){toast("ID ต้องมี 4–40 ตัวอักษร (A-Z, 0-9)");r.querySelector(".r-id").focus();return}
+      if(seen.has(id)){toast("ID ซ้ำกันในหน้านี้: "+id);return}
+      seen.add(id);items.push({r,owner,id});
+    }
+    if(!items.length)return;
+    document.querySelectorAll(".r-gen,#g-genall").forEach(b=>b.disabled=true);
+    toast("กำลังสร้างรหัส…");
+    try{
+      const now=Date.now();
+      for(const it of items){it.code=genCode();it.h=await hashCode(it.id,it.code)}
+      await mutate(d=>{
+        items.forEach(it=>{
+          const e={id:it.id,owner:it.owner,h:it.h,ts:now},i=d.codes.findIndex(c=>c.id===it.id);
+          if(i>=0)d.codes[i]=e;else d.codes.push(e);
+        });
+      },`issue ${items.length} package code(s)`);
+      const pl=plain();items.forEach(it=>{pl[it.h]=it.code});savePlain(pl);
+      items.forEach(it=>{
+        it.r.querySelector(".r-out").style.display="flex";
+        const c=it.r.querySelector(".r-code");c.textContent=pretty(it.code);c.dataset.raw=it.code;
+        it.r.querySelector(".r-gen").textContent="สร้างใหม่";
+      });
+      toast("สร้าง "+items.length+" รหัสแล้ว");refresh();
+    }catch(e){toast("สร้างไม่สำเร็จ: "+e.message)}
+    document.querySelectorAll(".r-gen,#g-genall").forEach(b=>b.disabled=false);
+  }
+  rows.addEventListener("click",async e=>{
+    const r=e.target.closest("[data-row]");if(!r)return;
+    if(e.target.closest(".r-gen")){
+      if(r.querySelector(".r-code").dataset.raw&&!confirm("ออกรหัสใหม่? รหัสเดิมของ ID นี้จะใช้ไม่ได้อีก"))return;
+      generate([r]);
+    }else if(e.target.closest(".r-rm")){r.remove();syncRm()}
+    else if(e.target.closest(".r-copy")){try{await navigator.clipboard.writeText(r.querySelector(".r-code").dataset.raw);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}}
+  });
+  g("g-genall").onclick=()=>{
+    const all=[...rows.querySelectorAll("[data-row]")].filter(r=>r.querySelector(".r-owner").value.trim()||r.querySelector(".r-id").value.trim());
+    if(!all.length){toast("กรอกชื่อเจ้าของและ ID ก่อน");return}
+    generate(all);
+  };
+  addRow();
+
+  /* ---------- รายการที่ออกรหัสแล้ว ---------- */
+  let cache=[];
+  function renderList(){
+    const box=g("g-list"),q=g("g-search").value.trim().toLowerCase(),pl=plain();
+    g("g-cnt").textContent=cache.length?`(${cache.length})`:"";
+    if(!cache.length){box.textContent="ยังไม่มีบอร์ดที่ออกรหัส";return}
+    const list=cache.slice().reverse().filter(c=>!q||(c.owner||"").toLowerCase().includes(q)||(c.id||"").toLowerCase().includes(q));
+    if(!list.length){box.textContent="ไม่พบรายการที่ค้นหา";return}
+    box.innerHTML=list.map(c=>{
+      const code=pl[c.h],key=esc(c.id||c.h);
+      return `<div class="url" style="flex-wrap:wrap;align-items:flex-start">
+        <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:3px">
+          <b style="font-size:14px;color:var(--ink)">${esc(c.owner||"(ไม่ระบุชื่อ)")}</b>
+          <code style="font-size:12px;white-space:normal;word-break:break-all">${c.id?esc(c.id):"(รูปแบบเก่า ไม่มี ID)"}</code>
+          <span style="font-size:11px;color:var(--mute)">สร้าง ${dateStr(c.ts)}</span>
+        </div>
+        <code style="flex:none;font-size:13px;font-weight:700">${code?esc(pretty(code)):"(ไม่มีรหัสในเครื่องนี้)"}</code>
+        ${code?`<button type="button" class="ghost cp x" data-copy="${esc(code)}">คัดลอกรหัส</button>`:""}
+        <button type="button" class="ghost x" data-gdel="${esc(c.h)}">ลบ</button></div>`}).join("");
+  }
   async function refresh(){
     const box=g("g-list");
-    try{
-      const {data}=await readFile();
-      g("g-cnt").textContent=data.codes.length?`(${data.codes.length})`:"";
-      if(!data.codes.length){box.textContent="ไม่มีรหัสที่ใช้งานได้";return}
-      const pl=plain();
-      box.innerHTML=data.codes.slice().reverse().map(c=>{const code=pl[c.h];return `<div class="url" style="flex-wrap:wrap">
-        <code style="flex:none;font-size:13px;font-weight:700">${code?esc(pretty(code)):"(ไม่มีรหัสในเครื่องนี้)"}</code>
-        <span class="tag new">ใช้ได้</span>
-        <span style="flex:1;min-width:120px;font-size:12px;color:var(--mute)">${esc(c.chip||"ทุกชิป")}${c.note?" · "+esc(c.note):""} · สร้าง ${dateStr(c.ts)}</span>
-        ${code?`<button type="button" class="ghost cp x" data-copy="${esc(code)}">คัดลอก</button>`:""}
-        <button type="button" class="ghost x" data-gdel="${esc(c.h)}">ลบรหัส</button></div>`}).join("");
-    }catch(e){box.textContent="❌ "+e.message}
+    const c=repo();g("g-url").textContent=c.owner&&c.repo?rawUrlFor(CODES_PATH,c):"-";
+    try{const {data}=await readFile();cache=data.codes;renderList()}
+    catch(e){box.textContent="❌ "+e.message}
   }
   g("g-refresh").onclick=refresh;
-  g("g-gen").onclick=async()=>{
-    const n=Math.min(20,Math.max(1,+g("g-count").value||1)),chip=cleanChip(g("g-chip").value)||null,note=g("g-note").value.trim().slice(0,60);
-    g("g-gen").disabled=true;toast("กำลังสร้างรหัส…");
-    try{
-      const codes=Array.from({length:n},genCode),hashes=await Promise.all(codes.map(hashCode)),now=Date.now();
-      await mutate(d=>{hashes.forEach(h=>d.codes.push({h,chip,note,ts:now}))},`add ${n} download code(s)`);
-      const pl=plain();hashes.forEach((h,i)=>pl[h]=codes[i]);savePlain(pl);
-      g("g-new").style.display="block";g("g-new").textContent=codes.map(pretty).join("\n");g("g-newrow").style.display="flex";
-      toast("สร้าง "+n+" รหัสแล้ว");refresh();
-    }catch(e){toast("สร้างไม่สำเร็จ: "+e.message)}
-    g("g-gen").disabled=false;
-  };
-  g("g-copyall").onclick=async()=>{try{await navigator.clipboard.writeText(g("g-new").textContent);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}};
+  g("g-search").oninput=renderList;
   document.addEventListener("click",async e=>{
     const d=e.target.closest("[data-gdel]");if(!d)return;
-    if(!confirm("ลบรหัสนี้? ลูกค้าจะใช้รหัสนี้ไม่ได้อีก"))return;
-    const h=d.dataset.gdel;
-    try{await mutate(x=>{x.codes=x.codes.filter(c=>c.h!==h)},"remove download code");const pl=plain();delete pl[h];savePlain(pl);toast("ลบรหัสแล้ว");refresh()}
+    const h=d.dataset.gdel,it=cache.find(c=>c.h===h);
+    if(!confirm(`ลบรหัสของ "${it&&it.owner||"-"}" (${it&&it.id||"-"})?\nบอร์ดนี้จะยืนยันแพ็คเกจไม่ผ่านอีก`))return;
+    try{await mutate(x=>{x.codes=x.codes.filter(c=>c.h!==h)},"revoke package code");const pl=plain();delete pl[h];savePlain(pl);toast("ลบรหัสแล้ว");refresh()}
     catch(x){toast("ลบไม่ได้: "+x.message)}
   });
+
+  /* ---------- ทดสอบตรวจสอบ (จำลองฝั่งบอร์ด) ---------- */
+  g("t-go").onclick=async()=>{
+    const id=norm(g("t-id").value),code=norm(g("t-code").value),out=g("t-res");
+    if(!id||!code){out.textContent="กรอก ID และรหัสก่อน";return}
+    out.textContent="กำลังตรวจ…";
+    try{
+      const {data}=await readFile(),h=await hashCode(id,code),e=data.codes.find(c=>c.id===id);
+      out.textContent=!e?"❌ ไม่พบ ID นี้ในระบบ":e.h===h?`✅ ตรงกัน — ปลดล็อคได้ (เจ้าของ: ${e.owner||"-"})`:"❌ รหัสไม่ตรงกับ ID นี้";
+    }catch(x){out.textContent="❌ "+x.message}
+  };
+
   let opened=false;
   window.__codesOpen=()=>{if(opened)return;opened=true;refresh()};
   if(document.querySelector('.tabs .tab.on')?.dataset.tab==="codes")window.__codesOpen();
