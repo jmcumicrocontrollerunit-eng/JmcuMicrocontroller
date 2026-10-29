@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OTA Firmware Hub</title>
+<style>
+:root{--bg:#f4f6fb;--card:#ffffff;--ink:#141a2e;--mute:#6b7494;--line:#e3e7f2;--a:#5b6cff;--a2:#22d3ee;--ok:#10b981;--warn:#f59e0b;--old:#f59e0b;--new:#10b981;--shadow:0 10px 30px rgba(40,50,120,.08);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0f1e;--card:#131a30;--ink:#eef1ff;--mute:#8b94b8;--line:#232c4a;--shadow:0 10px 30px rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{--bg:#0b0f1e;--card:#131a30;--ink:#eef1ff;--mute:#8b94b8;--line:#232c4a;--shadow:0 10px 30px rgba(0,0,0,.4)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans Thai","Prompt",system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+.hero{background:linear-gradient(135deg,#4f46e5,#06b6d4);color:#fff;padding:36px 20px 90px}
+.wrap{max-width:980px;margin:0 auto}
+.hero h1{margin:0 0 6px;font-size:28px;display:flex;align-items:center;gap:12px}
+.hero p{margin:0;opacity:.9;font-size:15px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);padding:4px 12px;border-radius:99px;font-size:12px;margin-top:14px}
+.dot{width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 4px rgba(74,222,128,.3)}
+main{max-width:980px;margin:-60px auto 40px;padding:0 16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:720px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow)}
+.head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.tag{font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px;color:#fff}
+.tag.old{background:var(--old)}.tag.new{background:var(--new)}
+.card h2{margin:0;font-size:18px}
+.drop{border:2px dashed var(--line);border-radius:16px;padding:28px 14px;text-align:center;cursor:pointer;transition:.2s;color:var(--mute)}
+.drop:hover,.drop.over{border-color:var(--a);background:color-mix(in srgb,var(--a) 8%,transparent);color:var(--a)}
+.drop svg{width:38px;height:38px;margin-bottom:6px}
+.drop b{display:block;color:var(--ink);font-size:15px}
+.drop small{font-size:12px}
+input[type=file]{display:none}
+.ver{width:100%;margin:12px 0 0;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:14px}
+.file{display:none;margin-top:14px}
+.file.show{display:block}
+.fname{display:flex;align-items:center;gap:10px;font-weight:600;word-break:break-all}
+.ico{flex:none;width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+.meta{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:13px;margin:12px 0}
+.meta span:nth-child(odd){color:var(--mute)}
+.meta code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;word-break:break-all}
+.url{display:flex;gap:8px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+.url code{flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:ui-monospace,Menlo,monospace}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;background:var(--a);color:#fff;transition:.15s}
+button:hover{filter:brightness(1.1)}
+button.ghost{background:transparent;color:var(--mute);border:1px solid var(--line)}
+button.ghost:hover{color:#ef4444;border-color:#ef4444}
+.row{display:flex;gap:8px;margin-top:12px}
+.bar{height:6px;border-radius:9px;background:var(--line);overflow:hidden;margin-top:12px;display:none}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--a2));transition:width .2s}
+.sec{margin-top:18px}
+.sec h3{margin:0 0 10px;font-size:15px}
+pre{margin:0;background:#0d1224;color:#cfe3ff;padding:16px;border-radius:14px;overflow-x:auto;font-size:12.5px;line-height:1.6;font-family:ui-monospace,Menlo,Consolas,monospace}
+.note{font-size:13px;color:var(--mute);line-height:1.6;margin-top:10px}
+.warn{background:color-mix(in srgb,var(--warn) 14%,transparent);border:1px solid color-mix(in srgb,var(--warn) 40%,transparent);color:var(--ink);border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.6;margin-bottom:18px;display:none}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:#111827;color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;opacity:0;transition:.25s;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="hero"><div class="wrap">
+  <h1>📡 OTA Firmware Hub</h1>
+  <p>วางไฟล์ .bin เวอร์ชันเก่าและใหม่ แล้วให้ MCU ดึงไปอัปเดตผ่านลิงก์</p>
+  <span class="chip"><span class="dot"></span><span id="status">กำลังเชื่อมต่อ...</span></span>
+</div></div>
+
+<main>
+  <div class="warn" id="warn">⚠️ หน้านี้ยังเก็บไฟล์ไม่ได้ (ต้องเป็นเจ้าของหน้า / ล็อกอินอยู่) เปิดผ่านลิงก์ของคุณเองอีกครั้ง</div>
+  <div class="grid" id="slots"></div>
+
+  <div class="card sec">
+    <h3>🧾 Manifest สำหรับ MCU</h3>
+    <pre id="manifest">// อัปโหลดไฟล์ก่อน</pre>
+    <div class="row"><button id="copyMan">คัดลอก JSON</button></div>
+    <p class="note">MCU เปรียบเทียบ <code>version</code> ของตัวเอง กับ <code>new.version</code> ถ้าไม่ตรงให้ดาวน์โหลด <code>new.url</code> แล้วตรวจ SHA-256 ก่อนเขียนลง flash ส่วนไฟล์เวอร์ชันเก่าเก็บไว้สำหรับ rollback</p>
+  </div>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const SLOTS=[{key:"new",title:"เวอร์ชันใหม่",tag:"NEW",ph:"เช่น 1.2.0"},{key:"old",title:"เวอร์ชันเก่า",tag:"OLD",ph:"เช่น 1.1.0"}];
+const state={old:null,new:null};
+let assets=null,db=null;
+const $=s=>document.querySelector(s);
+const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1800)};
+const fmt=n=>n<1024?n+" B":n<1048576?(n/1024).toFixed(1)+" KB":(n/1048576).toFixed(2)+" MB";
+const abs=u=>u&&u.startsWith("/")?location.origin+u:u;
+
+$("#slots").innerHTML=SLOTS.map(s=>`
+<div class="card" id="c-${s.key}">
+  <div class="head"><h2>${s.title}</h2><span class="tag ${s.key}">${s.tag}</span></div>
+  <label class="drop" id="d-${s.key}">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+    <b>ลากไฟล์ .bin มาวางที่นี่</b><small>หรือคลิกเพื่อเลือกไฟล์</small>
+    <input type="file" accept=".bin" id="f-${s.key}">
+  </label>
+  <input class="ver" id="v-${s.key}" placeholder="หมายเลขเวอร์ชัน ${s.ph}">
+  <div class="bar" id="b-${s.key}"><i></i></div>
+  <div class="file" id="i-${s.key}"></div>
+</div>`).join("");
+
+function render(k){
+  const d=state[k],box=$("#i-"+k);
+  if(!d){box.classList.remove("show");box.innerHTML="";return}
+  box.classList.add("show");
+  const url=abs(d.url);
+  box.innerHTML=`
+  <div class="fname"><div class="ico">BIN</div><span>${esc(d.name)}</span></div>
+  <div class="meta"><span>ขนาด</span><span>${fmt(d.size)}</span><span>เวอร์ชัน</span><span>${esc(d.version||"-")}</span><span>SHA-256</span><code>${d.sha}</code><span>อัปโหลด</span><span>${new Date(d.ts).toLocaleString("th-TH")}</span></div>
+  <div class="url"><code>${esc(url)}</code><button data-copy="${esc(url)}">คัดลอก</button></div>
+  <div class="row"><button class="ghost" data-del="${k}">ลบไฟล์</button></div>`;
+  $("#v-"+k).value=d.version||"";
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function manifest(){
+  const m=x=>x?{version:x.version||null,url:abs(x.url),size:x.size,sha256:x.sha}:null;
+  $("#manifest").textContent=(state.new||state.old)?JSON.stringify({new:m(state.new),old:m(state.old)},null,2):"// อัปโหลดไฟล์ก่อน";
+}
+
+async function sha256(buf){const h=await crypto.subtle.digest("SHA-256",buf);return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,"0")).join("")}
+
+async function handle(k,file){
+  if(!file)return;
+  if(!/\.bin$/i.test(file.name)){toast("รองรับเฉพาะไฟล์ .bin");return}
+  if(!assets||!db){toast("ยังเก็บไฟล์ไม่ได้ในตอนนี้");return}
+  const bar=$("#b-"+k),fill=bar.firstElementChild;bar.style.display="block";fill.style.width="30%";
+  try{
+    const sha=await sha256(await file.arrayBuffer());fill.style.width="60%";
+    const old=state[k];
+    const up=await assets.upload(new Blob([file],{type:"text/plain"}));
+    fill.style.width="100%";
+    const rec={name:file.name,size:file.size,sha,id:up.id,url:up.url,version:$("#v-"+k).value.trim(),ts:Date.now()};
+    await db.doc("firmware/"+k).set(rec);
+    if(old&&old.id&&old.id!==up.id){try{await assets.delete(old.id)}catch(e){}}
+    toast("อัปโหลดสำเร็จ ✓");
+  }catch(e){toast("อัปโหลดล้มเหลว: "+(e.message||e.code||"error"))}
+  setTimeout(()=>{bar.style.display="none";fill.style.width="0"},600);
+}
+
+SLOTS.forEach(({key:k})=>{
+  const dz=$("#d-"+k),inp=$("#f-"+k);
+  inp.onchange=()=>{handle(k,inp.files[0]);inp.value=""};
+  ["dragenter","dragover"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.add("over")}));
+  ["dragleave","drop"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove("over")}));
+  dz.addEventListener("drop",ev=>handle(k,ev.dataTransfer.files[0]));
+  $("#v-"+k).onchange=async e=>{if(state[k]&&db){await db.doc("firmware/"+k).update({version:e.target.value.trim()})}};
+});
+
+document.addEventListener("click",async e=>{
+  const c=e.target.closest("[data-copy]");
+  if(c){try{await navigator.clipboard.writeText(c.dataset.copy);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}}
+  const d=e.target.closest("[data-del]");
+  if(d&&confirm("ลบไฟล์นี้ถาวร?")){const k=d.dataset.del,r=state[k];try{await db.doc("firmware/"+k).delete();if(r&&r.id)await assets.delete(r.id);toast("ลบแล้ว")}catch(x){toast("ลบไม่ได้")}}
+});
+$("#copyMan").onclick=async()=>{try{await navigator.clipboard.writeText($("#manifest").textContent);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}};
+
+(async()=>{
+  try{
+    if(!window.claude){throw 0}
+    [assets,db]=await Promise.all([claude.use("assets"),claude.use("db")]);
+  }catch(e){}
+  if(!db){$("#status").textContent="ออฟไลน์";$("#warn").style.display="block";return}
+  $("#status").textContent=assets?"พร้อมใช้งาน":"อ่านอย่างเดียว";
+  if(!assets)$("#warn").style.display="block";
+  SLOTS.forEach(({key:k})=>db.doc("firmware/"+k).onSnapshot(s=>{state[k]=s.exists?s.data():null;render(k);manifest()}));
+})();
+</script>
+</body>
+</html>
