@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DashTron</title>
+<style>
+:root{--bg:#f4f6fb;--card:#ffffff;--ink:#141a2e;--mute:#6b7494;--line:#e3e7f2;--a:#5b6cff;--a2:#22d3ee;--warn:#f59e0b;--old:#f59e0b;--new:#10b981;--shadow:0 10px 30px rgba(40,50,120,.08);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0f1e;--card:#131a30;--ink:#eef1ff;--mute:#8b94b8;--line:#232c4a;--shadow:0 10px 30px rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{--bg:#0b0f1e;--card:#131a30;--ink:#eef1ff;--mute:#8b94b8;--line:#232c4a;--shadow:0 10px 30px rgba(0,0,0,.4)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans Thai","Prompt",system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+.hero{background:linear-gradient(135deg,#4f46e5,#06b6d4);color:#fff;padding:36px 20px 90px}
+.wrap{max-width:980px;margin:0 auto}
+.hero h1{margin:0 0 6px;font-size:28px}
+.hero p{margin:0;opacity:.9;font-size:15px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);padding:4px 12px;border-radius:99px;font-size:12px;margin-top:14px}
+.dot{width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 4px rgba(74,222,128,.3)}
+.dot.off{background:#f87171;box-shadow:0 0 0 4px rgba(248,113,113,.3)}
+main{max-width:980px;margin:-60px auto 40px;padding:0 16px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:18px;align-items:start}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow)}
+.head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.tag{font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px;color:#fff;background:var(--mute)}
+.tag.old{background:var(--old)}.tag.new{background:var(--new)}
+.card h2{margin:0;font-size:18px}
+.lb{font-size:12px;color:var(--mute);display:block;margin-bottom:4px}
+
+/* แท็บ */
+.tabs{display:flex;gap:8px;margin-top:18px}
+.tabs button.tab{flex:1;background:var(--card);color:var(--mute);border:1px solid var(--line);padding:12px 14px;font-size:14px;border-radius:14px;box-shadow:var(--shadow)}
+.tabs button.tab.on{background:var(--a);color:#fff;border-color:var(--a)}
+.tabs button.tab[data-tab="test"].on{background:var(--warn);border-color:var(--warn)}
+.panel[hidden]{display:none}
+.banner{margin-top:18px;padding:12px 16px;border-radius:14px;border:1px dashed var(--warn);background:color-mix(in srgb,var(--warn) 10%,transparent);font-size:13px;line-height:1.6;color:var(--ink)}
+
+/* ช่องวางไฟล์: ความสูงคงที่ ไม่ขยายตอนใส่ไฟล์ */
+.drop{position:relative;overflow:hidden;display:flex;align-items:center;min-height:58px;border:2px dashed var(--line);border-radius:12px;padding:8px 12px;cursor:pointer;transition:border-color .2s,background .2s,color .2s;color:var(--mute);font-size:13px}
+.drop:hover,.drop.over{border-color:var(--a);background:color-mix(in srgb,var(--a) 8%,transparent);color:var(--a)}
+.drop .em{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;text-align:center;flex-wrap:wrap}
+.drop .em svg{width:20px;height:20px;flex:none}
+.drop .em b{color:var(--ink);font-size:13px;font-weight:600}
+.drop .fl{display:none;align-items:center;gap:8px;width:100%;min-width:0;color:var(--ink)}
+.drop.has{border-style:solid;border-color:color-mix(in srgb,var(--new) 55%,var(--line))}
+.drop.has .em{display:none}
+.drop.has .fl{display:flex}
+.drop .ico{width:32px;height:32px;font-size:10px;border-radius:9px}
+.drop .nm{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.drop .nm span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;font-weight:600}
+.drop .nm small{font-weight:500;color:var(--mute);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drop .x{flex:none;padding:5px 9px;font-size:12px}
+.drop .bar{position:absolute;left:0;right:0;bottom:0;height:4px;margin:0;border-radius:0}
+input[type=file]{display:none}
+
+.ver,.in{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:14px}
+.ver{margin-top:12px}
+.sub{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px 0 6px;font-size:12px;font-weight:700;color:var(--mute)}
+.sub .ad{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.in.addr{width:112px;padding:4px 8px;font-size:12px;border-radius:8px;font-family:ui-monospace,Menlo,Consolas,monospace}
+details.more{margin-top:12px}
+details.more summary{font-size:12px;font-weight:600;color:var(--mute)}
+.mh{font-size:12px;font-weight:700;margin:10px 0 0}
+.ico{flex:none;width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+.meta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;font-size:12px;margin:6px 0 0}
+.meta span:nth-child(odd){color:var(--mute)}
+.meta code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;word-break:break-all}
+.none{font-size:12px;color:var(--mute);margin:8px 0 0}
+.url{display:flex;gap:8px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:6px 8px;min-width:0;margin-top:10px}
+.url code{flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:ui-monospace,Menlo,monospace}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;background:var(--a);color:#fff;transition:.15s}
+button:hover{filter:brightness(1.1)}
+button.ghost{background:transparent;color:var(--mute);border:1px solid var(--line)}
+button.ghost:hover{color:#ef4444;border-color:#ef4444;filter:none}
+button.ghost.cp:hover{color:var(--a);border-color:var(--a)}
+.row{display:flex;gap:8px;margin-top:12px}
+.bar{height:6px;border-radius:9px;background:var(--line);overflow:hidden;margin-top:12px;display:none}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--a2));transition:width .2s}
+.sec{margin-top:18px}
+.sec h3{margin:0 0 10px;font-size:15px}
+pre{margin:0;background:#0d1224;color:#cfe3ff;padding:16px;border-radius:14px;overflow-x:auto;font-size:12.5px;line-height:1.6;font-family:ui-monospace,Menlo,Consolas,monospace}
+.note{font-size:13px;color:var(--mute);line-height:1.6;margin-top:10px}
+.cfg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:720px){.cfg{grid-template-columns:1fr}}
+.cfg label{font-size:12px;color:var(--mute);display:block;margin-bottom:4px}
+.cfg .full{grid-column:1/-1}
+summary{cursor:pointer;font-weight:700;font-size:15px}
+.relcard{margin-top:18px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+@media(max-width:720px){.relcard{grid-template-columns:1fr}}
+.relcard h3{margin:0;font-size:15px}
+.relcard .ver{margin-top:0;font-size:18px;font-weight:700;font-family:ui-monospace,Menlo,Consolas,monospace}
+.chipin{font-weight:700;margin-top:0}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:#111827;color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;opacity:0;transition:.25s;pointer-events:none;max-width:90vw}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="hero"><div class="wrap">
+  <h1>📟 DashTron</h1>
+  <p>เวอร์ชันเดียว 2 ชิปขับจอ แต่ละชิปมีไฟล์หลักและไฟล์ Update (OTA) ผูกคู่กัน ตั้งเลขเวอร์ชันครั้งเดียว แล้วให้ ESP32 CYD เลือกติดตั้งตามชิปที่จอใช้ มีทั้งชุดโปรแกรมหลัก ชุดทดลองใช้งาน และ Installer (แยก Manifest จากกัน)</p>
+  <span class="chip"><span class="dot off" id="dot"></span><span id="status">กำลังเชื่อมต่อ...</span></span>
+</div></div>
+
+<main>
+  <details class="card" id="settings">
+    <summary>⚙️ ตั้งค่า GitHub</summary>
+    <div class="cfg">
+      <div><label>Owner</label><input class="in" id="s-owner"></div>
+      <div><label>Repository</label><input class="in" id="s-repo"></div>
+      <div><label>Branch</label><input class="in" id="s-branch" placeholder="main"></div>
+      <div class="full"><label>🔒 Repo ของชุด Installer (ไม่บังคับ — แนะนำให้แยกเป็น repo <b>Private</b> เพื่อไม่ให้ใครโหลดไฟล์ตรงได้ ถ้าเว้นว่าง จะใช้ repo ด้านบน)</label></div>
+      <div><label>Installer Owner</label><input class="in" id="s-iowner" placeholder="เหมือน Owner ด้านบน"></div>
+      <div><label>Installer Repository</label><input class="in" id="s-irepo" placeholder="เช่น DashTron-Installer"></div>
+      <div><label>Installer Branch</label><input class="in" id="s-ibranch" placeholder="main"></div>
+      <div class="full"><label>Personal Access Token (ต้องใช้ตอนอัปโหลด/ลบเท่านั้น)</label><input class="in" id="s-token" type="password" placeholder="github_pat_..." autocomplete="off"></div>
+    </div>
+    <div class="row"><button id="saveCfg">บันทึกการตั้งค่า</button><button class="ghost" id="clearTok">ลบ Token ออกจากเครื่องนี้</button></div>
+    <p class="note">สร้าง Token ที่ GitHub → Settings → Developer settings → Fine-grained tokens เลือกเฉพาะ repo นี้ และให้สิทธิ์ <b>Contents: Read and write</b> Token จะเก็บไว้ในเบราว์เซอร์เครื่องนี้เท่านั้น ไม่ถูกส่งไปที่อื่นนอกจาก api.github.com</p>
+  </details>
+
+  <div class="tabs">
+    <button type="button" class="tab on" data-tab="main">📦 โปรแกรมหลัก</button>
+    <button type="button" class="tab" data-tab="test">🧪 ทดลองใช้งาน</button>
+    <button type="button" class="tab" data-tab="installer">💾 Installer</button>
+    <button type="button" class="tab" data-tab="codes">🔑 รหัสยืนยันแพ็คเกจ</button>
+  </div>
+
+  <datalist id="chipPresets"><option value="ST7789"><option value="ST7735"><option value="ST7796"><option value="ILI9341"><option value="ILI9342"><option value="ILI9486"><option value="ILI9488"><option value="GC9A01"></datalist>
+
+  <section class="panel" id="p-main"></section>
+  <section class="panel" id="p-test" hidden></section>
+  <section class="panel" id="p-installer" hidden></section>
+  <section class="panel" id="p-codes" hidden>
+    <div class="banner">🔑 <b>รหัสยืนยันแพ็คเกจ</b> — ใส่ ID ของบอร์ด CYD + ชื่อเจ้าของ แล้วกดสร้างรหัส นำรหัสไปใส่ในบอร์ด จากนั้นบอร์ดจะดึงไฟล์ <code>codes/codes.json</code> จากลิงก์เว็บนี้มาตรวจว่า <b>ID + รหัส</b> ตรงกันหรือไม่ ถ้าตรงจะปลดล็อคการใช้งานทันที · รหัสผูกกับ ID เดียว (ใช้กับบอร์ดอื่นไม่ได้) · ไฟล์เก็บเฉพาะค่าแฮช ไม่เก็บรหัสจริง · ถ้าต้องการเพิกถอน กด "ลบ" ที่รายการด้านล่าง</div>
+
+    <div class="card sec">
+      <h3>🆕 สร้างรหัสยืนยัน</h3>
+      <div id="g-rows"></div>
+      <div class="row">
+        <button type="button" class="ghost cp" id="g-add" title="เพิ่มช่องใหม่">＋ เพิ่มช่อง</button>
+        <button type="button" id="g-genall">สร้างรหัสทุกช่อง</button>
+      </div>
+      <p class="note">ใช้ GitHub Token ที่ตั้งไว้ด้านบน · เพิ่มช่องได้ไม่จำกัด · ถ้า ID ซ้ำกับที่มีอยู่ ระบบจะออกรหัสใหม่ทับของเดิม (รหัสเก่าใช้ไม่ได้) · รหัสจริงดูย้อนหลังได้เฉพาะในเบราว์เซอร์เครื่องนี้</p>
+    </div>
+
+    <div class="card sec">
+      <h3>📋 บอร์ดที่ออกรหัสแล้ว <span id="g-cnt" style="color:var(--mute);font-weight:500"></span></h3>
+      <div class="row" style="margin-top:0"><input class="in" id="g-search" placeholder="ค้นหาชื่อเจ้าของ / ID" autocomplete="off" style="flex:1"><button type="button" id="g-refresh">รีเฟรช</button></div>
+      <div id="g-list" class="note">—</div>
+    </div>
+
+    <div class="card sec">
+      <details class="more" style="margin-top:0">
+        <summary>🧪 ทดสอบตรวจสอบ / วิธีให้ CYD ตรวจ</summary>
+        <div class="cfg">
+          <div><label>ID บอร์ด</label><input class="in" id="t-id" autocomplete="off" spellcheck="false"></div>
+          <div><label>รหัสยืนยัน</label><input class="in" id="t-code" autocomplete="off" spellcheck="false"></div>
+          <div style="align-self:end"><button type="button" id="t-go">ตรวจสอบ</button></div>
+        </div>
+        <p class="note" id="t-res">จำลองสิ่งที่บอร์ดทำ: อ่าน codes.json แล้วเทียบแฮช</p>
+        <div class="mh">ลิงก์ที่ให้บอร์ดอ่าน</div>
+        <div class="url"><code id="g-url">-</code><button type="button" data-copy-id="g-url">คัดลอก</button></div>
+        <p class="note">ขั้นตอนฝั่งบอร์ด: ① ดึง JSON จากลิงก์ด้านบน ② หา entry ที่ <code>id</code> ตรงกับ ID ของตัวเอง ③ คำนวณ <code>SHA-256("dashtron-pkg-v2|" + ID + "|" + CODE)</code> เป็น hex ตัวพิมพ์เล็ก (ID และ CODE ตัดอักขระที่ไม่ใช่ A-Z/0-9 ออกและแปลงเป็นพิมพ์ใหญ่) ④ ถ้าเท่ากับ <code>h</code> → ปลดล็อค · หลังออกรหัส/ลบรหัส อาจต้องรอสูงสุดราว 5 นาทีกว่า raw.githubusercontent.com จะอัปเดต</p>
+        <pre>#include &lt;WiFiClientSecure.h&gt;
+#include &lt;HTTPClient.h&gt;
+#include &lt;ArduinoJson.h&gt;   // v7
+#include &lt;mbedtls/sha256.h&gt;
+
+String normStr(String s){ s.toUpperCase(); String o; for(char c: s) if(isalnum((unsigned char)c)) o+=c; return o; }
+String sha256Hex(const String&amp; s){
+  uint8_t d[32]; mbedtls_sha256((const unsigned char*)s.c_str(), s.length(), d, 0);
+  char h[65]; for(int i=0;i&lt;32;i++) sprintf(h+i*2,"%02x",d[i]); return String(h);
+}
+// boardId เช่น eFuse MAC 12 หลัก: sprintf(b,"%012llX",ESP.getEfuseMac());
+bool verifyPackage(String boardId, String code, const char* url){
+  String id=normStr(boardId), want=sha256Hex("dashtron-pkg-v2|"+id+"|"+normStr(code));
+  WiFiClientSecure c; c.setInsecure();            // ควรใส่ root CA ถ้าต้องการความปลอดภัยเต็ม
+  HTTPClient http; http.begin(c,url);
+  if(http.GET()!=200){ http.end(); return false; }
+  JsonDocument f; f["codes"][0]["id"]=true; f["codes"][0]["h"]=true;
+  JsonDocument doc;
+  DeserializationError e=deserializeJson(doc,http.getStream(),DeserializationOption::Filter(f));
+  http.end(); if(e) return false;
+  for(JsonObject o: doc["codes"].as&lt;JsonArray&gt;())
+    if(id==(const char*)o["id"] &amp;&amp; want==(const char*)o["h"]) return true;
+  return false;
+}</pre>
+      </details>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const SLOTS=[{key:"a",title:"ชุดที่ 1",def:"ST7789"},{key:"b",title:"ชุดที่ 2",def:"ILI9341"}];
+const KINDS=[
+  {k:"main",label:"📦 ไฟล์หลัก",icon:"BIN",ph:"วางไฟล์หลัก .bin ที่นี่"},
+  {k:"ota", label:"🔄 ไฟล์ Update (OTA)",icon:"OTA",ph:"วางไฟล์ OTA .bin ที่นี่"},
+  {k:"part",label:"🧩 Partition table",icon:"PT",ph:"วาง partitions.bin (Huge APP)",addr:"0x8000",fn:"partitions.bin"},
+  {k:"boot0",label:"♻️ boot_app0 (ล้าง otadata)",icon:"B0",ph:"วาง boot_app0.bin",addr:"0xE000",fn:"boot_app0.bin"},
+  {k:"bl",label:"🥾 Bootloader (ชิปว่างเท่านั้น ไม่บังคับ)",icon:"BL",ph:"วาง bootloader.bin",addr:"0x1000",fn:"bootloader.bin"}
+];
+const MAIN_ADDR="0x10000";
+const BOOT_APP0_B64="AQAAAP///////////////////////////////5qYQ0f//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////wAAAAD///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8=";
+const OTA_DEF="0x2B0000";
+/* แต่ละ channel มีโฟลเดอร์ไฟล์และ manifest เป็นของตัวเอง ไม่ปนกัน */
+const CHANNELS=[
+  {id:"main",ota:true,kinds:["main","ota"],dir:"firmware",     man:"firmware/manifest.json",     channel:null,   verLabel:"🏷️ เวอร์ชันของชุดนี้ (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest สำหรับ MCU",manLinkTitle:"ลิงก์ manifest (ให้ ESP32 CYD ดึงลิงก์นี้ลิงก์เดียว)"},
+  {id:"test",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-test",man:"firmware-test/manifest.json",channel:"test",verLabel:"🏷️ เวอร์ชันชุดทดลองใช้งาน (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest ชุดทดลองใช้งาน",manLinkTitle:"ลิงก์ manifest ชุดทดลองใช้งาน (แยกจากโปรแกรมหลัก)",tag:"ทดลอง",pkgTitle:"🗜️ ชุดโปรเจ็คทดลอง (.zip)",pkgFile:"dashtron_test.zip",banner:"🧪 ชุดนี้เป็นไฟล์ทดลองใช้งาน เก็บแยกในโฟลเดอร์"},
+  {id:"installer",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-installer",man:"firmware-installer/manifest.json",channel:"installer",verLabel:"🏷️ เวอร์ชัน Installer (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest Installer",manLinkTitle:"ลิงก์ manifest Installer (แยกจากโปรแกรมหลักและชุดทดลองใช้งาน)",tag:"Installer",pkgTitle:"🗜️ ชุด Installer (.zip)",pkgFile:"dashtron_installer.zip",banner:"💾 ชุดนี้เป็นไฟล์ Installer เก็บแยกในโฟลเดอร์"}
+];
+const cleanAddr=v=>{const m=String(v||"").trim().match(/^(?:0x)?([0-9a-f]+)$/i);return m?"0x"+m[1].toUpperCase():""};
+const $=s=>document.querySelector(s);
+const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)};
+const fmt=n=>n<1024?n+" B":n<1048576?(n/1024).toFixed(1)+" KB":(n/1048576).toFixed(2)+" MB";
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const LS={get:k=>{try{return localStorage.getItem(k)}catch{return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch{}},del:k=>{try{localStorage.removeItem(k)}catch{}}};
+const cfg=()=>({owner:$("#s-owner").value.trim(),repo:$("#s-repo").value.trim(),branch:$("#s-branch").value.trim()||"main",token:$("#s-token").value.trim(),iowner:$("#s-iowner").value.trim(),irepo:$("#s-irepo").value.trim(),ibranch:$("#s-ibranch").value.trim()});
+/* ช่อง Installer ใช้ repo แยก (ถ้ากรอก) — ช่องอื่นใช้ repo หลัก */
+const repoFor=id=>{const c=cfg();return(id==="installer"&&c.irepo)?{owner:c.iowner||c.owner,repo:c.irepo,branch:c.ibranch||c.branch,token:c.token}:c};
+const enc=p=>p.split("/").map(encodeURIComponent).join("/");
+const rawUrlFor=(p,c)=>{return `https://raw.githubusercontent.com/${c.owner}/${c.repo}/${c.branch}/${enc(p)}`};
+const cleanChip=n=>String(n||"").trim().replace(/[^A-Za-z0-9_-]/g,"").toUpperCase();
+const needToken=()=>{if(cfg().token)return true;toast("ใส่ GitHub Token ในส่วนตั้งค่าก่อน");$("#settings").open=true;return false};
+const otherKey=k=>SLOTS.find(s=>s.key!==k).key;
+const dateStr=ts=>new Date(ts).toLocaleString("th-TH",{dateStyle:"short",timeStyle:"short"});
+
+/* ---- settings ---- */
+(()=>{
+  const h=location.hostname,g={owner:h.endsWith(".github.io")?h.split(".")[0]:"",repo:location.pathname.split("/")[1]||""};
+  $("#s-owner").value=LS.get("ota.owner")||g.owner;
+  $("#s-repo").value=LS.get("ota.repo")||g.repo;
+  $("#s-branch").value=LS.get("ota.branch")||"main";
+  $("#s-token").value=LS.get("ota.token")||"";
+  $("#s-iowner").value=LS.get("ota.iowner")||"";
+  $("#s-irepo").value=LS.get("ota.irepo")||"";
+  $("#s-ibranch").value=LS.get("ota.ibranch")||"";
+  if(!$("#s-token").value)$("#settings").open=true;
+})();
+
+/* ---- GitHub API ---- */
+async function ghApi(method,path,body,c){
+  const url=`https://api.github.com/repos/${c.owner}/${c.repo}/contents/${enc(path)}`+(method==="GET"?`?ref=${encodeURIComponent(c.branch)}&t=${Date.now()}`:"");
+  const r=await fetch(url,{method,headers:{Accept:"application/vnd.github+json",...(c.token?{Authorization:"Bearer "+c.token}:{}),...(body?{"Content-Type":"application/json"}:{})},body:body?JSON.stringify({...body,branch:c.branch}):undefined});
+  if(r.status===404&&method==="GET")return null;
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(j.message||("HTTP "+r.status));
+  return j;
+}
+const b64=buf=>{let s="";const u=new Uint8Array(buf);for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s)};
+async function sha256(buf){const h=await crypto.subtle.digest("SHA-256",buf);return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,"0")).join("")}
+
+const UP_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>';
+
+/* ---- หนึ่ง channel = เวอร์ชัน + 2 ชิป + manifest ของตัวเอง ---- */
+const mounts={};
+function mount(C){
+  const P=C.id;
+  const gh=(m,p,b)=>ghApi(m,p,b,repoFor(C.id));
+  const rawUrl=p=>rawUrlFor(p,repoFor(C.id));
+  const kinds=KINDS.filter(kd=>C.kinds.includes(kd.k));
+  const q=s=>$(`#${P}-${s}`);
+  const mk=s=>({chip:s.def,main:null,ota:null,part:null,boot0:null,bl:null,addr:OTA_DEF});
+  const state={a:mk(SLOTS[0]),b:mk(SLOTS[1]),version:"",pkg:null};
+  const hasAny=k=>kinds.some(kd=>!!state[k][kd.k]);
+
+  $("#p-"+P).innerHTML=`
+  ${C.channel?`<div class="banner">${C.banner} <code>${C.dir}/</code> และมี manifest ของตัวเอง (<code>${C.man}</code>) ไม่กระทบ manifest ของชุดอื่น</div>`:""}
+  <div class="card relcard">
+    <h3>${C.verLabel}</h3>
+    <input class="ver" id="${P}-v" placeholder="เช่น 2.0.2" autocomplete="off">
+  </div>
+  <div class="grid" id="${P}-slots"></div>
+  ${C.pkg?`<div class="card sec">
+    <h3>${C.pkgTitle}</h3>
+    <div class="drop" id="${P}-d-pkg">
+      <input type="file" accept=".zip,application/zip,application/x-zip-compressed" id="${P}-f-pkg">
+      <div class="em">${UP_ICON}<b>วางไฟล์ ${C.pkgFile} ที่นี่</b><span>หรือคลิกเลือก</span></div>
+      <div class="fl" id="${P}-i-pkg"></div>
+      <div class="bar" id="${P}-b-pkg"><i></i></div>
+    </div>
+    <details class="more"><summary>ลิงก์ / SHA-256</summary><div id="${P}-m-pkg"></div></details>
+    <p class="note">เก็บไฟล์ .zip ไว้ในโฟลเดอร์ <code>${C.dir}/</code> พร้อมลิงก์ดาวน์โหลดและ SHA-256 และบันทึกไว้ในฟิลด์ <code>package</code> ของ manifest ชุดนี้ (ไม่กระทบ <code>variants</code> ที่ ESP32 ใช้)</p>
+  </div>`:""}
+  <div class="card sec">
+    <h3>${C.manTitle}</h3>
+    <pre id="${P}-manifest">// อัปโหลดไฟล์ก่อน</pre>
+    <div class="row"><button id="${P}-copyMan">คัดลอก JSON</button></div>
+    <h3 style="margin-top:18px">${C.manLinkTitle}</h3>
+    <div class="url"><code id="${P}-manUrl">-</code><button data-copy-id="${P}-manUrl">คัดลอก</button></div>
+    <p class="note">ESP32 อ่าน <code>version</code> และรายการ <code>variants</code> แล้วแสดงเป็นเมนู เช่น <code>ST7789 v2.0.2</code> / <code>ILI9341 v2.0.2</code> (ใช้ฟิลด์ <code>label</code> ได้เลย) ผู้ใช้เลือกชิปที่ตรงกับจอ จากนั้นดาวน์โหลด <code>url</code> ของชิปนั้น และตรวจ <code>sha256</code> ก่อนเขียนลง flash${C.ota?`<br>ไฟล์ OTA ของชิปนั้นอยู่ในฟิลด์ <code>ota</code> ภายในรายการชิปเดียวกัน มี <code>address</code> (เช่น <code>0x2B0000</code>), <code>url</code>, <code>size</code>, <code>sha256</code> ใช้เขียนลงพาร์ทิชันนั้นโดยตรง`:""}</p>
+  </div>`;
+
+  const dropHtml=(k,kd)=>`
+  <div class="drop" id="${P}-d-${k}-${kd.k}">
+    <input type="file" accept=".bin" id="${P}-f-${k}-${kd.k}">
+    <div class="em">${UP_ICON}<b>${kd.ph}</b><span>หรือคลิกเลือก</span></div>
+    <div class="fl" id="${P}-i-${k}-${kd.k}"></div>
+    <div class="bar" id="${P}-b-${k}-${kd.k}"><i></i></div>
+  </div>`;
+
+  q("slots").innerHTML=SLOTS.map(s=>`
+  <div class="card" id="${P}-c-${s.key}">
+    <div class="head"><h2>${s.title}</h2><span class="tag" id="${P}-t-${s.key}">ว่าง</span></div>
+    <label class="lb">ชิปขับจอ (${C.ota?"ไฟล์หลักและไฟล์ OTA":"ไฟล์"}ในการ์ดนี้ผูกกับชิปนี้)</label>
+    <input class="ver chipin" id="${P}-n-${s.key}" list="chipPresets" value="${s.def}" autocomplete="off" spellcheck="false">
+    <div class="sub"><span>${KINDS[0].label}</span></div>
+    ${dropHtml(s.key,KINDS[0])}
+    ${kinds.slice(1).map(kd=>kd.k==="ota"
+      ?`<div class="sub"><span>${kd.label}</span><span class="ad">Address <input class="in addr" id="${P}-a-${s.key}" value="${OTA_DEF}" autocomplete="off" spellcheck="false"></span></div>${dropHtml(s.key,kd)}`
+      :`<div class="sub"><span>${kd.label}</span><span class="ad"><code>${kd.addr}</code>${kd.k==="boot0"?`<button type="button" class="ghost cp x" data-gen="${P}:${s.key}">สร้างให้อัตโนมัติ</button>`:""}</span></div>${dropHtml(s.key,kd)}`).join("")}
+    ${C.channel?`<p class="note" id="${P}-w-${s.key}" style="display:none;color:var(--warn)"></p>`:""}
+    <details class="more"><summary>ลิงก์ / SHA-256</summary><div id="${P}-m-${s.key}"></div></details>
+  </div>`).join("");
+
+  /* ---- manifest ---- */
+  function manifestObj(){
+    const v=state.version||"";
+    const variants=SLOTS.filter(s=>hasAny(s.key)).map(s=>{
+      const x=state[s.key];
+      const o={chip:x.chip,label:x.chip+(v?" v"+v:"")};
+      if(x.main)Object.assign(o,{url:rawUrl(x.main.path),size:x.main.size,sha256:x.main.sha,name:x.main.name,path:x.main.path,ts:x.main.ts});
+      if(x.ota)o.ota={name:x.ota.name,address:x.addr,url:rawUrl(x.ota.path),size:x.ota.size,sha256:x.ota.sha,path:x.ota.path,ts:x.ota.ts};
+      if(C.channel){
+        /* Web Flasher เขียนทุกไฟล์ตาม address (เรียงจากน้อยไปมาก) เพื่อให้ตารางพาร์ทิชัน+otadata ตรงกับแอพ */
+        const fl=kinds.filter(kd=>x[kd.k]).map(kd=>({kind:kd.k,address:kd.k==="main"?MAIN_ADDR:kd.addr,d:x[kd.k]}))
+          .sort((a,b)=>parseInt(a.address,16)-parseInt(b.address,16))
+          .map(f=>({kind:f.kind,name:f.d.name,address:f.address,url:rawUrl(f.d.path),size:f.d.size,sha256:f.d.sha,path:f.d.path,ts:f.d.ts}));
+        if(fl.length)o.files=fl;
+      }
+      return o;
+    });
+    const man={product:"DashTron",...(C.channel?{channel:C.channel}:{}),version:v||null,variants};
+    if(C.pkg&&state.pkg){const d=state.pkg;man.package={name:d.name,url:rawUrl(d.path),size:d.size,sha256:d.sha,path:d.path,ts:d.ts}}
+    return man;
+  }
+  async function saveManifest(){
+    const cur=await gh("GET",C.man);
+    const text=JSON.stringify(manifestObj(),null,2);
+    await gh("PUT",C.man,{message:`update ${C.id} manifest`,content:b64(new TextEncoder().encode(text)),sha:cur?cur.sha:undefined});
+  }
+
+  /* ---- UI ---- */
+  function renderDrop(k,kd){
+    const d=state[k][kd.k],dz=$(`#${P}-d-${k}-${kd.k}`),box=$(`#${P}-i-${k}-${kd.k}`);
+    dz.classList.toggle("has",!!d);
+    if(!d){box.innerHTML="";return}
+    const url=rawUrl(d.path);
+    box.innerHTML=`<div class="ico">${kd.icon}</div><div class="nm"><span title="${esc(d.name)}">${esc(d.name)}</span><small>${fmt(d.size)} · ${dateStr(d.ts)} · คลิกเพื่อเปลี่ยนไฟล์</small></div><button type="button" class="ghost cp x" data-copy="${esc(url)}" title="คัดลอกลิงก์">ลิงก์</button><button type="button" class="ghost x" data-del="${P}:${k}:${kd.k}" title="ลบไฟล์">ลบ</button>`;
+  }
+  function renderMeta(k){
+    const x=state[k];
+    const parts=kinds.filter(kd=>x[kd.k]).map(kd=>{
+      const d=x[kd.k],url=rawUrl(d.path);
+      return `<div class="mh">${kd.label}</div>
+      <div class="meta"><span>ไฟล์</span><code>${esc(d.name)}</code>${kd.k==="ota"?`<span>Address</span><code>${esc(x.addr)}</code>`:kd.addr?`<span>Address</span><code>${kd.addr}</code>`:kd.k==="main"&&C.channel?`<span>Address</span><code>${MAIN_ADDR}</code>`:""}<span>SHA-256</span><code>${esc(d.sha)}</code></div>
+      <div class="url"><code>${esc(url)}</code><button type="button" data-copy="${esc(url)}">คัดลอก</button></div>`;
+    });
+    q("m-"+k).innerHTML=parts.length?parts.join(""):'<p class="none">ยังไม่มีไฟล์</p>';
+  }
+  function render(k){
+    const x=state[k],t=q("t-"+k);
+    t.className="tag"+(hasAny(k)?" new":"");
+    t.textContent=hasAny(k)?(x.chip+(state.version?" · v"+state.version:"")):"ว่าง";
+    kinds.forEach(kd=>renderDrop(k,kd));
+    renderMeta(k);
+    q("n-"+k).value=x.chip;
+    if(C.ota)q("a-"+k).value=x.addr;
+    const w=$(`#${P}-w-${k}`);
+    if(w){
+      const miss=[];
+      if(x.main&&!x.part)miss.push("Partition table");
+      if(x.main&&!x.boot0)miss.push("boot_app0");
+      w.style.display=miss.length?"block":"none";
+      w.textContent=miss.length?"⚠️ ยังไม่มี "+miss.join(" และ ")+" — ถ้าลงแค่ไฟล์แอพ ชิปที่มีตารางพาร์ทิชันเล็กกว่าแอพจะบูตไม่ขึ้น (Image length doesn't fit in partition)":"";
+    }
+  }
+  function renderPkg(){
+    if(!C.pkg)return;
+    const d=state.pkg,dz=$(`#${P}-d-pkg`),box=$(`#${P}-i-pkg`),meta=$(`#${P}-m-pkg`);
+    dz.classList.toggle("has",!!d);
+    if(!d){box.innerHTML="";meta.innerHTML='<p class="none">ยังไม่มีไฟล์</p>';return}
+    const url=rawUrl(d.path);
+    box.innerHTML=`<div class="ico">ZIP</div><div class="nm"><span title="${esc(d.name)}">${esc(d.name)}</span><small>${fmt(d.size)} · ${dateStr(d.ts)} · คลิกเพื่อเปลี่ยนไฟล์</small></div><button type="button" class="ghost cp x" data-copy="${esc(url)}" title="คัดลอกลิงก์">ลิงก์</button><button type="button" class="ghost x" data-del="${P}:pkg:zip" title="ลบไฟล์">ลบ</button>`;
+    meta.innerHTML=`<div class="meta"><span>ไฟล์</span><code>${esc(d.name)}</code><span>SHA-256</span><code>${esc(d.sha)}</code></div>
+    <div class="url"><code>${esc(url)}</code><button type="button" data-copy="${esc(url)}">คัดลอก</button></div>`;
+  }
+  function renderAll(){
+    SLOTS.forEach(s=>render(s.key));
+    renderPkg();
+    q("v").value=state.version||"";
+    q("manifest").textContent=(SLOTS.some(s=>hasAny(s.key))||state.pkg)?JSON.stringify(manifestObj(),null,2):"// อัปโหลดไฟล์ก่อน";
+    const c=repoFor(C.id);q("manUrl").textContent=c.owner&&c.repo?rawUrl(C.man):"-";
+  }
+
+  /* คืนข้อความ error (หรือ null ถ้าสำเร็จ) */
+  async function load(){
+    const c=repoFor(C.id);
+    if(!c.owner||!c.repo){renderAll();return null}
+    let err=null;
+    try{
+      const j=await gh("GET",C.man);
+      let m={};
+      if(j)m=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,"")),x=>x.charCodeAt(0))));
+      SLOTS.forEach(s=>{state[s.key]=mk(s)});
+      state.version=m.version||"";
+      state.pkg=(C.pkg&&m.package&&m.package.path)?{name:m.package.name||m.package.path.split("/").pop(),size:m.package.size,sha:m.package.sha256,path:m.package.path,ts:m.package.ts||Date.now()}:null;
+      const used={};
+      (Array.isArray(m.variants)?m.variants:[]).filter(r=>r&&(r.path||(r.ota&&r.ota.path)||(Array.isArray(r.files)&&r.files.length))).slice(0,2).forEach(r=>{
+        const chip=cleanChip(r.chip);
+        const slot=SLOTS.find(s=>!used[s.key]&&s.def===chip)||SLOTS.find(s=>!used[s.key]);
+        if(!slot)return;
+        used[slot.key]=true;
+        const st=state[slot.key];
+        if(chip)st.chip=chip;
+        if(r.path)st.main={name:r.name||r.path.split("/").pop(),size:r.size,sha:r.sha256,path:r.path,ts:r.ts||Date.now()};
+        if(Array.isArray(r.files))r.files.forEach(f=>{
+          const kd=kinds.find(z=>z.k===f.kind)||kinds.find(z=>z.k!=="main"&&z.addr&&cleanAddr(z.addr)===cleanAddr(f.address))||(cleanAddr(f.address)===cleanAddr(MAIN_ADDR)?kinds[0]:null);
+          if(kd&&f.path)st[kd.k]={name:f.name||f.path.split("/").pop(),size:f.size,sha:f.sha256,path:f.path,ts:f.ts||Date.now()};
+        });
+        if(C.ota&&r.ota&&r.ota.path){
+          st.ota={name:r.ota.name||r.ota.path.split("/").pop(),size:r.ota.size,sha:r.ota.sha256,path:r.ota.path,ts:r.ota.ts||Date.now()};
+          st.addr=cleanAddr(r.ota.address)||OTA_DEF;
+        }
+      });
+    }catch(e){err=e.message}
+    renderAll();
+    return err;
+  }
+
+  async function handle(k,kind,file){
+    if(!file)return;
+    if(!/\.bin$/i.test(file.name)){toast("รองรับเฉพาะไฟล์ .bin");return}
+    if(!needToken())return;
+    const chip=cleanChip(q("n-"+k).value);
+    if(!chip){toast("ใส่ชื่อชิปขับจอของไฟล์นี้ก่อน");return}
+    const o=otherKey(k);
+    if(hasAny(o)&&state[o].chip===chip){toast("ชื่อชิปซ้ำกับอีกชุด กรุณาตั้งชื่อให้ต่างกัน");return}
+    let addr=state[k].addr;
+    if(kind==="ota"){addr=cleanAddr(q("a-"+k).value);if(!addr){toast("Flash Address ไม่ถูกต้อง (เช่น 0x2B0000)");return}}
+    // ถ้ายังไม่ได้กรอกเวอร์ชัน ลองอ่านจากชื่อไฟล์ เช่น firmware_v2.0.2.bin
+    const vin=q("v");
+    if(kind==="main"&&!vin.value.trim()){const m=file.name.match(/(\d+(?:\.\d+)+)/);if(m)vin.value=m[1]}
+    state.version=vin.value.trim();
+    const bar=$(`#${P}-b-${k}-${kind}`),fill=bar.firstElementChild;bar.style.display="block";fill.style.width="20%";
+    try{
+      const buf=await file.arrayBuffer(),sha=await sha256(buf);fill.style.width="40%";
+      const path=kind==="ota"?`${C.dir}/${chip}/ota/${file.name}`:`${C.dir}/${chip}/${file.name}`,prev=state[k][kind];
+      if(kind!=="main"&&kind!=="ota"){const clash=kinds.some(z=>z.k!==kind&&state[k][z.k]&&state[k][z.k].path===path);if(clash)throw new Error("ชื่อไฟล์ซ้ำกับไฟล์อื่นในชุดนี้")}
+      const ex=await gh("GET",path);
+      await gh("PUT",path,{message:`upload ${C.id} ${chip} ${kind}: ${file.name}`,content:b64(buf),sha:ex?ex.sha:undefined});
+      fill.style.width="70%";
+      if(prev&&prev.path!==path){try{const p=await gh("GET",prev.path);if(p)await gh("DELETE",prev.path,{message:"remove replaced file",sha:p.sha})}catch{}}
+      state[k].chip=chip;
+      state[k].addr=addr;
+      state[k][kind]={name:file.name,size:file.size,sha,path,ts:Date.now()};
+      await saveManifest();fill.style.width="100%";
+      renderAll();
+      toast(`อัปโหลดสำเร็จ ✓ ${C.tag?"["+C.tag+"] ":""}${chip} ${kind==="ota"?"OTA "+addr:kind}`+(state.version?" v"+state.version:""));
+    }catch(e){toast("อัปโหลดล้มเหลว: "+e.message)}
+    setTimeout(()=>{bar.style.display="none";fill.style.width="0"},600);
+  }
+
+  async function handlePkg(file){
+    if(!file)return;
+    if(!/\.zip$/i.test(file.name)){toast("รองรับเฉพาะไฟล์ .zip");return}
+    if(!needToken())return;
+    const bar=$(`#${P}-b-pkg`),fill=bar.firstElementChild;bar.style.display="block";fill.style.width="20%";
+    try{
+      const buf=await file.arrayBuffer(),sha=await sha256(buf);fill.style.width="40%";
+      const path=`${C.dir}/${file.name}`,prev=state.pkg;
+      const ex=await gh("GET",path);
+      await gh("PUT",path,{message:`upload ${C.id} package: ${file.name}`,content:b64(buf),sha:ex?ex.sha:undefined});
+      fill.style.width="70%";
+      if(prev&&prev.path!==path){try{const p=await gh("GET",prev.path);if(p)await gh("DELETE",prev.path,{message:"remove replaced package",sha:p.sha})}catch{}}
+      state.pkg={name:file.name,size:file.size,sha,path,ts:Date.now()};
+      await saveManifest();fill.style.width="100%";
+      renderAll();toast("อัปโหลดสำเร็จ ✓ ["+C.tag+"] "+file.name);
+    }catch(e){toast("อัปโหลดล้มเหลว: "+e.message)}
+    setTimeout(()=>{bar.style.display="none";fill.style.width="0"},600);
+  }
+
+  async function del(k,kind){
+    if(k==="pkg"){
+      const r=state.pkg;if(!r||!needToken())return;
+      try{
+        const p=await gh("GET",r.path);
+        if(p)await gh("DELETE",r.path,{message:`delete ${C.id} package`,sha:p.sha});
+        state.pkg=null;await saveManifest();renderAll();toast("ลบแล้ว");
+      }catch(x){toast("ลบไม่ได้: "+x.message)}
+      return;
+    }
+    const r=state[k][kind];
+    if(!r)return;
+    if(!needToken())return;
+    try{
+      const p=await gh("GET",r.path);
+      if(p)await gh("DELETE",r.path,{message:`delete ${C.id} ${state[k].chip} ${kind}`,sha:p.sha});
+      state[k][kind]=null;await saveManifest();renderAll();toast("ลบแล้ว");
+    }catch(x){toast("ลบไม่ได้: "+x.message)}
+  }
+
+  SLOTS.forEach(({key:k})=>{
+    kinds.forEach(kd=>{
+      const dz=$(`#${P}-d-${k}-${kd.k}`),inp=$(`#${P}-f-${k}-${kd.k}`);
+      inp.onchange=()=>{handle(k,kd.k,inp.files[0]);inp.value=""};
+      dz.addEventListener("click",ev=>{if(ev.target.closest("button")||ev.target===inp)return;inp.click()});
+      ["dragenter","dragover"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.add("over")}));
+      ["dragleave","drop"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove("over")}));
+      dz.addEventListener("drop",ev=>handle(k,kd.k,ev.dataTransfer.files[0]));
+    });
+
+    // แก้ชื่อชิปหลังอัปโหลดแล้ว → อัปเดต manifest (มีผลกับทั้งไฟล์หลักและ OTA ของชุดนี้)
+    q("n-"+k).onchange=async e=>{
+      const v=cleanChip(e.target.value);
+      e.target.value=v||state[k].chip;
+      if(!v||v===state[k].chip)return;
+      const o=otherKey(k);
+      if(hasAny(o)&&state[o].chip===v){toast("ชื่อชิปซ้ำกับอีกชุด");e.target.value=state[k].chip;return}
+      if(!hasAny(k)){state[k].chip=v;return}
+      if(!needToken()){e.target.value=state[k].chip;return}
+      state[k].chip=v;
+      try{await saveManifest();renderAll();toast("บันทึกชื่อชิปแล้ว")}catch(x){toast("บันทึกไม่ได้: "+x.message)}
+    };
+
+    // แก้ Flash Address ของ OTA
+    if(C.ota)q("a-"+k).onchange=async e=>{
+      const v=cleanAddr(e.target.value);
+      if(!v){toast("Flash Address ไม่ถูกต้อง");e.target.value=state[k].addr;return}
+      e.target.value=v;
+      if(v===state[k].addr)return;
+      if(!state[k].ota){state[k].addr=v;return}
+      if(!needToken()){e.target.value=state[k].addr;return}
+      state[k].addr=v;
+      try{await saveManifest();renderAll();toast("บันทึก Address แล้ว")}catch(x){toast("บันทึกไม่ได้: "+x.message)}
+    };
+  });
+
+  if(C.pkg){
+    const dz=$(`#${P}-d-pkg`),inp=$(`#${P}-f-pkg`);
+    inp.onchange=()=>{handlePkg(inp.files[0]);inp.value=""};
+    dz.addEventListener("click",ev=>{if(ev.target.closest("button")||ev.target===inp)return;inp.click()});
+    ["dragenter","dragover"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.add("over")}));
+    ["dragleave","drop"].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove("over")}));
+    dz.addEventListener("drop",ev=>handlePkg(ev.dataTransfer.files[0]));
+  }
+
+  // เวอร์ชันเดียวของทั้งชุด
+  q("v").onchange=async e=>{
+    state.version=e.target.value.trim();
+    if(!SLOTS.some(s=>hasAny(s.key))){renderAll();return}
+    if(!needToken())return;
+    try{await saveManifest();renderAll();toast("บันทึกเวอร์ชันแล้ว")}catch(x){toast("บันทึกไม่ได้: "+x.message)}
+  };
+  q("copyMan").onclick=async()=>{try{await navigator.clipboard.writeText(q("manifest").textContent);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}};
+
+  renderAll();
+  /* boot_app0.bin ตัวจริงจาก core ESP32 3.3.12 (8192 bytes) ใช้รีเซ็ต otadata ให้บูตจาก app0 */
+  const genBoot=k=>handle(k,"boot0",new File([Uint8Array.from(atob(BOOT_APP0_B64),c=>c.charCodeAt(0))],"boot_app0.bin",{type:"application/octet-stream"}));
+  mounts[P]={load,del,genBoot};
+}
+
+CHANNELS.forEach(mount);
+
+/* ---- รวม ---- */
+function setStatus(t,ok){$("#status").textContent=t;$("#dot").classList.toggle("off",!ok)}
+async function loadAll(){
+  const c=cfg();
+  if(!c.owner||!c.repo){setStatus("ยังไม่ได้ตั้งค่า repo",false);return}
+  const errs=await Promise.all(CHANNELS.map(ch=>mounts[ch.id].load()));
+  const e=errs.find(Boolean);
+  if(e)setStatus("เชื่อมต่อ GitHub ไม่ได้: "+e,false);
+  else setStatus(c.token?"พร้อมใช้งาน":"อ่านอย่างเดียว (ยังไม่ใส่ Token)",!!c.token);
+}
+$("#saveCfg").onclick=()=>{const c=cfg();LS.set("ota.owner",c.owner);LS.set("ota.repo",c.repo);LS.set("ota.branch",c.branch);LS.set("ota.token",c.token);LS.set("ota.iowner",c.iowner);LS.set("ota.irepo",c.irepo);LS.set("ota.ibranch",c.ibranch);toast("บันทึกแล้ว");loadAll()};
+$("#clearTok").onclick=()=>{LS.del("ota.token");$("#s-token").value="";toast("ลบ Token แล้ว");loadAll()};
+
+/* แท็บ */
+document.querySelectorAll(".tabs .tab").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tabs .tab").forEach(x=>x.classList.toggle("on",x===b));
+  CHANNELS.forEach(ch=>{$("#p-"+ch.id).hidden=ch.id!==b.dataset.tab});
+  $("#p-codes").hidden=b.dataset.tab!=="codes";
+  if(b.dataset.tab==="codes"&&window.__codesOpen)window.__codesOpen();
+  LS.set("ota.tab",b.dataset.tab);
+});
+(()=>{const t=LS.get("ota.tab");const b=t&&document.querySelector(`.tabs .tab[data-tab="${t}"]`);if(b)b.click()})();
+
+document.addEventListener("click",e=>{
+  const g=e.target.closest("[data-gen]");
+  if(g){const [ch,k]=g.dataset.gen.split(":");mounts[ch].genBoot(k)}
+});
+document.addEventListener("click",async e=>{
+  const c=e.target.closest("[data-copy]"),ci=e.target.closest("[data-copy-id]");
+  if(c||ci){try{await navigator.clipboard.writeText(c?c.dataset.copy:$("#"+ci.dataset.copyId).textContent);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}}
+  const d=e.target.closest("[data-del]");
+  if(d&&confirm("ลบไฟล์นี้ถาวร?")){
+    const [ch,k,kind]=d.dataset.del.split(":");
+    mounts[ch].del(k,kind);
+  }
+});
+
+loadAll();
+
+/* ================= แท็บ รหัสยืนยันแพ็คเกจ (เก็บแฮชใน codes/codes.json ของ repo) ================= */
+(()=>{
+  const g=id=>document.getElementById(id);
+  const CODES_PATH="codes/codes.json";
+  /* ต้องตรงกับฝั่งบอร์ด CYD ทุกตัวอักษร: SHA-256( SALT | ID | CODE ) */
+  const SALT="dashtron-pkg-v2";
+  const ALPHA="ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // ตัด 0/O/1/I/L
+  const CODE_LEN=16;
+  const norm=v=>String(v||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
+  const pretty=c=>c.match(/.{1,4}/g).join("-");
+  async function hashCode(id,code){return sha256(new TextEncoder().encode(SALT+"|"+norm(id)+"|"+norm(code)))}
+  function genCode(){ // สุ่มแบบไม่เอนเอียง (rejection sampling)
+    let out="";
+    while(out.length<CODE_LEN){const r=crypto.getRandomValues(new Uint8Array(32));for(const b of r){if(b<248&&out.length<CODE_LEN)out+=ALPHA[b%31]}}
+    return out;
+  }
+  /* เก็บรหัสจริงไว้ในเครื่องนี้เท่านั้น (hash → code) */
+  const plain=()=>{try{return JSON.parse(LS.get("gate.plain2")||"{}")}catch{return{}}};
+  const savePlain=o=>LS.set("gate.plain2",JSON.stringify(o));
+
+  const repo=()=>cfg();
+  async function readFile(){
+    const c=repo();if(!c.owner||!c.repo)throw new Error("ตั้งค่า Owner / Repository ก่อน");
+    const j=await ghApi("GET",CODES_PATH,null,c);
+    if(!j)return{sha:undefined,data:{v:2,codes:[]}};
+    const txt=new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,"")),x=>x.charCodeAt(0)));
+    const data=JSON.parse(txt||"{}");if(!Array.isArray(data.codes))data.codes=[];
+    data.v=2;
+    return{sha:j.sha,data};
+  }
+  /* อ่าน → แก้ → บันทึก (ถ้าชนกันกับการแก้พร้อมกัน ลองใหม่ 1 ครั้ง) */
+  async function mutate(fn,msg){
+    if(!needToken())throw new Error("ใส่ GitHub Token ก่อน");
+    for(let i=0;i<2;i++){
+      const {sha,data}=await readFile();
+      fn(data);
+      try{
+        await ghApi("PUT",CODES_PATH,{message:msg,content:b64(new TextEncoder().encode(JSON.stringify(data,null,2))),sha},repo());
+        return data;
+      }catch(e){if(i===1||!/sha|match|conflict|409|422/i.test(e.message))throw e}
+    }
+  }
+
+  /* ---------- ช่องกรอก (กด + เพิ่มได้ไม่จำกัด) ---------- */
+  let rowSeq=0;
+  const rows=g("g-rows");
+  function addRow(){
+    const n=++rowSeq,d=document.createElement("div");
+    d.className="card";d.dataset.row=n;d.style.cssText="margin-top:10px;padding:14px";
+    d.innerHTML=`<div class="cfg" style="margin-top:0">
+      <div><label>👤 ชื่อเจ้าของ</label><input class="in r-owner" maxlength="60" autocomplete="off" placeholder="เช่น คุณสมชาย / ออเดอร์ #123"></div>
+      <div><label>🆔 ID ของบอร์ด</label><input class="in r-id" maxlength="40" autocomplete="off" spellcheck="false" placeholder="เช่น A1B2C3D4E5F6" style="font-family:ui-monospace,Menlo,Consolas,monospace"></div>
+      <div style="align-self:end;display:flex;gap:8px"><button type="button" class="r-gen" style="flex:1">สร้างรหัส</button><button type="button" class="ghost r-rm" title="ลบช่องนี้">✕</button></div>
+    </div>
+    <div class="url r-out" style="display:none"><code class="r-code" style="font-size:15px;font-weight:700;letter-spacing:.5px"></code><button type="button" class="r-copy">คัดลอกรหัส</button></div>`;
+    rows.appendChild(d);
+    syncRm();
+    return d;
+  }
+  function syncRm(){const all=rows.querySelectorAll("[data-row]");all.forEach(r=>r.querySelector(".r-rm").style.visibility=all.length>1?"visible":"hidden")}
+  g("g-add").onclick=()=>{const r=addRow();r.querySelector(".r-owner").focus()};
+
+  async function generate(rowEls){
+    const items=[],seen=new Set();
+    for(const r of rowEls){
+      const owner=r.querySelector(".r-owner").value.trim().slice(0,60),id=norm(r.querySelector(".r-id").value);
+      if(!owner){toast("ใส่ชื่อเจ้าของก่อน");r.querySelector(".r-owner").focus();return}
+      if(id.length<4||id.length>40){toast("ID ต้องมี 4–40 ตัวอักษร (A-Z, 0-9)");r.querySelector(".r-id").focus();return}
+      if(seen.has(id)){toast("ID ซ้ำกันในหน้านี้: "+id);return}
+      seen.add(id);items.push({r,owner,id});
+    }
+    if(!items.length)return;
+    document.querySelectorAll(".r-gen,#g-genall").forEach(b=>b.disabled=true);
+    toast("กำลังสร้างรหัส…");
+    try{
+      const now=Date.now();
+      for(const it of items){it.code=genCode();it.h=await hashCode(it.id,it.code)}
+      await mutate(d=>{
+        items.forEach(it=>{
+          const e={id:it.id,owner:it.owner,h:it.h,ts:now},i=d.codes.findIndex(c=>c.id===it.id);
+          if(i>=0)d.codes[i]=e;else d.codes.push(e);
+        });
+      },`issue ${items.length} package code(s)`);
+      const pl=plain();items.forEach(it=>{pl[it.h]=it.code});savePlain(pl);
+      items.forEach(it=>{
+        it.r.querySelector(".r-out").style.display="flex";
+        const c=it.r.querySelector(".r-code");c.textContent=pretty(it.code);c.dataset.raw=it.code;
+        it.r.querySelector(".r-gen").textContent="สร้างใหม่";
+      });
+      toast("สร้าง "+items.length+" รหัสแล้ว");refresh();
+    }catch(e){toast("สร้างไม่สำเร็จ: "+e.message)}
+    document.querySelectorAll(".r-gen,#g-genall").forEach(b=>b.disabled=false);
+  }
+  rows.addEventListener("click",async e=>{
+    const r=e.target.closest("[data-row]");if(!r)return;
+    if(e.target.closest(".r-gen")){
+      if(r.querySelector(".r-code").dataset.raw&&!confirm("ออกรหัสใหม่? รหัสเดิมของ ID นี้จะใช้ไม่ได้อีก"))return;
+      generate([r]);
+    }else if(e.target.closest(".r-rm")){r.remove();syncRm()}
+    else if(e.target.closest(".r-copy")){try{await navigator.clipboard.writeText(r.querySelector(".r-code").dataset.raw);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}}
+  });
+  g("g-genall").onclick=()=>{
+    const all=[...rows.querySelectorAll("[data-row]")].filter(r=>r.querySelector(".r-owner").value.trim()||r.querySelector(".r-id").value.trim());
+    if(!all.length){toast("กรอกชื่อเจ้าของและ ID ก่อน");return}
+    generate(all);
+  };
+  addRow();
+
+  /* ---------- รายการที่ออกรหัสแล้ว ---------- */
+  let cache=[];
+  function renderList(){
+    const box=g("g-list"),q=g("g-search").value.trim().toLowerCase(),pl=plain();
+    g("g-cnt").textContent=cache.length?`(${cache.length})`:"";
+    if(!cache.length){box.textContent="ยังไม่มีบอร์ดที่ออกรหัส";return}
+    const list=cache.slice().reverse().filter(c=>!q||(c.owner||"").toLowerCase().includes(q)||(c.id||"").toLowerCase().includes(q));
+    if(!list.length){box.textContent="ไม่พบรายการที่ค้นหา";return}
+    box.innerHTML=list.map(c=>{
+      const code=pl[c.h],key=esc(c.id||c.h);
+      return `<div class="url" style="flex-wrap:wrap;align-items:flex-start">
+        <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:3px">
+          <b style="font-size:14px;color:var(--ink)">${esc(c.owner||"(ไม่ระบุชื่อ)")}</b>
+          <code style="font-size:12px;white-space:normal;word-break:break-all">${c.id?esc(c.id):"(รูปแบบเก่า ไม่มี ID)"}</code>
+          <span style="font-size:11px;color:var(--mute)">สร้าง ${dateStr(c.ts)}</span>
+        </div>
+        <code style="flex:none;font-size:13px;font-weight:700">${code?esc(pretty(code)):"(ไม่มีรหัสในเครื่องนี้)"}</code>
+        ${code?`<button type="button" class="ghost cp x" data-copy="${esc(code)}">คัดลอกรหัส</button>`:""}
+        <button type="button" class="ghost x" data-gdel="${esc(c.h)}">ลบ</button></div>`}).join("");
+  }
+  async function refresh(){
+    const box=g("g-list");
+    const c=repo();g("g-url").textContent=c.owner&&c.repo?rawUrlFor(CODES_PATH,c):"-";
+    try{const {data}=await readFile();cache=data.codes;renderList()}
+    catch(e){box.textContent="❌ "+e.message}
+  }
+  g("g-refresh").onclick=refresh;
+  g("g-search").oninput=renderList;
+  document.addEventListener("click",async e=>{
+    const d=e.target.closest("[data-gdel]");if(!d)return;
+    const h=d.dataset.gdel,it=cache.find(c=>c.h===h);
+    if(!confirm(`ลบรหัสของ "${it&&it.owner||"-"}" (${it&&it.id||"-"})?\nบอร์ดนี้จะยืนยันแพ็คเกจไม่ผ่านอีก`))return;
+    try{await mutate(x=>{x.codes=x.codes.filter(c=>c.h!==h)},"revoke package code");const pl=plain();delete pl[h];savePlain(pl);toast("ลบรหัสแล้ว");refresh()}
+    catch(x){toast("ลบไม่ได้: "+x.message)}
+  });
+
+  /* ---------- ทดสอบตรวจสอบ (จำลองฝั่งบอร์ด) ---------- */
+  g("t-go").onclick=async()=>{
+    const id=norm(g("t-id").value),code=norm(g("t-code").value),out=g("t-res");
+    if(!id||!code){out.textContent="กรอก ID และรหัสก่อน";return}
+    out.textContent="กำลังตรวจ…";
+    try{
+      const {data}=await readFile(),h=await hashCode(id,code),e=data.codes.find(c=>c.id===id);
+      out.textContent=!e?"❌ ไม่พบ ID นี้ในระบบ":e.h===h?`✅ ตรงกัน — ปลดล็อคได้ (เจ้าของ: ${e.owner||"-"})`:"❌ รหัสไม่ตรงกับ ID นี้";
+    }catch(x){out.textContent="❌ "+x.message}
+  };
+
+  let opened=false;
+  window.__codesOpen=()=>{if(opened)return;opened=true;refresh()};
+  if(document.querySelector('.tabs .tab.on')?.dataset.tab==="codes")window.__codesOpen();
+})();
+</script>
+</body>
+</html>

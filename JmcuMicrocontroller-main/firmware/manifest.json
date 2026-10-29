@@ -1,0 +1,44 @@
+{
+  "product": "DashTron",
+  "version": "2.0.3",
+  "variants": [
+    {
+      "chip": "ST7789",
+      "label": "ST7789 v2.0.3",
+      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware/ST7789/DashTron.ino.bin",
+      "size": 1619008,
+      "sha256": "caa9fbbf35ccbfdd115c168e501613c94c44695c918989dba3ad45180b7d4455",
+      "name": "DashTron.ino.bin",
+      "path": "firmware/ST7789/DashTron.ino.bin",
+      "ts": 1792900772495,
+      "ota": {
+        "name": "DashTron_Updater.ino.bin",
+        "address": "0x2E0000",
+        "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware/ST7789/ota/DashTron_Updater.ino.bin",
+        "size": 1080288,
+        "sha256": "7ccd3931acb8d495e36e85251ebc0bcfc5e816981b701bf39e7684d4659acd88",
+        "path": "firmware/ST7789/ota/DashTron_Updater.ino.bin",
+        "ts": 1792745176679
+      }
+    },
+    {
+      "chip": "ILI9341",
+      "label": "ILI9341 v2.0.3",
+      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware/ILI9341/DashTron.ino.bin",
+      "size": 1619056,
+      "sha256": "2d124c9fdee5a7e06d48841acdd78b379b6aacc40a98125d909f2809f3caddf9",
+      "name": "DashTron.ino.bin",
+      "path": "firmware/ILI9341/DashTron.ino.bin",
+      "ts": 1792900676009,
+      "ota": {
+        "name": "DashTron_Updater.ino.bin",
+        "address": "0x2B0000",
+        "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware/ILI9341/ota/DashTron_Updater.ino.bin",
+        "size": 1080304,
+        "sha256": "a81d59076b7fa8dba48775393cd10ab3a6eebf676ecf2a130dcad769755db2b6",
+        "path": "firmware/ILI9341/ota/DashTron_Updater.ino.bin",
+        "ts": 1792745200693
+      }
+    }
+  ]
+}
