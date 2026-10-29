@@ -58,12 +58,6 @@
     {
       "chip": "ILI9341",
       "label": "ILI9341",
-      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ILI9341/DashTron_Installer_V2.ino.bin",
-      "size": 1170992,
-      "sha256": "7e8e643b480e131a88a10c7af88dea19068d2c899f1fe9b48dbd26680a013ae1",
-      "name": "DashTron_Installer_V2.ino.bin",
-      "path": "firmware-installer/ILI9341/DashTron_Installer_V2.ino.bin",
-      "ts": 1793271047436,
       "files": [
         {
           "kind": "bl",
@@ -94,16 +88,6 @@
           "sha256": "f94c5d786a7a8fab06ac5d10e33bf37711a6697636dc037559ea19cc410a17f0",
           "path": "firmware-installer/ILI9341/boot_app0.bin",
           "ts": 1793271063743
-        },
-        {
-          "kind": "main",
-          "name": "DashTron_Installer_V2.ino.bin",
-          "address": "0x10000",
-          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ILI9341/DashTron_Installer_V2.ino.bin",
-          "size": 1170992,
-          "sha256": "7e8e643b480e131a88a10c7af88dea19068d2c899f1fe9b48dbd26680a013ae1",
-          "path": "firmware-installer/ILI9341/DashTron_Installer_V2.ino.bin",
-          "ts": 1793271047436
         }
       ]
     }
