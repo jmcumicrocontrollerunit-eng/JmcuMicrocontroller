@@ -14,6 +14,16 @@
       "ts": 1793277718132,
       "files": [
         {
+          "kind": "bl",
+          "name": "DashTron_Installer_STD.ino.bootloader.bin",
+          "address": "0x1000",
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ILI9341/DashTron_Installer_STD.ino.bootloader.bin",
+          "size": 24992,
+          "sha256": "47bbbfca119fe87190f63a67af9d85adff6433bcf3812ec92a9b9c9416a53ad1",
+          "path": "firmware-installer/ILI9341/DashTron_Installer_STD.ino.bootloader.bin",
+          "ts": 1793277739093
+        },
+        {
           "kind": "part",
           "name": "DashTron_Installer_STD.ino.partitions.bin",
           "address": "0x8000",
