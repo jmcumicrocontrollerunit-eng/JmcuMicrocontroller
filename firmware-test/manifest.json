@@ -14,6 +14,16 @@
       "ts": 1793266731151,
       "files": [
         {
+          "kind": "part",
+          "name": "DashTron_V3.ino.partitions.bin",
+          "address": "0x8000",
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-test/ST7789/DashTron_V3.ino.partitions.bin",
+          "size": 3072,
+          "sha256": "aaae2888c5a6a348004b5b436f47abb25ae32e72d9003902955a998eda723edd",
+          "path": "firmware-test/ST7789/DashTron_V3.ino.partitions.bin",
+          "ts": 1793266736529
+        },
+        {
           "kind": "main",
           "name": "DashTron_V3.ino.bin",
           "address": "0x10000",
