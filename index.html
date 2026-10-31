@@ -222,7 +222,15 @@ const CHANNELS=[
 ];
 const cleanAddr=v=>{const m=String(v||"").trim().match(/^(?:0x)?([0-9a-f]+)$/i);return m?"0x"+m[1].toUpperCase():""};
 const $=s=>document.querySelector(s);
-const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)};
+let toastT;const toast=(m,ms)=>{const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),ms||(/ล้มเหลว/.test(m)?9000:2600))};
+/* แปลข้อความ error ของ GitHub ให้เข้าใจง่าย */
+const hint=m=>{m=String(m||"");
+  if(/bad credentials/i.test(m))return m+" → Token ผิด/หมดอายุ สร้างใหม่แล้ววางในช่อง Token";
+  if(/not accessible|forbidden|must have push|resource not/i.test(m))return m+" → Token ไม่มีสิทธิ์ Contents: Read and write หรือไม่ได้เลือก repo นี้";
+  if(/not found/i.test(m))return m+" → Owner/Repository/Branch ผิด หรือ Token มองไม่เห็น repo (repo private ต้องเลือกใน Token)";
+  if(/does not match|conflict/i.test(m))return m+" → ไฟล์ถูกแก้พร้อมกัน ลองอัปโหลดใหม่ทีละไฟล์";
+  if(/failed to fetch|networkerror|load failed/i.test(m))return m+" → เน็ตหลุด/ถูกบล็อก api.github.com";
+  return m};
 const fmt=n=>n<1024?n+" B":n<1048576?(n/1024).toFixed(1)+" KB":(n/1048576).toFixed(2)+" MB";
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const LS={get:k=>{try{return localStorage.getItem(k)}catch{return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch{}},del:k=>{try{localStorage.removeItem(k)}catch{}}};
@@ -468,7 +476,7 @@ function mount(C){
       await saveManifest();fill.style.width="100%";
       renderAll();
       toast(`อัปโหลดสำเร็จ ✓ ${C.tag?"["+C.tag+"] ":""}${chip} ${kind==="ota"?"OTA "+addr:kind}`+(state.version?" v"+state.version:""));
-    }catch(e){toast("อัปโหลดล้มเหลว: "+e.message)}
+    }catch(e){toast("อัปโหลดล้มเหลว: "+hint(e.message))}
     setTimeout(()=>{bar.style.display="none";fill.style.width="0"},600);
   }
 
@@ -487,7 +495,7 @@ function mount(C){
       state.pkg={name:file.name,size:file.size,sha,path,ts:Date.now()};
       await saveManifest();fill.style.width="100%";
       renderAll();toast("อัปโหลดสำเร็จ ✓ ["+C.tag+"] "+file.name);
-    }catch(e){toast("อัปโหลดล้มเหลว: "+e.message)}
+    }catch(e){toast("อัปโหลดล้มเหลว: "+hint(e.message))}
     setTimeout(()=>{bar.style.display="none";fill.style.width="0"},600);
   }
 
