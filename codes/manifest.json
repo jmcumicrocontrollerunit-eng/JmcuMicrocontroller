@@ -1,15 +1,24 @@
 {
   "product": "DashTron",
   "type": "package-verify",
-  "v": 2,
+  "v": 3,
   "verify": {
     "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/codes/codes.json",
     "path": "codes/codes.json",
     "algo": "sha256",
-    "salt": "dashtron-pkg-v2",
-    "input": "salt|ID|CODE",
+    "salt": "dashtron-pkg-v3",
+    "input": "salt|ID|CODE|EXP_SECONDS",
     "output": "hex-lowercase",
     "normalize": "uppercase, keep A-Z and 0-9 only (ID and CODE)",
-    "code_length": 16
+    "code_length": 16,
+    "expiry": {
+      "field": "exp",
+      "unit": "unix-ms",
+      "rule": "unlock only if now < exp (use NTP time); EXP_SECONDS = floor(exp/1000) as decimal string",
+      "allowed_days": [
+        1,
+        30
+      ]
+    }
   }
 }
