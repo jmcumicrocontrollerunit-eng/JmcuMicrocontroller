@@ -1,10 +1,10 @@
 {
   "product": "DashTron",
-  "version": null,
+  "version": "2.2.2",
   "variants": [
     {
       "chip": "ST7789",
-      "label": "ST7789",
+      "label": "ST7789 v2.2.2",
       "ota": {
         "name": "DashTron_Updater.ino.bin",
         "address": "0x2B0000",
@@ -17,7 +17,7 @@
     },
     {
       "chip": "ILI9341",
-      "label": "ILI9341",
+      "label": "ILI9341 v2.2.2",
       "ota": {
         "name": "DashTron_Updater.ino.bin",
         "address": "0x2B0000",
