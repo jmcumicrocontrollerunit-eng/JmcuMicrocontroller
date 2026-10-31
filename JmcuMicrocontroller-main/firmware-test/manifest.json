@@ -7,11 +7,11 @@
       "chip": "ST7789",
       "label": "ST7789",
       "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-test/ST7789/DashTron_V3.ino.bin",
-      "size": 1686928,
-      "sha256": "6e9d058717d9ff79434205eec6adc199664da750333bfdc1e3ae6dd94b13d3b8",
+      "size": 1759584,
+      "sha256": "75226df62d572d173e3fe93dfeb1b6caae0e1099e1a4c98582935b4c9999affb",
       "name": "DashTron_V3.ino.bin",
       "path": "firmware-test/ST7789/DashTron_V3.ino.bin",
-      "ts": 1792905475701,
+      "ts": 1793266731151,
       "files": [
         {
           "kind": "bl",
@@ -21,7 +21,7 @@
           "size": 24992,
           "sha256": "47bbbfca119fe87190f63a67af9d85adff6433bcf3812ec92a9b9c9416a53ad1",
           "path": "firmware-test/ST7789/DashTron_V3.ino.bootloader.bin",
-          "ts": 1792905496706
+          "ts": 1793266748345
         },
         {
           "kind": "part",
@@ -31,7 +31,7 @@
           "size": 3072,
           "sha256": "aaae2888c5a6a348004b5b436f47abb25ae32e72d9003902955a998eda723edd",
           "path": "firmware-test/ST7789/DashTron_V3.ino.partitions.bin",
-          "ts": 1792905482642
+          "ts": 1793266736529
         },
         {
           "kind": "boot0",
@@ -41,17 +41,17 @@
           "size": 8192,
           "sha256": "f94c5d786a7a8fab06ac5d10e33bf37711a6697636dc037559ea19cc410a17f0",
           "path": "firmware-test/ST7789/boot_app0.bin",
-          "ts": 1792905489339
+          "ts": 1793266741041
         },
         {
           "kind": "main",
           "name": "DashTron_V3.ino.bin",
           "address": "0x10000",
           "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-test/ST7789/DashTron_V3.ino.bin",
-          "size": 1686928,
-          "sha256": "6e9d058717d9ff79434205eec6adc199664da750333bfdc1e3ae6dd94b13d3b8",
+          "size": 1759584,
+          "sha256": "75226df62d572d173e3fe93dfeb1b6caae0e1099e1a4c98582935b4c9999affb",
           "path": "firmware-test/ST7789/DashTron_V3.ino.bin",
-          "ts": 1792905475701
+          "ts": 1793266731151
         }
       ]
     },
@@ -59,11 +59,11 @@
       "chip": "ILI9341",
       "label": "ILI9341",
       "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-test/ILI9341/DashTron_V3.ino.bin",
-      "size": 1686976,
-      "sha256": "c4c3ce87a7ad5733a8ea733899a4dee2b36a3101f370d6de35e15d3539b9ba9c",
+      "size": 1759632,
+      "sha256": "bda6e30d7e1e85db852861a9b8b7a9db173ebc0767b201d172bf556cf92507b4",
       "name": "DashTron_V3.ino.bin",
       "path": "firmware-test/ILI9341/DashTron_V3.ino.bin",
-      "ts": 1792905398487,
+      "ts": 1793266636302,
       "files": [
         {
           "kind": "bl",
@@ -73,7 +73,7 @@
           "size": 24992,
           "sha256": "47bbbfca119fe87190f63a67af9d85adff6433bcf3812ec92a9b9c9416a53ad1",
           "path": "firmware-test/ILI9341/DashTron_V3.ino.bootloader.bin",
-          "ts": 1792905433339
+          "ts": 1793266675193
         },
         {
           "kind": "part",
@@ -83,7 +83,7 @@
           "size": 3072,
           "sha256": "aaae2888c5a6a348004b5b436f47abb25ae32e72d9003902955a998eda723edd",
           "path": "firmware-test/ILI9341/DashTron_V3.ino.partitions.bin",
-          "ts": 1792905409979
+          "ts": 1793266659402
         },
         {
           "kind": "boot0",
@@ -93,17 +93,17 @@
           "size": 8192,
           "sha256": "f94c5d786a7a8fab06ac5d10e33bf37711a6697636dc037559ea19cc410a17f0",
           "path": "firmware-test/ILI9341/boot_app0.bin",
-          "ts": 1792905424702
+          "ts": 1793266665089
         },
         {
           "kind": "main",
           "name": "DashTron_V3.ino.bin",
           "address": "0x10000",
           "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-test/ILI9341/DashTron_V3.ino.bin",
-          "size": 1686976,
-          "sha256": "c4c3ce87a7ad5733a8ea733899a4dee2b36a3101f370d6de35e15d3539b9ba9c",
+          "size": 1759632,
+          "sha256": "bda6e30d7e1e85db852861a9b8b7a9db173ebc0767b201d172bf556cf92507b4",
           "path": "firmware-test/ILI9341/DashTron_V3.ino.bin",
-          "ts": 1792905398487
+          "ts": 1793266636302
         }
       ]
     }

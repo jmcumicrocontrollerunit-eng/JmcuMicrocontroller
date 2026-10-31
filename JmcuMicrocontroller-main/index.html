@@ -86,6 +86,10 @@ pre{margin:0;background:#0d1224;color:#cfe3ff;padding:16px;border-radius:14px;ov
 @media(max-width:720px){.cfg{grid-template-columns:1fr}}
 .cfg label{font-size:12px;color:var(--mute);display:block;margin-bottom:4px}
 .cfg .full{grid-column:1/-1}
+.cfg4{grid-template-columns:1fr 1fr 150px auto}
+@media(max-width:720px){.cfg4{grid-template-columns:1fr}}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid currentColor}
+.badge.ok{color:#16a34a}.badge.exp{color:#dc2626}
 summary{cursor:pointer;font-weight:700;font-size:15px}
 .relcard{margin-top:18px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
 @media(max-width:720px){.relcard{grid-template-columns:1fr}}
@@ -133,7 +137,7 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
   <section class="panel" id="p-test" hidden></section>
   <section class="panel" id="p-installer" hidden></section>
   <section class="panel" id="p-codes" hidden>
-    <div class="banner">🔑 <b>รหัสยืนยันแพ็คเกจ</b> — ใส่ ID ของบอร์ด CYD + ชื่อเจ้าของ แล้วกดสร้างรหัส นำรหัสไปใส่ในบอร์ด จากนั้นบอร์ดจะดึงไฟล์ <code>codes/codes.json</code> จากลิงก์เว็บนี้มาตรวจว่า <b>ID + รหัส</b> ตรงกันหรือไม่ ถ้าตรงจะปลดล็อคการใช้งานทันที · รหัสผูกกับ ID เดียว (ใช้กับบอร์ดอื่นไม่ได้) · ไฟล์เก็บเฉพาะค่าแฮช ไม่เก็บรหัสจริง · ถ้าต้องการเพิกถอน กด "ลบ" ที่รายการด้านล่าง</div>
+    <div class="banner">🔑 <b>รหัสยืนยันแพ็คเกจ</b> — ใส่ ID ของบอร์ด CYD + ชื่อเจ้าของ แล้วกดสร้างรหัส นำรหัสไปใส่ในบอร์ด จากนั้นบอร์ดจะดึงไฟล์ <code>codes/codes.json</code> จากลิงก์เว็บนี้มาตรวจว่า <b>ID + รหัส</b> ตรงกันหรือไม่ ถ้าตรงและ<b>ยังไม่หมดอายุ</b>จะปลดล็อคการใช้งานทันที · เลือกอายุรหัสได้ <b>1 วัน</b> หรือ <b>30 วัน</b> (นับจากเวลาที่สร้างรหัส) · เมื่อครบกำหนดรหัสจะปลดล็อคไม่ได้อีก · รหัสผูกกับ ID เดียว (ใช้กับบอร์ดอื่นไม่ได้) · ไฟล์เก็บเฉพาะค่าแฮช ไม่เก็บรหัสจริง · ถ้าต้องการเพิกถอน กด "ลบ" ที่รายการด้านล่าง</div>
 
     <div class="card sec">
       <h3>🆕 สร้างรหัสยืนยัน</h3>
@@ -142,7 +146,7 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
         <button type="button" class="ghost cp" id="g-add" title="เพิ่มช่องใหม่">＋ เพิ่มช่อง</button>
         <button type="button" id="g-genall">สร้างรหัสทุกช่อง</button>
       </div>
-      <p class="note">ใช้ GitHub Token ที่ตั้งไว้ด้านบน · เพิ่มช่องได้ไม่จำกัด · ถ้า ID ซ้ำกับที่มีอยู่ ระบบจะออกรหัสใหม่ทับของเดิม (รหัสเก่าใช้ไม่ได้) · รหัสจริงดูย้อนหลังได้เฉพาะในเบราว์เซอร์เครื่องนี้</p>
+      <p class="note">ใช้ GitHub Token ที่ตั้งไว้ด้านบน · เพิ่มช่องได้ไม่จำกัด · ถ้า ID ซ้ำกับที่มีอยู่ ระบบจะออกรหัสใหม่ทับของเดิม (รหัสเก่าใช้ไม่ได้ — ใช้ต่ออายุได้) · รหัสจริงดูย้อนหลังได้เฉพาะในเบราว์เซอร์เครื่องนี้</p>
     </div>
 
     <div class="card sec">
@@ -171,7 +175,7 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
         <p class="note" id="t-res">จำลองสิ่งที่บอร์ดทำ: อ่าน codes.json แล้วเทียบแฮช</p>
         <div class="mh">ลิงก์ codes.json (อยู่ใน manifest ในฟิลด์ verify.url)</div>
         <div class="url"><code id="g-url">-</code><button type="button" data-copy-id="g-url">คัดลอก</button></div>
-        <p class="note">ขั้นตอนฝั่งบอร์ด: ① ดึง JSON จากลิงก์ด้านบน ② หา entry ที่ <code>id</code> ตรงกับ ID ของตัวเอง ③ คำนวณ <code>SHA-256("dashtron-pkg-v2|" + ID + "|" + CODE)</code> เป็น hex ตัวพิมพ์เล็ก (ID และ CODE ตัดอักขระที่ไม่ใช่ A-Z/0-9 ออกและแปลงเป็นพิมพ์ใหญ่) ④ ถ้าเท่ากับ <code>h</code> → ปลดล็อค · หลังออกรหัส/ลบรหัส อาจต้องรอสูงสุดราว 5 นาทีกว่า raw.githubusercontent.com จะอัปเดต</p>
+        <p class="note">ขั้นตอนฝั่งบอร์ด: ① ดึง JSON จากลิงก์ด้านบน ② หา entry ที่ <code>id</code> ตรงกับ ID ของตัวเอง ③ คำนวณ <code>SHA-256("dashtron-pkg-v3|" + ID + "|" + CODE + "|" + floor(exp/1000))</code> เป็น hex ตัวพิมพ์เล็ก (ID และ CODE ตัดอักขระที่ไม่ใช่ A-Z/0-9 ออกและแปลงเป็นพิมพ์ใหญ่) ④ ถ้าเท่ากับ <code>h</code> <b>และเวลาปัจจุบัน (NTP) &lt; <code>exp</code></b> → ปลดล็อค ถ้า <code>now ≥ exp</code> → หมดอายุ ไม่ปลดล็อค · หลังออกรหัส/ลบรหัส อาจต้องรอสูงสุดราว 5 นาทีกว่า raw.githubusercontent.com จะอัปเดต</p>
         <pre>#include &lt;WiFiClientSecure.h&gt;
 #include &lt;HTTPClient.h&gt;
 #include &lt;ArduinoJson.h&gt;   // v7
@@ -183,18 +187,26 @@ String sha256Hex(const String&amp; s){
   char h[65]; for(int i=0;i&lt;32;i++) sprintf(h+i*2,"%02x",d[i]); return String(h);
 }
 // boardId เช่น eFuse MAC 12 หลัก: sprintf(b,"%012llX",ESP.getEfuseMac());
-bool verifyPackage(String boardId, String code, const char* url){
-  String id=normStr(boardId), want=sha256Hex("dashtron-pkg-v2|"+id+"|"+normStr(code));
+// ต้องซิงค์เวลาด้วย NTP ก่อน: configTime(7*3600,0,"pool.ntp.org");
+// คืนค่า: 1=ปลดล็อค, 0=ไม่ตรง/ไม่พบ, -1=หมดอายุ, -2=ยังไม่ได้ซิงค์เวลา/โหลดไม่ได้
+int verifyPackage(String boardId, String code, const char* url){
+  time_t now=time(nullptr); if(now<1700000000) return -2;
+  String id=normStr(boardId), nc=normStr(code);
   WiFiClientSecure c; c.setInsecure();            // ควรใส่ root CA ถ้าต้องการความปลอดภัยเต็ม
   HTTPClient http; http.begin(c,url);
-  if(http.GET()!=200){ http.end(); return false; }
-  JsonDocument f; f["codes"][0]["id"]=true; f["codes"][0]["h"]=true;
+  if(http.GET()!=200){ http.end(); return -2; }
+  JsonDocument f; f["codes"][0]["id"]=true; f["codes"][0]["h"]=true; f["codes"][0]["exp"]=true;
   JsonDocument doc;
   DeserializationError e=deserializeJson(doc,http.getStream(),DeserializationOption::Filter(f));
-  http.end(); if(e) return false;
-  for(JsonObject o: doc["codes"].as&lt;JsonArray&gt;())
-    if(id==(const char*)o["id"] &amp;&amp; want==(const char*)o["h"]) return true;
-  return false;
+  http.end(); if(e) return -2;
+  for(JsonObject o: doc["codes"].as&lt;JsonArray&gt;()){
+    if(id!=(const char*)o["id"]) continue;
+    uint64_t expMs=o["exp"].as&lt;uint64_t&gt;(), expS=expMs/1000;
+    String want=sha256Hex("dashtron-pkg-v3|"+id+"|"+nc+"|"+String((unsigned long long)expS));
+    if(want!=(const char*)o["h"]) return 0;
+    return ((uint64_t)now*1000ULL &lt; expMs) ? 1 : -1;
+  }
+  return 0;
 }</pre>
       </details>
     </div>
@@ -617,12 +629,16 @@ loadAll();
   const g=id=>document.getElementById(id);
   const CODES_PATH="codes/codes.json";
   /* ต้องตรงกับฝั่งบอร์ด CYD ทุกตัวอักษร: SHA-256( SALT | ID | CODE ) */
-  const SALT="dashtron-pkg-v2";
+  const SALT="dashtron-pkg-v3";
+  const DAYS_OPTS=[1,30];
   const ALPHA="ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // ตัด 0/O/1/I/L
   const CODE_LEN=16;
   const norm=v=>String(v||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
   const pretty=c=>c.match(/.{1,4}/g).join("-");
-  async function hashCode(id,code){return sha256(new TextEncoder().encode(SALT+"|"+norm(id)+"|"+norm(code)))}
+  /* v3: ผูกวันหมดอายุ (exp = มิลลิวินาที Unix) เข้าไปในแฮช → แก้วันหมดอายุใน JSON แล้วรหัสจะใช้ไม่ได้ */
+  async function hashCode(id,code,exp){return sha256(new TextEncoder().encode(SALT+"|"+norm(id)+"|"+norm(code)+"|"+Math.floor(exp/1000)))}
+  const DAY=86400000;
+  const fmtLeft=ms=>{const d=Math.floor(ms/DAY),h=Math.floor(ms%DAY/3600000),m=Math.floor(ms%3600000/60000);return d>0?`${d} วัน ${h} ชม.`:h>0?`${h} ชม. ${m} นาที`:`${Math.max(m,1)} นาที`}
   function genCode(){ // สุ่มแบบไม่เอนเอียง (rejection sampling)
     let out="";
     while(out.length<CODE_LEN){const r=crypto.getRandomValues(new Uint8Array(32));for(const b of r){if(b<248&&out.length<CODE_LEN)out+=ALPHA[b%31]}}
@@ -636,10 +652,10 @@ loadAll();
   async function readFile(){
     const c=repo();if(!c.owner||!c.repo)throw new Error("ตั้งค่า Owner / Repository ก่อน");
     const j=await ghApi("GET",CODES_PATH,null,c);
-    if(!j)return{sha:undefined,data:{v:2,codes:[]}};
+    if(!j)return{sha:undefined,data:{v:3,codes:[]}};
     const txt=new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,"")),x=>x.charCodeAt(0)));
     const data=JSON.parse(txt||"{}");if(!Array.isArray(data.codes))data.codes=[];
-    data.v=2;
+    data.v=3;
     return{sha:j.sha,data};
   }
   /* อ่าน → แก้ → บันทึก (ถ้าชนกันกับการแก้พร้อมกัน ลองใหม่ 1 ครั้ง) */
@@ -661,9 +677,10 @@ loadAll();
   function addRow(){
     const n=++rowSeq,d=document.createElement("div");
     d.className="card";d.dataset.row=n;d.style.cssText="margin-top:10px;padding:14px";
-    d.innerHTML=`<div class="cfg" style="margin-top:0">
+    d.innerHTML=`<div class="cfg cfg4" style="margin-top:0">
       <div><label>👤 ชื่อเจ้าของ</label><input class="in r-owner" maxlength="60" autocomplete="off" placeholder="เช่น คุณสมชาย / ออเดอร์ #123"></div>
       <div><label>🆔 ID ของบอร์ด</label><input class="in r-id" maxlength="40" autocomplete="off" spellcheck="false" placeholder="เช่น A1B2C3D4E5F6" style="font-family:ui-monospace,Menlo,Consolas,monospace"></div>
+      <div><label>⏳ จำนวนวัน</label><select class="in r-days">${DAYS_OPTS.map(n=>`<option value="${n}">${n} วัน</option>`).join("")}</select></div>
       <div style="align-self:end;display:flex;gap:8px"><button type="button" class="r-gen" style="flex:1">สร้างรหัส</button><button type="button" class="ghost r-rm" title="ลบช่องนี้">✕</button></div>
     </div>
     <div class="url r-out" style="display:none"><code class="r-code" style="font-size:15px;font-weight:700;letter-spacing:.5px"></code><button type="button" class="r-copy">คัดลอกรหัส</button></div>`;
@@ -681,24 +698,26 @@ loadAll();
       if(!owner){toast("ใส่ชื่อเจ้าของก่อน");r.querySelector(".r-owner").focus();return}
       if(id.length<4||id.length>40){toast("ID ต้องมี 4–40 ตัวอักษร (A-Z, 0-9)");r.querySelector(".r-id").focus();return}
       if(seen.has(id)){toast("ID ซ้ำกันในหน้านี้: "+id);return}
-      seen.add(id);items.push({r,owner,id});
+      const days=+r.querySelector(".r-days").value;
+      if(!DAYS_OPTS.includes(days)){toast("เลือกจำนวนวัน 1 หรือ 30 วัน");return}
+      seen.add(id);items.push({r,owner,id,days});
     }
     if(!items.length)return;
     document.querySelectorAll(".r-gen,#g-genall").forEach(b=>b.disabled=true);
     toast("กำลังสร้างรหัส…");
     try{
       const now=Date.now();
-      for(const it of items){it.code=genCode();it.h=await hashCode(it.id,it.code)}
+      for(const it of items){it.exp=now+it.days*DAY;it.code=genCode();it.h=await hashCode(it.id,it.code,it.exp)}
       await mutate(d=>{
         items.forEach(it=>{
-          const e={id:it.id,owner:it.owner,h:it.h,ts:now},i=d.codes.findIndex(c=>c.id===it.id);
+          const e={id:it.id,owner:it.owner,days:it.days,exp:it.exp,h:it.h,ts:now},i=d.codes.findIndex(c=>c.id===it.id);
           if(i>=0)d.codes[i]=e;else d.codes.push(e);
         });
       },`issue ${items.length} package code(s)`);
       const pl=plain();items.forEach(it=>{pl[it.h]=it.code});savePlain(pl);
       items.forEach(it=>{
         it.r.querySelector(".r-out").style.display="flex";
-        const c=it.r.querySelector(".r-code");c.textContent=pretty(it.code);c.dataset.raw=it.code;
+        const c=it.r.querySelector(".r-code");c.textContent=pretty(it.code)+"  ("+it.days+" วัน · หมดอายุ "+dateStr(it.exp)+")";c.dataset.raw=it.code;
         it.r.querySelector(".r-gen").textContent="สร้างใหม่";
       });
       try{await saveManifest(false)}catch{}
@@ -729,16 +748,17 @@ loadAll();
     return{
       product:"DashTron",
       type:"package-verify",
-      v:2,
+      v:3,
       verify:{
         url:c.owner&&c.repo?rawUrlFor(CODES_PATH,c):"",
         path:CODES_PATH,
         algo:"sha256",
         salt:SALT,
-        input:"salt|ID|CODE",
+        input:"salt|ID|CODE|EXP_SECONDS",
         output:"hex-lowercase",
         normalize:"uppercase, keep A-Z and 0-9 only (ID and CODE)",
-        code_length:CODE_LEN
+        code_length:CODE_LEN,
+        expiry:{field:"exp",unit:"unix-ms",rule:"unlock only if now < exp (use NTP time); EXP_SECONDS = floor(exp/1000) as decimal string",allowed_days:DAYS_OPTS}
       }
     };
   }
@@ -778,7 +798,8 @@ loadAll();
         <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:3px">
           <b style="font-size:14px;color:var(--ink)">${esc(c.owner||"(ไม่ระบุชื่อ)")}</b>
           <code style="font-size:12px;white-space:normal;word-break:break-all">${c.id?esc(c.id):"(รูปแบบเก่า ไม่มี ID)"}</code>
-          <span style="font-size:11px;color:var(--mute)">สร้าง ${dateStr(c.ts)}</span>
+          <span style="font-size:11px;color:var(--mute)">สร้าง ${dateStr(c.ts)}${c.exp?` · หมดอายุ ${dateStr(c.exp)}`:""}</span>
+          ${c.exp?(c.exp>Date.now()?`<span class="badge ok">${c.days||"-"} วัน · เหลือ ${fmtLeft(c.exp-Date.now())}</span>`:`<span class="badge exp">${c.days||"-"} วัน · หมดอายุแล้ว</span>`):`<span class="badge exp">รูปแบบเก่า (ไม่มีวันหมดอายุ)</span>`}
         </div>
         <code style="flex:none;font-size:13px;font-weight:700">${code?esc(pretty(code)):"(ไม่มีรหัสในเครื่องนี้)"}</code>
         ${code?`<button type="button" class="ghost cp x" data-copy="${esc(code)}">คัดลอกรหัส</button>`:""}
@@ -806,8 +827,11 @@ loadAll();
     if(!id||!code){out.textContent="กรอก ID และรหัสก่อน";return}
     out.textContent="กำลังตรวจ…";
     try{
-      const {data}=await readFile(),h=await hashCode(id,code),e=data.codes.find(c=>c.id===id);
-      out.textContent=!e?"❌ ไม่พบ ID นี้ในระบบ":e.h===h?`✅ ตรงกัน — ปลดล็อคได้ (เจ้าของ: ${e.owner||"-"})`:"❌ รหัสไม่ตรงกับ ID นี้";
+      const {data}=await readFile(),e=data.codes.find(c=>c.id===id);
+      if(!e){out.textContent="❌ ไม่พบ ID นี้ในระบบ";return}
+      if(!e.exp){out.textContent="❌ รายการนี้เป็นรูปแบบเก่า (ไม่มีวันหมดอายุ) — ให้ออกรหัสใหม่";return}
+      const h=await hashCode(id,code,e.exp);
+      out.textContent=e.h!==h?"❌ รหัสไม่ตรงกับ ID นี้":Date.now()>=e.exp?`⌛ รหัสถูกต้องแต่หมดอายุแล้ว (${dateStr(e.exp)}) — ปลดล็อคไม่ได้`:`✅ ตรงกัน — ปลดล็อคได้ ${e.days||"-"} วัน เหลือ ${fmtLeft(e.exp-Date.now())} (เจ้าของ: ${e.owner||"-"})`;
     }catch(x){out.textContent="❌ "+x.message}
   };
 

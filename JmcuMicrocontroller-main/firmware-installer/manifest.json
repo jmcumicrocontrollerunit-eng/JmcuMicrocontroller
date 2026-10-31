@@ -6,32 +6,32 @@
     {
       "chip": "ST7789",
       "label": "ST7789",
-      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ST7789/DashTron_Installer.ino.bin",
-      "size": 1171072,
-      "sha256": "757db32da255aa17b737fcecd01bcc4cae682139d3e98c14cceabb3dd94cd319",
-      "name": "DashTron_Installer.ino.bin",
-      "path": "firmware-installer/ST7789/DashTron_Installer.ino.bin",
-      "ts": 1792912601912,
+      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ST7789/DashTron_Installer_STD.ino.bin",
+      "size": 1170160,
+      "sha256": "25f6a393aba647fdf8cb8356c1acb2b9d308521690b95457d27c72132bf866d3",
+      "name": "DashTron_Installer_STD.ino.bin",
+      "path": "firmware-installer/ST7789/DashTron_Installer_STD.ino.bin",
+      "ts": 1793277775473,
       "files": [
         {
           "kind": "bl",
-          "name": "DashTron_Installer.ino.bootloader.bin",
+          "name": "DashTron_Installer_STD.ino.bootloader.bin",
           "address": "0x1000",
-          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ST7789/DashTron_Installer.ino.bootloader.bin",
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ST7789/DashTron_Installer_STD.ino.bootloader.bin",
           "size": 24992,
           "sha256": "47bbbfca119fe87190f63a67af9d85adff6433bcf3812ec92a9b9c9416a53ad1",
-          "path": "firmware-installer/ST7789/DashTron_Installer.ino.bootloader.bin",
-          "ts": 1792912627402
+          "path": "firmware-installer/ST7789/DashTron_Installer_STD.ino.bootloader.bin",
+          "ts": 1793277795526
         },
         {
           "kind": "part",
-          "name": "DashTron_Installer.ino.partitions.bin",
+          "name": "DashTron_Installer_STD.ino.partitions.bin",
           "address": "0x8000",
-          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ST7789/DashTron_Installer.ino.partitions.bin",
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ST7789/DashTron_Installer_STD.ino.partitions.bin",
           "size": 3072,
           "sha256": "14a4803864309c94d6a172fb93cb3e33836cb08d1c51a42f98864f9beccbf7a9",
-          "path": "firmware-installer/ST7789/DashTron_Installer.ino.partitions.bin",
-          "ts": 1792912610474
+          "path": "firmware-installer/ST7789/DashTron_Installer_STD.ino.partitions.bin",
+          "ts": 1793277782341
         },
         {
           "kind": "boot0",
@@ -41,49 +41,49 @@
           "size": 8192,
           "sha256": "f94c5d786a7a8fab06ac5d10e33bf37711a6697636dc037559ea19cc410a17f0",
           "path": "firmware-installer/ST7789/boot_app0.bin",
-          "ts": 1792912617281
+          "ts": 1793277788717
         },
         {
           "kind": "main",
-          "name": "DashTron_Installer.ino.bin",
+          "name": "DashTron_Installer_STD.ino.bin",
           "address": "0x10000",
-          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ST7789/DashTron_Installer.ino.bin",
-          "size": 1171072,
-          "sha256": "757db32da255aa17b737fcecd01bcc4cae682139d3e98c14cceabb3dd94cd319",
-          "path": "firmware-installer/ST7789/DashTron_Installer.ino.bin",
-          "ts": 1792912601912
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ST7789/DashTron_Installer_STD.ino.bin",
+          "size": 1170160,
+          "sha256": "25f6a393aba647fdf8cb8356c1acb2b9d308521690b95457d27c72132bf866d3",
+          "path": "firmware-installer/ST7789/DashTron_Installer_STD.ino.bin",
+          "ts": 1793277775473
         }
       ]
     },
     {
       "chip": "ILI9341",
       "label": "ILI9341",
-      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ILI9341/DashTron_Installer.ino.bin",
-      "size": 1171152,
-      "sha256": "c796d317207ad924c55c90a55ae39009fbffbd279d4416c46c3cc54db908ba0a",
-      "name": "DashTron_Installer.ino.bin",
-      "path": "firmware-installer/ILI9341/DashTron_Installer.ino.bin",
-      "ts": 1792912527813,
+      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ILI9341/DashTron_Installer_STD.ino.bin",
+      "size": 1170208,
+      "sha256": "50e05f7ff76cda7c21c42b9ba5e1f3ff9ff79f3da23eb22b048ad02ff29dc115",
+      "name": "DashTron_Installer_STD.ino.bin",
+      "path": "firmware-installer/ILI9341/DashTron_Installer_STD.ino.bin",
+      "ts": 1793277718132,
       "files": [
         {
           "kind": "bl",
-          "name": "DashTron_Installer.ino.bootloader.bin",
+          "name": "DashTron_Installer_STD.ino.bootloader.bin",
           "address": "0x1000",
-          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ILI9341/DashTron_Installer.ino.bootloader.bin",
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ILI9341/DashTron_Installer_STD.ino.bootloader.bin",
           "size": 24992,
           "sha256": "47bbbfca119fe87190f63a67af9d85adff6433bcf3812ec92a9b9c9416a53ad1",
-          "path": "firmware-installer/ILI9341/DashTron_Installer.ino.bootloader.bin",
-          "ts": 1792912574763
+          "path": "firmware-installer/ILI9341/DashTron_Installer_STD.ino.bootloader.bin",
+          "ts": 1793277739093
         },
         {
           "kind": "part",
-          "name": "DashTron_Installer.ino.partitions.bin",
+          "name": "DashTron_Installer_STD.ino.partitions.bin",
           "address": "0x8000",
-          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ILI9341/DashTron_Installer.ino.partitions.bin",
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ILI9341/DashTron_Installer_STD.ino.partitions.bin",
           "size": 3072,
           "sha256": "14a4803864309c94d6a172fb93cb3e33836cb08d1c51a42f98864f9beccbf7a9",
-          "path": "firmware-installer/ILI9341/DashTron_Installer.ino.partitions.bin",
-          "ts": 1792912556043
+          "path": "firmware-installer/ILI9341/DashTron_Installer_STD.ino.partitions.bin",
+          "ts": 1793277725331
         },
         {
           "kind": "boot0",
@@ -93,17 +93,17 @@
           "size": 8192,
           "sha256": "f94c5d786a7a8fab06ac5d10e33bf37711a6697636dc037559ea19cc410a17f0",
           "path": "firmware-installer/ILI9341/boot_app0.bin",
-          "ts": 1792912564237
+          "ts": 1793277731586
         },
         {
           "kind": "main",
-          "name": "DashTron_Installer.ino.bin",
+          "name": "DashTron_Installer_STD.ino.bin",
           "address": "0x10000",
-          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ILI9341/DashTron_Installer.ino.bin",
-          "size": 1171152,
-          "sha256": "c796d317207ad924c55c90a55ae39009fbffbd279d4416c46c3cc54db908ba0a",
-          "path": "firmware-installer/ILI9341/DashTron_Installer.ino.bin",
-          "ts": 1792912527813
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-installer/ILI9341/DashTron_Installer_STD.ino.bin",
+          "size": 1170208,
+          "sha256": "50e05f7ff76cda7c21c42b9ba5e1f3ff9ff79f3da23eb22b048ad02ff29dc115",
+          "path": "firmware-installer/ILI9341/DashTron_Installer_STD.ino.bin",
+          "ts": 1793277718132
         }
       ]
     }
