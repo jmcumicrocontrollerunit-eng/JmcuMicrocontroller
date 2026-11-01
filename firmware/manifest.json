@@ -29,7 +29,16 @@
       "sha256": "4eb6d45f92dd84a96e2a843411c6792d2f0ff2f96db39af94c99824d2f3b1c3e",
       "name": "DashTron.ino.bin",
       "path": "firmware/ILI9341/DashTron.ino.bin",
-      "ts": 1793531221001
+      "ts": 1793531221001,
+      "ota": {
+        "name": "DashTron_Updater.ino.bin",
+        "address": "0x2B0000",
+        "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware/ILI9341/ota/DashTron_Updater.ino.bin",
+        "size": 1094240,
+        "sha256": "42fa0cb2eeae2a8019cbaae7b7bc8dd61808f7f584636af4693d7b9bd6bf5c7c",
+        "path": "firmware/ILI9341/ota/DashTron_Updater.ino.bin",
+        "ts": 1793531262823
+      }
     }
   ]
 }
