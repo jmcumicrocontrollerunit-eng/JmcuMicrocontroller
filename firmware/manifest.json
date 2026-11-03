@@ -5,6 +5,12 @@
     {
       "chip": "ST7789",
       "label": "ST7789 v2.2.2",
+      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware/ST7789/DashTron.ino.bin",
+      "size": 1759744,
+      "sha256": "feaf3f6e6bed15c2bc3acc48bbf405a2d294d8df8cdab7e447b16c2fbe952f77",
+      "name": "DashTron.ino.bin",
+      "path": "firmware/ST7789/DashTron.ino.bin",
+      "ts": 1793670440673,
       "ota": {
         "name": "DashTron_Updater.ino.bin",
         "address": "0x2B0000",
