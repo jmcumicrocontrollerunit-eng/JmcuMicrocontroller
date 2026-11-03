@@ -20,6 +20,19 @@
         "path": "firmware/ST7789/ota/DashTron_Updater.ino.bin",
         "ts": 1793667521725
       }
+    },
+    {
+      "chip": "ILI9341",
+      "label": "ILI9341 v2.2.2",
+      "ota": {
+        "name": "DashTron_Updater.ino.bin",
+        "address": "0x2B0000",
+        "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware/ILI9341/ota/DashTron_Updater.ino.bin",
+        "size": 1094240,
+        "sha256": "1dae5c77f7f2ddce8953a355efd094659db5787a943b8f01ed2ceac46427ea9b",
+        "path": "firmware/ILI9341/ota/DashTron_Updater.ino.bin",
+        "ts": 1793667901388
+      }
     }
   ]
 }
