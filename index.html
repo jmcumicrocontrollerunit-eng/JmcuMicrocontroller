@@ -30,8 +30,8 @@ main{max-width:980px;margin:-60px auto 40px;padding:0 16px}
 .lb{font-size:12px;color:var(--mute);display:block;margin-bottom:4px}
 
 /* แท็บ */
-.tabs{display:flex;gap:8px;margin-top:18px}
-.tabs button.tab{flex:1;background:var(--card);color:var(--mute);border:1px solid var(--line);padding:12px 14px;font-size:14px;border-radius:14px;box-shadow:var(--shadow)}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.tabs button.tab{flex:1 1 auto;background:var(--card);color:var(--mute);border:1px solid var(--line);padding:12px 14px;font-size:14px;border-radius:14px;box-shadow:var(--shadow)}
 .tabs button.tab.on{background:var(--a);color:#fff;border-color:var(--a)}
 .tabs button.tab[data-tab="test"].on{background:var(--warn);border-color:var(--warn)}
 .panel[hidden]{display:none}
@@ -103,7 +103,7 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
 <body>
 <div class="hero"><div class="wrap">
   <h1>📟 DashTron</h1>
-  <p>เวอร์ชันเดียว 2 ชิปขับจอ แต่ละชิปมีไฟล์หลักและไฟล์ Update (OTA) ผูกคู่กัน ตั้งเลขเวอร์ชันครั้งเดียว แล้วให้ ESP32 CYD เลือกติดตั้งตามชิปที่จอใช้ มีทั้งชุดโปรแกรมหลัก ชุดทดลองใช้งาน และ Installer (แยก Manifest จากกัน)</p>
+  <p>เวอร์ชันเดียว 2 ชิปขับจอ แต่ละชิปมีไฟล์หลักและไฟล์ Update (OTA) ผูกคู่กัน ตั้งเลขเวอร์ชันครั้งเดียว แล้วให้ ESP32 CYD เลือกติดตั้งตามชิปที่จอใช้ มีทั้ง SmartGauge, ระบบตรวจสอบเลขไมล์, ระบบเตือนกินยา, BitkubBot, เกจมอเตอร์ไซค์ และ Installer (แยก Manifest จากกัน)</p>
   <span class="chip"><span class="dot off" id="dot"></span><span id="status">กำลังเชื่อมต่อ...</span></span>
 </div></div>
 
@@ -125,8 +125,11 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
   </details>
 
   <div class="tabs">
-    <button type="button" class="tab on" data-tab="main">📦 โปรแกรมหลัก</button>
-    <button type="button" class="tab" data-tab="test">🧪 ทดลองใช้งาน</button>
+    <button type="button" class="tab on" data-tab="main">📦 smartgauge</button>
+    <button type="button" class="tab" data-tab="test">🧪 ระบบตรวจสอบเลขไมล์</button>
+    <button type="button" class="tab" data-tab="medreminder">💊 ระบบเตือนกินยา</button>
+    <button type="button" class="tab" data-tab="bitkubbot">🪙 BitkubBot</button>
+    <button type="button" class="tab" data-tab="motogauge">🏍️ เกจมอเตอร์ไซค์</button>
     <button type="button" class="tab" data-tab="installer">💾 Installer</button>
     <button type="button" class="tab" data-tab="codes">🔑 รหัสยืนยันแพ็คเกจ</button>
   </div>
@@ -135,6 +138,9 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
 
   <section class="panel" id="p-main"></section>
   <section class="panel" id="p-test" hidden></section>
+  <section class="panel" id="p-medreminder" hidden></section>
+  <section class="panel" id="p-bitkubbot" hidden></section>
+  <section class="panel" id="p-motogauge" hidden></section>
   <section class="panel" id="p-installer" hidden></section>
   <section class="panel" id="p-codes" hidden>
     <div class="banner">🔑 <b>รหัสยืนยันแพ็คเกจ</b> — ใส่ ID ของบอร์ด CYD + ชื่อเจ้าของ แล้วกดสร้างรหัส นำรหัสไปใส่ในบอร์ด จากนั้นบอร์ดจะดึงไฟล์ <code>codes/codes.json</code> จากลิงก์เว็บนี้มาตรวจว่า <b>ID + รหัส</b> ตรงกันหรือไม่ ถ้าตรงและ<b>ยังไม่หมดอายุ</b>จะปลดล็อคการใช้งานทันที · เลือกอายุรหัสได้ <b>1 วัน</b> หรือ <b>30 วัน</b> (นับจากเวลาที่สร้างรหัส) · เมื่อครบกำหนดรหัสจะปลดล็อคไม่ได้อีก · รหัสผูกกับ ID เดียว (ใช้กับบอร์ดอื่นไม่ได้) · ไฟล์เก็บเฉพาะค่าแฮช ไม่เก็บรหัสจริง · ถ้าต้องการเพิกถอน กด "ลบ" ที่รายการด้านล่าง</div>
@@ -228,9 +234,12 @@ const BOOT_APP0_B64="AQAAAP///////////////////////////////5qYQ0f////////////////
 const OTA_DEF="0x2B0000";
 /* แต่ละ channel มีโฟลเดอร์ไฟล์และ manifest เป็นของตัวเอง ไม่ปนกัน */
 const CHANNELS=[
-  {id:"main",ota:true,kinds:["main","ota"],dir:"firmware",     man:"firmware/manifest.json",     channel:null,   verLabel:"🏷️ เวอร์ชันของชุดนี้ (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest สำหรับ MCU",manLinkTitle:"ลิงก์ manifest (ให้ ESP32 CYD ดึงลิงก์นี้ลิงก์เดียว)"},
-  {id:"test",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-test",man:"firmware-test/manifest.json",channel:"test",verLabel:"🏷️ เวอร์ชันชุดทดลองใช้งาน (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest ชุดทดลองใช้งาน",manLinkTitle:"ลิงก์ manifest ชุดทดลองใช้งาน (แยกจากโปรแกรมหลัก)",tag:"ทดลอง",pkgTitle:"🗜️ ชุดโปรเจ็คทดลอง (.zip)",pkgFile:"dashtron_test.zip",banner:"🧪 ชุดนี้เป็นไฟล์ทดลองใช้งาน เก็บแยกในโฟลเดอร์"},
-  {id:"installer",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-installer",man:"firmware-installer/manifest.json",channel:"installer",verLabel:"🏷️ เวอร์ชัน Installer (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest Installer",manLinkTitle:"ลิงก์ manifest Installer (แยกจากโปรแกรมหลักและชุดทดลองใช้งาน)",tag:"Installer",pkgTitle:"🗜️ ชุด Installer (.zip)",pkgFile:"dashtron_installer.zip",banner:"💾 ชุดนี้เป็นไฟล์ Installer เก็บแยกในโฟลเดอร์"}
+  {id:"main",ota:true,kinds:["main","ota"],dir:"firmware",     man:"firmware/manifest.json",     channel:null,   verLabel:"🏷️ เวอร์ชัน SmartGauge (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest SmartGauge สำหรับ MCU",manLinkTitle:"ลิงก์ manifest SmartGauge (ให้ ESP32 CYD ดึงลิงก์นี้ลิงก์เดียว)"},
+  {id:"test",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-test",man:"firmware-test/manifest.json",channel:"test",verLabel:"🏷️ เวอร์ชันระบบตรวจสอบเลขไมล์ (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest ระบบตรวจสอบเลขไมล์",manLinkTitle:"ลิงก์ manifest ระบบตรวจสอบเลขไมล์ (แยกจาก SmartGauge)",tag:"เลขไมล์",pkgTitle:"🗜️ ชุดโปรเจ็คระบบตรวจสอบเลขไมล์ (.zip)",pkgFile:"dashtron_test.zip",banner:"🧪 ชุดนี้เป็นไฟล์ระบบตรวจสอบเลขไมล์ เก็บแยกในโฟลเดอร์"},
+  {id:"medreminder",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-medreminder",man:"firmware-medreminder/manifest.json",channel:"medreminder",verLabel:"🏷️ เวอร์ชันระบบเตือนกินยา (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest ระบบเตือนกินยา",manLinkTitle:"ลิงก์ manifest ระบบเตือนกินยา (แยกจากชุดอื่น)",tag:"เตือนกินยา",pkgTitle:"🗜️ ชุดโปรเจ็คระบบเตือนกินยา (.zip)",pkgFile:"dashtron_medreminder.zip",banner:"💊 ชุดนี้เป็นไฟล์ระบบเตือนกินยา เก็บแยกในโฟลเดอร์"},
+  {id:"bitkubbot",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-bitkubbot",man:"firmware-bitkubbot/manifest.json",channel:"bitkubbot",verLabel:"🏷️ เวอร์ชัน BitkubBot (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest BitkubBot",manLinkTitle:"ลิงก์ manifest BitkubBot (แยกจากชุดอื่น)",tag:"BitkubBot",pkgTitle:"🗜️ ชุดโปรเจ็ค BitkubBot (.zip)",pkgFile:"dashtron_bitkubbot.zip",banner:"🪙 ชุดนี้เป็นไฟล์ BitkubBot เก็บแยกในโฟลเดอร์"},
+  {id:"motogauge",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-motogauge",man:"firmware-motogauge/manifest.json",channel:"motogauge",verLabel:"🏷️ เวอร์ชันเกจมอเตอร์ไซค์ (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest เกจมอเตอร์ไซค์",manLinkTitle:"ลิงก์ manifest เกจมอเตอร์ไซค์ (แยกจากชุดอื่น)",tag:"เกจมอเตอร์ไซค์",pkgTitle:"🗜️ ชุดโปรเจ็คเกจมอเตอร์ไซค์ (.zip)",pkgFile:"dashtron_motogauge.zip",banner:"🏍️ ชุดนี้เป็นไฟล์เกจมอเตอร์ไซค์ เก็บแยกในโฟลเดอร์"},
+  {id:"installer",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-installer",man:"firmware-installer/manifest.json",channel:"installer",verLabel:"🏷️ เวอร์ชัน Installer (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest Installer",manLinkTitle:"ลิงก์ manifest Installer (แยกจาก SmartGauge, ระบบตรวจสอบเลขไมล์, ระบบเตือนกินยา, BitkubBot และเกจมอเตอร์ไซค์)",tag:"Installer",pkgTitle:"🗜️ ชุด Installer (.zip)",pkgFile:"dashtron_installer.zip",banner:"💾 ชุดนี้เป็นไฟล์ Installer เก็บแยกในโฟลเดอร์"}
 ];
 const cleanAddr=v=>{const m=String(v||"").trim().match(/^(?:0x)?([0-9a-f]+)$/i);return m?"0x"+m[1].toUpperCase():""};
 const $=s=>document.querySelector(s);
