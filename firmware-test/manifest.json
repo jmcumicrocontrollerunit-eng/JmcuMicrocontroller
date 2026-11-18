@@ -54,6 +54,28 @@
           "ts": 1794975173890
         }
       ]
+    },
+    {
+      "chip": "ILI9341",
+      "label": "ILI9341",
+      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-test/ILI9341/CYD_SET_Thai.ino.bin",
+      "size": 1482096,
+      "sha256": "b9ebdd5574b47839da58dfc255327e1a0e48797f858cd07771047c14219f91a5",
+      "name": "CYD_SET_Thai.ino.bin",
+      "path": "firmware-test/ILI9341/CYD_SET_Thai.ino.bin",
+      "ts": 1794975217358,
+      "files": [
+        {
+          "kind": "main",
+          "name": "CYD_SET_Thai.ino.bin",
+          "address": "0x10000",
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-test/ILI9341/CYD_SET_Thai.ino.bin",
+          "size": 1482096,
+          "sha256": "b9ebdd5574b47839da58dfc255327e1a0e48797f858cd07771047c14219f91a5",
+          "path": "firmware-test/ILI9341/CYD_SET_Thai.ino.bin",
+          "ts": 1794975217358
+        }
+      ]
     }
   ]
 }
