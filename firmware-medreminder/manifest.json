@@ -1,0 +1,29 @@
+{
+  "product": "DashTron",
+  "channel": "medreminder",
+  "version": null,
+  "variants": [
+    {
+      "chip": "ST7789",
+      "label": "ST7789",
+      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-medreminder/ST7789/MedReminder.ino.bin",
+      "size": 1716352,
+      "sha256": "96e56a30f272e3551b71f4747843c4a1888fda2b7a8dddf9d75568844d815601",
+      "name": "MedReminder.ino.bin",
+      "path": "firmware-medreminder/ST7789/MedReminder.ino.bin",
+      "ts": 1794975963401,
+      "files": [
+        {
+          "kind": "main",
+          "name": "MedReminder.ino.bin",
+          "address": "0x10000",
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-medreminder/ST7789/MedReminder.ino.bin",
+          "size": 1716352,
+          "sha256": "96e56a30f272e3551b71f4747843c4a1888fda2b7a8dddf9d75568844d815601",
+          "path": "firmware-medreminder/ST7789/MedReminder.ino.bin",
+          "ts": 1794975963401
+        }
+      ]
+    }
+  ]
+}
