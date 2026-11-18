@@ -54,6 +54,28 @@
           "ts": 1794975963401
         }
       ]
+    },
+    {
+      "chip": "ILI9341",
+      "label": "ILI9341",
+      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-medreminder/ILI9341/MedReminder.ino.bin",
+      "size": 1716400,
+      "sha256": "03ba77964385d7745e68ae5d533427c093bd60373d500ea9cd604c42a617515f",
+      "name": "MedReminder.ino.bin",
+      "path": "firmware-medreminder/ILI9341/MedReminder.ino.bin",
+      "ts": 1794976168239,
+      "files": [
+        {
+          "kind": "main",
+          "name": "MedReminder.ino.bin",
+          "address": "0x10000",
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-medreminder/ILI9341/MedReminder.ino.bin",
+          "size": 1716400,
+          "sha256": "03ba77964385d7745e68ae5d533427c093bd60373d500ea9cd604c42a617515f",
+          "path": "firmware-medreminder/ILI9341/MedReminder.ino.bin",
+          "ts": 1794976168239
+        }
+      ]
     }
   ]
 }
