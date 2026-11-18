@@ -66,6 +66,16 @@
       "ts": 1794976738884,
       "files": [
         {
+          "kind": "bl",
+          "name": "CYD_Bitkub_Bot.ino.bootloader.bin",
+          "address": "0x1000",
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-bitkubbot/ILI9341/CYD_Bitkub_Bot.ino.bootloader.bin",
+          "size": 24992,
+          "sha256": "47bbbfca119fe87190f63a67af9d85adff6433bcf3812ec92a9b9c9416a53ad1",
+          "path": "firmware-bitkubbot/ILI9341/CYD_Bitkub_Bot.ino.bootloader.bin",
+          "ts": 1794976759972
+        },
+        {
           "kind": "part",
           "name": "CYD_Bitkub_Bot.ino.partitions.bin",
           "address": "0x8000",
