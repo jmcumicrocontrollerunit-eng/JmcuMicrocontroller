@@ -14,6 +14,16 @@
       "ts": 1794976669305,
       "files": [
         {
+          "kind": "part",
+          "name": "CYD_Bitkub_Bot.ino.partitions.bin",
+          "address": "0x8000",
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-bitkubbot/ST7789/CYD_Bitkub_Bot.ino.partitions.bin",
+          "size": 3072,
+          "sha256": "aaae2888c5a6a348004b5b436f47abb25ae32e72d9003902955a998eda723edd",
+          "path": "firmware-bitkubbot/ST7789/CYD_Bitkub_Bot.ino.partitions.bin",
+          "ts": 1794976675548
+        },
+        {
           "kind": "main",
           "name": "CYD_Bitkub_Bot.ino.bin",
           "address": "0x10000",
