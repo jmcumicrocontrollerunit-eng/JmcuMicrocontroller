@@ -1,0 +1,29 @@
+{
+  "product": "DashTron",
+  "channel": "motogauge",
+  "version": null,
+  "variants": [
+    {
+      "chip": "ST7789",
+      "label": "ST7789",
+      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-motogauge/ST7789/Giorno.ino.bin",
+      "size": 1214640,
+      "sha256": "9677a024b1e68143874d61be0ebbc314489559b44dbd25ec420966446591a47f",
+      "name": "Giorno.ino.bin",
+      "path": "firmware-motogauge/ST7789/Giorno.ino.bin",
+      "ts": 1794977000636,
+      "files": [
+        {
+          "kind": "main",
+          "name": "Giorno.ino.bin",
+          "address": "0x10000",
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-motogauge/ST7789/Giorno.ino.bin",
+          "size": 1214640,
+          "sha256": "9677a024b1e68143874d61be0ebbc314489559b44dbd25ec420966446591a47f",
+          "path": "firmware-motogauge/ST7789/Giorno.ino.bin",
+          "ts": 1794977000636
+        }
+      ]
+    }
+  ]
+}
