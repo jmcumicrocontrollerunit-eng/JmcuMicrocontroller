@@ -83,7 +83,7 @@
           "size": 3072,
           "sha256": "aaae2888c5a6a348004b5b436f47abb25ae32e72d9003902955a998eda723edd",
           "path": "firmware-test/ILI9341/CYD_SET_Thai.ino.partitions.bin",
-          "ts": 1794975224270
+          "ts": 1795166277466
         },
         {
           "kind": "boot0",
