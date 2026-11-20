@@ -41,7 +41,7 @@
           "size": 8192,
           "sha256": "f94c5d786a7a8fab06ac5d10e33bf37711a6697636dc037559ea19cc410a17f0",
           "path": "firmware-test/ST7789/boot_app0.bin",
-          "ts": 1794975197263
+          "ts": 1795166320565
         },
         {
           "kind": "main",
