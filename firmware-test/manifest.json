@@ -7,11 +7,11 @@
       "chip": "ST7789",
       "label": "ST7789",
       "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-test/ST7789/CYD_SET_Thai.ino.bin",
-      "size": 1482064,
-      "sha256": "b5d7ceca18a3b75068d46ac3c4e1d1a45a9330dca1eea2a99986a4fff8f31e44",
+      "size": 1496256,
+      "sha256": "30cf0c59e626edf45669caeef12df89f0aa9e95d1f96eb2f74ef9a7c19ff889e",
       "name": "CYD_SET_Thai.ino.bin",
       "path": "firmware-test/ST7789/CYD_SET_Thai.ino.bin",
-      "ts": 1794975173890,
+      "ts": 1795166306026,
       "files": [
         {
           "kind": "bl",
@@ -48,10 +48,10 @@
           "name": "CYD_SET_Thai.ino.bin",
           "address": "0x10000",
           "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-test/ST7789/CYD_SET_Thai.ino.bin",
-          "size": 1482064,
-          "sha256": "b5d7ceca18a3b75068d46ac3c4e1d1a45a9330dca1eea2a99986a4fff8f31e44",
+          "size": 1496256,
+          "sha256": "30cf0c59e626edf45669caeef12df89f0aa9e95d1f96eb2f74ef9a7c19ff889e",
           "path": "firmware-test/ST7789/CYD_SET_Thai.ino.bin",
-          "ts": 1794975173890
+          "ts": 1795166306026
         }
       ]
     },
