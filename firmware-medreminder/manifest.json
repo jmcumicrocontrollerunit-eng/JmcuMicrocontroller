@@ -21,7 +21,7 @@
           "size": 24992,
           "sha256": "47bbbfca119fe87190f63a67af9d85adff6433bcf3812ec92a9b9c9416a53ad1",
           "path": "firmware-medreminder/ST7789/MedReminder.ino.bootloader.bin",
-          "ts": 1794975985424
+          "ts": 1795612437975
         },
         {
           "kind": "part",
