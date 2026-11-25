@@ -93,7 +93,7 @@
           "size": 8192,
           "sha256": "f94c5d786a7a8fab06ac5d10e33bf37711a6697636dc037559ea19cc410a17f0",
           "path": "firmware-medreminder/ILI9341/boot_app0.bin",
-          "ts": 1794976181097
+          "ts": 1795612463985
         },
         {
           "kind": "main",
