@@ -6,12 +6,6 @@
     {
       "chip": "ILI9341",
       "label": "ILI9341",
-      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-bitkubbot/ILI9341/CYD_Bitkub_Bot.ino.bin",
-      "size": 1551184,
-      "sha256": "03b4a55fc5516bfe87d4538145b2e0e5bc8062795ca4ff2d731c73c9fc4b4ed5",
-      "name": "CYD_Bitkub_Bot.ino.bin",
-      "path": "firmware-bitkubbot/ILI9341/CYD_Bitkub_Bot.ino.bin",
-      "ts": 1794976738884,
       "files": [
         {
           "kind": "bl",
@@ -42,16 +36,6 @@
           "sha256": "f94c5d786a7a8fab06ac5d10e33bf37711a6697636dc037559ea19cc410a17f0",
           "path": "firmware-bitkubbot/ILI9341/boot_app0.bin",
           "ts": 1794976753014
-        },
-        {
-          "kind": "main",
-          "name": "CYD_Bitkub_Bot.ino.bin",
-          "address": "0x10000",
-          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-bitkubbot/ILI9341/CYD_Bitkub_Bot.ino.bin",
-          "size": 1551184,
-          "sha256": "03b4a55fc5516bfe87d4538145b2e0e5bc8062795ca4ff2d731c73c9fc4b4ed5",
-          "path": "firmware-bitkubbot/ILI9341/CYD_Bitkub_Bot.ino.bin",
-          "ts": 1794976738884
         }
       ]
     }
