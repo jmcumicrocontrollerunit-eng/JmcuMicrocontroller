@@ -6,12 +6,6 @@
     {
       "chip": "ST7789",
       "label": "ST7789",
-      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-bitkubbot/ST7789/CYD_Bitkub_Bot.ino.bin",
-      "size": 1551136,
-      "sha256": "3d37059576e70458eaa3137cb3bd52c714c3eb113351f41657a8e314cd75e736",
-      "name": "CYD_Bitkub_Bot.ino.bin",
-      "path": "firmware-bitkubbot/ST7789/CYD_Bitkub_Bot.ino.bin",
-      "ts": 1794976669305,
       "files": [
         {
           "kind": "bl",
@@ -42,16 +36,6 @@
           "sha256": "f94c5d786a7a8fab06ac5d10e33bf37711a6697636dc037559ea19cc410a17f0",
           "path": "firmware-bitkubbot/ST7789/boot_app0.bin",
           "ts": 1794976682306
-        },
-        {
-          "kind": "main",
-          "name": "CYD_Bitkub_Bot.ino.bin",
-          "address": "0x10000",
-          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-bitkubbot/ST7789/CYD_Bitkub_Bot.ino.bin",
-          "size": 1551136,
-          "sha256": "3d37059576e70458eaa3137cb3bd52c714c3eb113351f41657a8e314cd75e736",
-          "path": "firmware-bitkubbot/ST7789/CYD_Bitkub_Bot.ino.bin",
-          "ts": 1794976669305
         }
       ]
     },
