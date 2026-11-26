@@ -77,13 +77,13 @@
         },
         {
           "kind": "part",
-          "name": "Giorno.ino.partitions.bin",
+          "name": "gulf_tide.ino.partitions.bin",
           "address": "0x8000",
-          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-motogauge/ILI9341/Giorno.ino.partitions.bin",
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-motogauge/ILI9341/gulf_tide.ino.partitions.bin",
           "size": 3072,
           "sha256": "aaae2888c5a6a348004b5b436f47abb25ae32e72d9003902955a998eda723edd",
-          "path": "firmware-motogauge/ILI9341/Giorno.ino.partitions.bin",
-          "ts": 1794977060466
+          "path": "firmware-motogauge/ILI9341/gulf_tide.ino.partitions.bin",
+          "ts": 1795732439367
         },
         {
           "kind": "boot0",
