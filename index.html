@@ -86,7 +86,7 @@ pre{margin:0;background:#0d1224;color:#cfe3ff;padding:16px;border-radius:14px;ov
 @media(max-width:720px){.cfg{grid-template-columns:1fr}}
 .cfg label{font-size:12px;color:var(--mute);display:block;margin-bottom:4px}
 .cfg .full{grid-column:1/-1}
-.cfg4{grid-template-columns:1fr 1fr 150px auto}
+.cfg4{grid-template-columns:1fr 150px auto}
 @media(max-width:720px){.cfg4{grid-template-columns:1fr}}
 .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid currentColor}
 .badge.ok{color:#16a34a}.badge.exp{color:#dc2626}
@@ -103,7 +103,7 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
 <body>
 <div class="hero"><div class="wrap">
   <h1>📟 DashTron</h1>
-  <p>เวอร์ชันเดียว 2 ชิปขับจอ แต่ละชิปมีไฟล์หลักและไฟล์ Update (OTA) ผูกคู่กัน ตั้งเลขเวอร์ชันครั้งเดียว แล้วให้ ESP32 CYD เลือกติดตั้งตามชิปที่จอใช้ มีทั้ง SmartGauge, ระบบตรวจสอบเลขไมล์, ระบบเตือนกินยา, BitkubBot, ตารางน้ำขึ้น-ลง , Service (ผูกกับรหัสยืนยันแพ็คเกจ) และ Installer (แยก Manifest จากกัน)</p>
+  <p>เวอร์ชันเดียว 2 ชิปขับจอ แต่ละชิปมีไฟล์หลักและไฟล์ Update (OTA) ผูกคู่กัน ตั้งเลขเวอร์ชันครั้งเดียว แล้วให้ ESP32 CYD เลือกติดตั้งตามชิปที่จอใช้ มีทั้ง SmartGauge, ระบบตรวจสอบเลขไมล์, ระบบเตือนกินยา, BitkubBot, ตารางน้ำขึ้น-ลง , Service (ผูกกับรหัสยืนยัน Service) และ Installer (แยก Manifest จากกัน)</p>
   <span class="chip"><span class="dot off" id="dot"></span><span id="status">กำลังเชื่อมต่อ...</span></span>
 </div></div>
 
@@ -132,7 +132,7 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
     <button type="button" class="tab" data-tab="gulftide">🐳 ตารางน้ำขึ้น-ลง</button>
     <button type="button" class="tab" data-tab="service">🛠️ Service</button>
     <button type="button" class="tab" data-tab="installer">💾 Installer</button>
-    <button type="button" class="tab" data-tab="codes">🔑 รหัสยืนยันแพ็คเกจ</button>
+    <button type="button" class="tab" data-tab="codes">🔑 รหัสยืนยัน Service</button>
   </div>
 
   <datalist id="chipPresets"><option value="ST7789"><option value="ST7735"><option value="ST7796"><option value="ILI9341"><option value="ILI9342"><option value="ILI9486"><option value="ILI9488"><option value="GC9A01"></datalist>
@@ -145,7 +145,7 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
   <section class="panel" id="p-service" hidden></section>
   <section class="panel" id="p-installer" hidden></section>
   <section class="panel" id="p-codes" hidden>
-    <div class="banner">🔑 <b>รหัสยืนยันแพ็คเกจ</b> — ใส่ ID ของบอร์ด CYD + ชื่อเจ้าของ แล้วกดสร้างรหัส นำรหัสไปใส่ในบอร์ด จากนั้นบอร์ดจะดึงไฟล์ <code>codes/codes.json</code> จากลิงก์เว็บนี้มาตรวจว่า <b>ID + รหัส</b> ตรงกันหรือไม่ ถ้าตรงและ<b>ยังไม่หมดอายุ</b>จะปลดล็อคการใช้งานทันที · เลือกอายุรหัสได้ <b>1 วัน</b> หรือ <b>30 วัน</b> (นับจากเวลาที่สร้างรหัส) · เมื่อครบกำหนดรหัสจะปลดล็อคไม่ได้อีก · รหัสผูกกับ ID เดียว (ใช้กับบอร์ดอื่นไม่ได้) · ไฟล์เก็บเฉพาะค่าแฮช ไม่เก็บรหัสจริง · ถ้าต้องการเพิกถอน กด "ลบ" ที่รายการด้านล่าง</div>
+    <div class="banner">🔑 <b>รหัสยืนยัน Service</b> — ใส่ชื่อเจ้าของ + เลือกจำนวนวัน แล้วกดสร้างรหัส (<b>ไม่ต้องใส่ ID บอร์ด</b>) นำรหัสไปใส่ในบอร์ด จากนั้นบอร์ดจะดึงไฟล์ <code>codes/codes.json</code> จากลิงก์เว็บนี้มาตรวจว่ารหัสตรงกับรายการใดรายการหนึ่งหรือไม่ ถ้าตรงและ<b>ยังไม่หมดอายุ</b>จะปลดล็อค Service ทันที · เลือกอายุรหัสได้ <b>1 วัน</b> หรือ <b>30 วัน</b> (นับจากเวลาที่สร้างรหัส) · เมื่อครบกำหนดรหัสจะปลดล็อคไม่ได้อีก · รหัสไม่ผูกกับบอร์ดใด จึงใช้ได้กับทุกบอร์ดจนกว่าจะหมดอายุหรือถูกลบ · ไฟล์เก็บเฉพาะค่าแฮช ไม่เก็บรหัสจริง · ถ้าต้องการเพิกถอน กด "ลบ" ที่รายการด้านล่าง</div>
 
     <div class="card sec">
       <h3>🆕 สร้างรหัสยืนยัน</h3>
@@ -154,23 +154,23 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
         <button type="button" class="ghost cp" id="g-add" title="เพิ่มช่องใหม่">＋ เพิ่มช่อง</button>
         <button type="button" id="g-genall">สร้างรหัสทุกช่อง</button>
       </div>
-      <p class="note">ใช้ GitHub Token ที่ตั้งไว้ด้านบน · เพิ่มช่องได้ไม่จำกัด · ถ้า ID ซ้ำกับที่มีอยู่ ระบบจะออกรหัสใหม่ทับของเดิม (รหัสเก่าใช้ไม่ได้ — ใช้ต่ออายุได้) · รหัสจริงดูย้อนหลังได้เฉพาะในเบราว์เซอร์เครื่องนี้</p>
+      <p class="note">ใช้ GitHub Token ที่ตั้งไว้ด้านบน · เพิ่มช่องได้ไม่จำกัด · กด "สร้างใหม่" ในช่องเดิมจะออกรหัสใหม่และรหัสเก่าของช่องนั้นใช้ไม่ได้ · รหัสจริงดูย้อนหลังได้เฉพาะในเบราว์เซอร์เครื่องนี้</p>
     </div>
 
     <div class="card sec">
-      <h3>🧾 Manifest สำหรับ CYD (ยืนยันแพ็คเกจ)</h3>
+      <h3>🧾 Manifest สำหรับ CYD (ยืนยัน Service)</h3>
       <pre id="cm-pre">// ตั้งค่า Owner / Repository ก่อน</pre>
       <div class="row"><button type="button" id="cm-copy">คัดลอก JSON</button><button type="button" class="ghost cp" id="cm-save">บันทึก manifest ลง repo</button></div>
       <h3 style="margin-top:18px">ลิงก์ manifest (ให้ CYD ดึงลิงก์นี้ก่อน)</h3>
       <div class="url"><code id="cm-url">-</code><button type="button" data-copy-id="cm-url">คัดลอก</button></div>
       <h3 style="margin-top:18px">🔗 โปรเจ็คที่ผูกกับรหัสนี้</h3>
       <div id="cm-linked" class="note" style="margin-top:0">—</div>
-      <p class="note">เส้นทางฝั่งบอร์ด: ① ดึง manifest จากลิงก์นี้ ② อ่าน <code>verify.url</code> เพื่อไปดึง <code>codes.json</code> ③ หา entry ที่ <code>id</code> ตรงกับบอร์ด แล้วคำนวณแฮชตาม <code>verify.salt</code> เทียบกับ <code>h</code> · manifest นี้จะถูกบันทึกลง repo อัตโนมัติเมื่อสร้างรหัส (หรือกดปุ่มบันทึกเอง) และไม่เปลี่ยนตามจำนวนบอร์ด ฝัง URL ของ manifest ลงเฟิร์มแวร์ครั้งเดียวได้เลย</p>
+      <p class="note">เส้นทางฝั่งบอร์ด: ① ดึง manifest จากลิงก์นี้ ② อ่าน <code>verify.url</code> เพื่อไปดึง <code>codes.json</code> ③ วนทุก entry คำนวณแฮชจากรหัสที่ผู้ใช้กรอกกับ <code>exp</code> ของ entry นั้นตาม <code>verify.salt</code> แล้วเทียบกับ <code>h</code> · manifest นี้จะถูกบันทึกลง repo อัตโนมัติเมื่อสร้างรหัส (หรือกดปุ่มบันทึกเอง) และไม่เปลี่ยนตามจำนวนรหัส ฝัง URL ของ manifest ลงเฟิร์มแวร์ครั้งเดียวได้เลย</p>
     </div>
 
     <div class="card sec">
-      <h3>📋 บอร์ดที่ออกรหัสแล้ว <span id="g-cnt" style="color:var(--mute);font-weight:500"></span></h3>
-      <div class="row" style="margin-top:0"><input class="in" id="g-search" placeholder="ค้นหาชื่อเจ้าของ / ID" autocomplete="off" style="flex:1"><button type="button" id="g-refresh">รีเฟรช</button></div>
+      <h3>📋 รหัสที่ออกแล้ว <span id="g-cnt" style="color:var(--mute);font-weight:500"></span></h3>
+      <div class="row" style="margin-top:0"><input class="in" id="g-search" placeholder="ค้นหาชื่อเจ้าของ" autocomplete="off" style="flex:1"><button type="button" id="g-refresh">รีเฟรช</button></div>
       <div id="g-list" class="note">—</div>
     </div>
 
@@ -178,14 +178,13 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
       <details class="more" style="margin-top:0">
         <summary>🧪 ทดสอบตรวจสอบ / วิธีให้ CYD ตรวจ</summary>
         <div class="cfg">
-          <div><label>ID บอร์ด</label><input class="in" id="t-id" autocomplete="off" spellcheck="false"></div>
           <div><label>รหัสยืนยัน</label><input class="in" id="t-code" autocomplete="off" spellcheck="false"></div>
           <div style="align-self:end"><button type="button" id="t-go">ตรวจสอบ</button></div>
         </div>
         <p class="note" id="t-res">จำลองสิ่งที่บอร์ดทำ: อ่าน codes.json แล้วเทียบแฮช</p>
         <div class="mh">ลิงก์ codes.json (อยู่ใน manifest ในฟิลด์ verify.url)</div>
         <div class="url"><code id="g-url">-</code><button type="button" data-copy-id="g-url">คัดลอก</button></div>
-        <p class="note">ขั้นตอนฝั่งบอร์ด: ① ดึง JSON จากลิงก์ด้านบน ② หา entry ที่ <code>id</code> ตรงกับ ID ของตัวเอง ③ คำนวณ <code>SHA-256("dashtron-pkg-v3|" + ID + "|" + CODE + "|" + floor(exp/1000))</code> เป็น hex ตัวพิมพ์เล็ก (ID และ CODE ตัดอักขระที่ไม่ใช่ A-Z/0-9 ออกและแปลงเป็นพิมพ์ใหญ่) ④ ถ้าเท่ากับ <code>h</code> <b>และเวลาปัจจุบัน (NTP) &lt; <code>exp</code></b> → ปลดล็อค ถ้า <code>now ≥ exp</code> → หมดอายุ ไม่ปลดล็อค · หลังออกรหัส/ลบรหัส อาจต้องรอสูงสุดราว 5 นาทีกว่า raw.githubusercontent.com จะอัปเดต</p>
+        <p class="note">ขั้นตอนฝั่งบอร์ด: ① ดึง JSON จากลิงก์ด้านบน ② วนทุก entry ใน <code>codes</code> ③ คำนวณ <code>SHA-256("dashtron-svc-v1|" + CODE + "|" + floor(exp/1000))</code> เป็น hex ตัวพิมพ์เล็ก โดยใช้ <code>exp</code> ของ entry นั้น (CODE ตัดอักขระที่ไม่ใช่ A-Z/0-9 ออกและแปลงเป็นพิมพ์ใหญ่) ④ ถ้าเท่ากับ <code>h</code> <b>และเวลาปัจจุบัน (NTP) &lt; <code>exp</code></b> → ปลดล็อค ถ้า <code>now ≥ exp</code> → หมดอายุ ไม่ปลดล็อค · ไม่ต้องใช้ ID บอร์ด · หลังออกรหัส/ลบรหัส อาจต้องรอสูงสุดราว 5 นาทีกว่า raw.githubusercontent.com จะอัปเดต</p>
         <pre>#include &lt;WiFiClientSecure.h&gt;
 #include &lt;HTTPClient.h&gt;
 #include &lt;ArduinoJson.h&gt;   // v7
@@ -196,24 +195,22 @@ String sha256Hex(const String&amp; s){
   uint8_t d[32]; mbedtls_sha256((const unsigned char*)s.c_str(), s.length(), d, 0);
   char h[65]; for(int i=0;i&lt;32;i++) sprintf(h+i*2,"%02x",d[i]); return String(h);
 }
-// boardId เช่น eFuse MAC 12 หลัก: sprintf(b,"%012llX",ESP.getEfuseMac());
 // ต้องซิงค์เวลาด้วย NTP ก่อน: configTime(7*3600,0,"pool.ntp.org");
-// คืนค่า: 1=ปลดล็อค, 0=ไม่ตรง/ไม่พบ, -1=หมดอายุ, -2=ยังไม่ได้ซิงค์เวลา/โหลดไม่ได้
-int verifyPackage(String boardId, String code, const char* url){
-  time_t now=time(nullptr); if(now<1700000000) return -2;
-  String id=normStr(boardId), nc=normStr(code);
+// คืนค่า: 1=ปลดล็อค, 0=รหัสไม่ถูกต้อง, -1=หมดอายุ, -2=ยังไม่ได้ซิงค์เวลา/โหลดไม่ได้
+int verifyService(String code, const char* url){
+  time_t now=time(nullptr); if(now&lt;1700000000) return -2;
+  String nc=normStr(code);
   WiFiClientSecure c; c.setInsecure();            // ควรใส่ root CA ถ้าต้องการความปลอดภัยเต็ม
   HTTPClient http; http.begin(c,url);
   if(http.GET()!=200){ http.end(); return -2; }
-  JsonDocument f; f["codes"][0]["id"]=true; f["codes"][0]["h"]=true; f["codes"][0]["exp"]=true;
+  JsonDocument f; f["codes"][0]["h"]=true; f["codes"][0]["exp"]=true;
   JsonDocument doc;
   DeserializationError e=deserializeJson(doc,http.getStream(),DeserializationOption::Filter(f));
   http.end(); if(e) return -2;
   for(JsonObject o: doc["codes"].as&lt;JsonArray&gt;()){
-    if(id!=(const char*)o["id"]) continue;
-    uint64_t expMs=o["exp"].as&lt;uint64_t&gt;(), expS=expMs/1000;
-    String want=sha256Hex("dashtron-pkg-v3|"+id+"|"+nc+"|"+String((unsigned long long)expS));
-    if(want!=(const char*)o["h"]) return 0;
+    uint64_t expMs=o["exp"].as&lt;uint64_t&gt;(); if(!expMs) continue;
+    String want=sha256Hex("dashtron-svc-v1|"+nc+"|"+String((unsigned long long)(expMs/1000)));
+    if(want!=(const char*)o["h"]) continue;      // ไม่ตรง → ลอง entry ถัดไป
     return ((uint64_t)now*1000ULL &lt; expMs) ? 1 : -1;
   }
   return 0;
@@ -236,7 +233,7 @@ const KINDS=[
 const MAIN_ADDR="0x10000";
 const BOOT_APP0_B64="AQAAAP///////////////////////////////5qYQ0f//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////wAAAAD///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8=";
 const OTA_DEF="0x2B0000";
-const CODES_MAN="codes/manifest.json"; /* manifest รหัสยืนยันแพ็คเกจ — channel ที่ตั้ง gated:true จะผูกกับไฟล์นี้ */
+const CODES_MAN="codes/manifest.json"; /* manifest รหัสยืนยัน Service — channel ที่ตั้ง gated:true จะผูกกับไฟล์นี้ */
 /* แต่ละ channel มีโฟลเดอร์ไฟล์และ manifest เป็นของตัวเอง ไม่ปนกัน */
 const CHANNELS=[
   {id:"main",ota:true,kinds:["main","ota"],dir:"firmware",     man:"firmware/manifest.json",     channel:null,   verLabel:"🏷️ เวอร์ชัน SmartGauge (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest SmartGauge สำหรับ MCU",manLinkTitle:"ลิงก์ manifest SmartGauge (ให้ ESP32 CYD ดึงลิงก์นี้ลิงก์เดียว)"},
@@ -244,7 +241,7 @@ const CHANNELS=[
   {id:"medreminder",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-medreminder",man:"firmware-medreminder/manifest.json",channel:"medreminder",verLabel:"🏷️ เวอร์ชันระบบเตือนกินยา (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest ระบบเตือนกินยา",manLinkTitle:"ลิงก์ manifest ระบบเตือนกินยา (แยกจากชุดอื่น)",tag:"เตือนกินยา",pkgTitle:"🗜️ ชุดโปรเจ็คระบบเตือนกินยา (.zip)",pkgFile:"dashtron_medreminder.zip",banner:"💊 ชุดนี้เป็นไฟล์ระบบเตือนกินยา เก็บแยกในโฟลเดอร์"},
   {id:"bitkubbot",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-bitkubbot",man:"firmware-bitkubbot/manifest.json",channel:"bitkubbot",verLabel:"🏷️ เวอร์ชัน BitkubBot (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest BitkubBot",manLinkTitle:"ลิงก์ manifest BitkubBot (แยกจากชุดอื่น)",tag:"BitkubBot",pkgTitle:"🗜️ ชุดโปรเจ็ค BitkubBot (.zip)",pkgFile:"dashtron_bitkubbot.zip",banner:"🪙 ชุดนี้เป็นไฟล์ BitkubBot เก็บแยกในโฟลเดอร์"},
   {id:"gulftide",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-gulftide",man:"firmware-gulftide/manifest.json",channel:"gulftide",verLabel:"🏷️ เวอร์ชั่น ตารางน้ำขึ้น-ลง (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest ตารางน้ำขึ้น-ลง",manLinkTitle:"ลิงก์ manifest ตารางน้ำขึ้น-ลง (แยกจากชุดอื่น)",tag:"ตารางน้ำขึ้น-ลง",pkgTitle:"🗜️ ชุดโปรเจ็คตารางน้ำขึ้น-ลง (.zip)",pkgFile:"dashtron_gulftide.zip",banner:" ชุดนี้เป็นไฟล์ตารางน้ำขึ้น-ลง เก็บแยกในโฟลเดอร์"},
-  {id:"service",ota:false,pkg:true,gated:true,kinds:["main","part","boot0","bl"],dir:"firmware-service",man:"firmware-service/manifest.json",channel:"service",verLabel:"🏷️ เวอร์ชัน Service (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest Service",manLinkTitle:"ลิงก์ manifest Service (แยกจากชุดอื่น และผูกกับรหัสยืนยันแพ็คเกจ)",tag:"Service",pkgTitle:"🗜️ ชุดโปรเจ็ค Service (.zip)",pkgFile:"dashtron_service.zip",banner:"🛠️ ชุดนี้เป็นไฟล์ Service เก็บแยกในโฟลเดอร์"},
+  {id:"service",ota:false,pkg:true,gated:true,kinds:["main","part","boot0","bl"],dir:"firmware-service",man:"firmware-service/manifest.json",channel:"service",verLabel:"🏷️ เวอร์ชัน Service (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest Service",manLinkTitle:"ลิงก์ manifest Service (แยกจากชุดอื่น และผูกกับรหัสยืนยัน Service)",tag:"Service",pkgTitle:"🗜️ ชุดโปรเจ็ค Service (.zip)",pkgFile:"dashtron_service.zip",banner:"🛠️ ชุดนี้เป็นไฟล์ Service เก็บแยกในโฟลเดอร์"},
   {id:"installer",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-installer",man:"firmware-installer/manifest.json",channel:"installer",verLabel:"🏷️ เวอร์ชัน Installer (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest Installer",manLinkTitle:"ลิงก์ manifest Installer (แยกจาก SmartGauge, ระบบตรวจสอบเลขไมล์, ระบบเตือนกินยา, BitkubBot และตารางน้ำขึ้น-ลง)",tag:"Installer",pkgTitle:"🗜️ ชุด Installer (.zip)",pkgFile:"dashtron_installer.zip",banner:"💾 ชุดนี้เป็นไฟล์ Installer เก็บแยกในโฟลเดอร์"}
 ];
 const cleanAddr=v=>{const m=String(v||"").trim().match(/^(?:0x)?([0-9a-f]+)$/i);return m?"0x"+m[1].toUpperCase():""};
@@ -304,7 +301,7 @@ function mount(C){
 
   $("#p-"+P).innerHTML=`
   ${C.channel?`<div class="banner">${C.banner} <code>${C.dir}/</code> และมี manifest ของตัวเอง (<code>${C.man}</code>) ไม่กระทบ manifest ของชุดอื่น</div>`:""}
-  ${C.gated?`<div class="banner" style="border-color:var(--a);background:color-mix(in srgb,var(--a) 10%,transparent)">🔑 ชุดนี้<b>ผูกกับรหัสยืนยันแพ็คเกจ</b> — manifest ของชุดนี้มีฟิลด์ <code>verify</code> ชี้ไปที่ <code>${CODES_MAN}</code> บอร์ดต้องผ่านการตรวจ <b>ID + รหัส</b> (และรหัสยังไม่หมดอายุ) ก่อนจึงจะดาวน์โหลด/ติดตั้งไฟล์ชุดนี้ <button type="button" class="ghost cp x" data-gotab="codes" style="margin-left:6px">ไปที่แท็บรหัสยืนยัน →</button></div>`:""}
+  ${C.gated?`<div class="banner" style="border-color:var(--a);background:color-mix(in srgb,var(--a) 10%,transparent)">🔑 ชุดนี้<b>ผูกกับรหัสยืนยัน Service</b> — manifest ของชุดนี้มีฟิลด์ <code>verify</code> ชี้ไปที่ <code>${CODES_MAN}</code> บอร์ดต้องกรอก<b>รหัสยืนยัน</b>และผ่านการตรวจ (รหัสยังไม่หมดอายุ) ไม่ต้องใช้ ID บอร์ด ก่อนจึงจะดาวน์โหลด/ติดตั้งไฟล์ชุดนี้ <button type="button" class="ghost cp x" data-gotab="codes" style="margin-left:6px">ไปที่แท็บรหัสยืนยัน →</button></div>`:""}
   <div class="card relcard">
     <h3>${C.verLabel}</h3>
     <input class="ver" id="${P}-v" placeholder="เช่น 2.0.2" autocomplete="off">
@@ -370,7 +367,7 @@ function mount(C){
       return o;
     });
     const man={product:"DashTron",...(C.channel?{channel:C.channel}:{}),version:v||null,variants};
-    if(C.gated){const cc=cfg();man.verify={required:true,type:"package-verify",manifest:cc.owner&&cc.repo?rawUrlFor(CODES_MAN,cc):"",note:"ตรวจรหัสยืนยันแพ็คเกจตามขั้นตอนใน verify manifest ก่อนดาวน์โหลดไฟล์ในชุดนี้"}}
+    if(C.gated){const cc=cfg();man.verify={required:true,type:"service-verify",manifest:cc.owner&&cc.repo?rawUrlFor(CODES_MAN,cc):"",note:"ตรวจรหัสยืนยัน Service ตามขั้นตอนใน verify manifest ก่อนดาวน์โหลดไฟล์ในชุดนี้ (ไม่ต้องใช้ ID บอร์ด)"}}
     if(C.pkg&&state.pkg){const d=state.pkg;man.package={name:d.name,url:rawUrl(d.path),size:d.size,sha256:d.sha,path:d.path,ts:d.ts}}
     return man;
   }
@@ -645,19 +642,19 @@ document.addEventListener("click",async e=>{
 
 loadAll();
 
-/* ================= แท็บ รหัสยืนยันแพ็คเกจ (เก็บแฮชใน codes/codes.json ของ repo) ================= */
+/* ================= แท็บ รหัสยืนยัน Service (เก็บแฮชใน codes/codes.json ของ repo) ================= */
 (()=>{
   const g=id=>document.getElementById(id);
   const CODES_PATH="codes/codes.json";
-  /* ต้องตรงกับฝั่งบอร์ด CYD ทุกตัวอักษร: SHA-256( SALT | ID | CODE ) */
-  const SALT="dashtron-pkg-v3";
+  /* ต้องตรงกับฝั่งบอร์ด CYD ทุกตัวอักษร: SHA-256( SALT | CODE | EXP_SECONDS ) — ไม่มี ID บอร์ด */
+  const SALT="dashtron-svc-v1";
   const DAYS_OPTS=[1,30];
   const ALPHA="ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // ตัด 0/O/1/I/L
   const CODE_LEN=16;
   const norm=v=>String(v||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
   const pretty=c=>c.match(/.{1,4}/g).join("-");
-  /* v3: ผูกวันหมดอายุ (exp = มิลลิวินาที Unix) เข้าไปในแฮช → แก้วันหมดอายุใน JSON แล้วรหัสจะใช้ไม่ได้ */
-  async function hashCode(id,code,exp){return sha256(new TextEncoder().encode(SALT+"|"+norm(id)+"|"+norm(code)+"|"+Math.floor(exp/1000)))}
+  /* v4: ไม่ผูก ID บอร์ด · ผูกวันหมดอายุ (exp = มิลลิวินาที Unix) เข้าไปในแฮช → แก้วันหมดอายุใน JSON แล้วรหัสจะใช้ไม่ได้ */
+  async function hashCode(code,exp){return sha256(new TextEncoder().encode(SALT+"|"+norm(code)+"|"+Math.floor(exp/1000)))}
   const DAY=86400000;
   const fmtLeft=ms=>{const d=Math.floor(ms/DAY),h=Math.floor(ms%DAY/3600000),m=Math.floor(ms%3600000/60000);return d>0?`${d} วัน ${h} ชม.`:h>0?`${h} ชม. ${m} นาที`:`${Math.max(m,1)} นาที`}
   function genCode(){ // สุ่มแบบไม่เอนเอียง (rejection sampling)
@@ -673,10 +670,10 @@ loadAll();
   async function readFile(){
     const c=repo();if(!c.owner||!c.repo)throw new Error("ตั้งค่า Owner / Repository ก่อน");
     const j=await ghApi("GET",CODES_PATH,null,c);
-    if(!j)return{sha:undefined,data:{v:3,codes:[]}};
+    if(!j)return{sha:undefined,data:{v:4,codes:[]}};
     const txt=new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,"")),x=>x.charCodeAt(0)));
     const data=JSON.parse(txt||"{}");if(!Array.isArray(data.codes))data.codes=[];
-    data.v=3;
+    data.v=4;
     return{sha:j.sha,data};
   }
   /* อ่าน → แก้ → บันทึก (ถ้าชนกันกับการแก้พร้อมกัน ลองใหม่ 1 ครั้ง) */
@@ -700,7 +697,6 @@ loadAll();
     d.className="card";d.dataset.row=n;d.style.cssText="margin-top:10px;padding:14px";
     d.innerHTML=`<div class="cfg cfg4" style="margin-top:0">
       <div><label>👤 ชื่อเจ้าของ</label><input class="in r-owner" maxlength="60" autocomplete="off" placeholder="เช่น คุณสมชาย / ออเดอร์ #123"></div>
-      <div><label>🆔 ID ของบอร์ด</label><input class="in r-id" maxlength="40" autocomplete="off" spellcheck="false" placeholder="เช่น A1B2C3D4E5F6" style="font-family:ui-monospace,Menlo,Consolas,monospace"></div>
       <div><label>⏳ จำนวนวัน</label><select class="in r-days">${DAYS_OPTS.map(n=>`<option value="${n}">${n} วัน</option>`).join("")}</select></div>
       <div style="align-self:end;display:flex;gap:8px"><button type="button" class="r-gen" style="flex:1">สร้างรหัส</button><button type="button" class="ghost r-rm" title="ลบช่องนี้">✕</button></div>
     </div>
@@ -713,30 +709,28 @@ loadAll();
   g("g-add").onclick=()=>{const r=addRow();r.querySelector(".r-owner").focus()};
 
   async function generate(rowEls){
-    const items=[],seen=new Set();
+    const items=[];
     for(const r of rowEls){
-      const owner=r.querySelector(".r-owner").value.trim().slice(0,60),id=norm(r.querySelector(".r-id").value);
+      const owner=r.querySelector(".r-owner").value.trim().slice(0,60);
       if(!owner){toast("ใส่ชื่อเจ้าของก่อน");r.querySelector(".r-owner").focus();return}
-      if(id.length<4||id.length>40){toast("ID ต้องมี 4–40 ตัวอักษร (A-Z, 0-9)");r.querySelector(".r-id").focus();return}
-      if(seen.has(id)){toast("ID ซ้ำกันในหน้านี้: "+id);return}
       const days=+r.querySelector(".r-days").value;
       if(!DAYS_OPTS.includes(days)){toast("เลือกจำนวนวัน 1 หรือ 30 วัน");return}
-      seen.add(id);items.push({r,owner,id,days});
+      items.push({r,owner,days,old:r.dataset.h||""});
     }
     if(!items.length)return;
     document.querySelectorAll(".r-gen,#g-genall").forEach(b=>b.disabled=true);
     toast("กำลังสร้างรหัส…");
     try{
       const now=Date.now();
-      for(const it of items){it.exp=now+it.days*DAY;it.code=genCode();it.h=await hashCode(it.id,it.code,it.exp)}
+      for(const it of items){it.exp=now+it.days*DAY;it.code=genCode();it.h=await hashCode(it.code,it.exp)}
       await mutate(d=>{
-        items.forEach(it=>{
-          const e={id:it.id,owner:it.owner,days:it.days,exp:it.exp,h:it.h,ts:now},i=d.codes.findIndex(c=>c.id===it.id);
-          if(i>=0)d.codes[i]=e;else d.codes.push(e);
-        });
-      },`issue ${items.length} package code(s)`);
-      const pl=plain();items.forEach(it=>{pl[it.h]=it.code});savePlain(pl);
+        const olds=new Set(items.map(it=>it.old).filter(Boolean));
+        if(olds.size)d.codes=d.codes.filter(c=>!olds.has(c.h));
+        items.forEach(it=>{d.codes.push({owner:it.owner,days:it.days,exp:it.exp,h:it.h,ts:now})});
+      },`issue ${items.length} service code(s)`);
+      const pl=plain();items.forEach(it=>{if(it.old)delete pl[it.old];pl[it.h]=it.code});savePlain(pl);
       items.forEach(it=>{
+        it.r.dataset.h=it.h;
         it.r.querySelector(".r-out").style.display="flex";
         const c=it.r.querySelector(".r-code");c.textContent=pretty(it.code)+"  ("+it.days+" วัน · หมดอายุ "+dateStr(it.exp)+")";c.dataset.raw=it.code;
         it.r.querySelector(".r-gen").textContent="สร้างใหม่";
@@ -749,14 +743,14 @@ loadAll();
   rows.addEventListener("click",async e=>{
     const r=e.target.closest("[data-row]");if(!r)return;
     if(e.target.closest(".r-gen")){
-      if(r.querySelector(".r-code").dataset.raw&&!confirm("ออกรหัสใหม่? รหัสเดิมของ ID นี้จะใช้ไม่ได้อีก"))return;
+      if(r.querySelector(".r-code").dataset.raw&&!confirm("ออกรหัสใหม่? รหัสเดิมของช่องนี้จะใช้ไม่ได้อีก"))return;
       generate([r]);
     }else if(e.target.closest(".r-rm")){r.remove();syncRm()}
     else if(e.target.closest(".r-copy")){try{await navigator.clipboard.writeText(r.querySelector(".r-code").dataset.raw);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}}
   });
   g("g-genall").onclick=()=>{
-    const all=[...rows.querySelectorAll("[data-row]")].filter(r=>r.querySelector(".r-owner").value.trim()||r.querySelector(".r-id").value.trim());
-    if(!all.length){toast("กรอกชื่อเจ้าของและ ID ก่อน");return}
+    const all=[...rows.querySelectorAll("[data-row]")].filter(r=>r.querySelector(".r-owner").value.trim());
+    if(!all.length){toast("กรอกชื่อเจ้าของก่อน");return}
     generate(all);
   };
   addRow();
@@ -769,17 +763,18 @@ loadAll();
     const c=repo();
     return{
       product:"DashTron",
-      type:"package-verify",
-      v:3,
+      type:"service-verify",
+      v:4,
       protects:gatedList().map(ch=>{const rc=repoFor(ch.id);return{channel:ch.channel||ch.id,manifest:rc.owner&&rc.repo?rawUrlFor(ch.man,rc):""}}),
       verify:{
         url:c.owner&&c.repo?rawUrlFor(CODES_PATH,c):"",
         path:CODES_PATH,
         algo:"sha256",
         salt:SALT,
-        input:"salt|ID|CODE|EXP_SECONDS",
+        input:"salt|CODE|EXP_SECONDS",
         output:"hex-lowercase",
-        normalize:"uppercase, keep A-Z and 0-9 only (ID and CODE)",
+        normalize:"uppercase, keep A-Z and 0-9 only (CODE)",
+        match:"no board ID: for each entry in codes[] compute the hash with that entry's exp and compare with h; unlock on the first match",
         code_length:CODE_LEN,
         expiry:{field:"exp",unit:"unix-ms",rule:"unlock only if now < exp (use NTP time); EXP_SECONDS = floor(exp/1000) as decimal string",allowed_days:DAYS_OPTS}
       }
@@ -799,7 +794,7 @@ loadAll();
       const old=new TextDecoder().decode(Uint8Array.from(atob(cur.content.replace(/\n/g,"")),x=>x.charCodeAt(0)));
       if(old===text)return false;
     }
-    await ghApi("PUT",MAN_PATH,{message:"update package-verify manifest",content:b64(new TextEncoder().encode(text)),sha:cur?cur.sha:undefined},c);
+    await ghApi("PUT",MAN_PATH,{message:"update service-verify manifest",content:b64(new TextEncoder().encode(text)),sha:cur?cur.sha:undefined},c);
     return true;
   }
   g("cm-copy").onclick=async()=>{try{await navigator.clipboard.writeText(g("cm-pre").textContent);toast("คัดลอกแล้ว")}catch{toast("คัดลอกไม่ได้")}};
@@ -813,17 +808,16 @@ loadAll();
   function renderList(){
     const box=g("g-list"),q=g("g-search").value.trim().toLowerCase(),pl=plain();
     g("g-cnt").textContent=cache.length?`(${cache.length})`:"";
-    if(!cache.length){box.textContent="ยังไม่มีบอร์ดที่ออกรหัส";return}
-    const list=cache.slice().reverse().filter(c=>!q||(c.owner||"").toLowerCase().includes(q)||(c.id||"").toLowerCase().includes(q));
+    if(!cache.length){box.textContent="ยังไม่มีรหัสที่ออกไว้";return}
+    const list=cache.slice().reverse().filter(c=>!q||(c.owner||"").toLowerCase().includes(q));
     if(!list.length){box.textContent="ไม่พบรายการที่ค้นหา";return}
     box.innerHTML=list.map(c=>{
-      const code=pl[c.h],key=esc(c.id||c.h);
+      const code=pl[c.h],legacy=!!c.id;
       return `<div class="url" style="flex-wrap:wrap;align-items:flex-start">
         <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:3px">
           <b style="font-size:14px;color:var(--ink)">${esc(c.owner||"(ไม่ระบุชื่อ)")}</b>
-          <code style="font-size:12px;white-space:normal;word-break:break-all">${c.id?esc(c.id):"(รูปแบบเก่า ไม่มี ID)"}</code>
           <span style="font-size:11px;color:var(--mute)">สร้าง ${dateStr(c.ts)}${c.exp?` · หมดอายุ ${dateStr(c.exp)}`:""}</span>
-          ${c.exp?(c.exp>Date.now()?`<span class="badge ok">${c.days||"-"} วัน · เหลือ ${fmtLeft(c.exp-Date.now())}</span>`:`<span class="badge exp">${c.days||"-"} วัน · หมดอายุแล้ว</span>`):`<span class="badge exp">รูปแบบเก่า (ไม่มีวันหมดอายุ)</span>`}
+          ${legacy?`<span class="badge exp">รูปแบบเก่า (ผูก ID บอร์ด) — ใช้ไม่ได้แล้ว ให้ออกรหัสใหม่</span>`:c.exp?(c.exp>Date.now()?`<span class="badge ok">${c.days||"-"} วัน · เหลือ ${fmtLeft(c.exp-Date.now())}</span>`:`<span class="badge exp">${c.days||"-"} วัน · หมดอายุแล้ว</span>`):`<span class="badge exp">รูปแบบเก่า (ไม่มีวันหมดอายุ)</span>`}
         </div>
         <code style="flex:none;font-size:13px;font-weight:700">${code?esc(pretty(code)):"(ไม่มีรหัสในเครื่องนี้)"}</code>
         ${code?`<button type="button" class="ghost cp x" data-copy="${esc(code)}">คัดลอกรหัส</button>`:""}
@@ -840,22 +834,21 @@ loadAll();
   document.addEventListener("click",async e=>{
     const d=e.target.closest("[data-gdel]");if(!d)return;
     const h=d.dataset.gdel,it=cache.find(c=>c.h===h);
-    if(!confirm(`ลบรหัสของ "${it&&it.owner||"-"}" (${it&&it.id||"-"})?\nบอร์ดนี้จะยืนยันแพ็คเกจไม่ผ่านอีก`))return;
+    if(!confirm(`ลบรหัสของ "${it&&it.owner||"-"}"?\nรหัสนี้จะปลดล็อค Service ไม่ได้อีก`))return;
     try{await mutate(x=>{x.codes=x.codes.filter(c=>c.h!==h)},"revoke package code");const pl=plain();delete pl[h];savePlain(pl);toast("ลบรหัสแล้ว");refresh()}
     catch(x){toast("ลบไม่ได้: "+x.message)}
   });
 
   /* ---------- ทดสอบตรวจสอบ (จำลองฝั่งบอร์ด) ---------- */
   g("t-go").onclick=async()=>{
-    const id=norm(g("t-id").value),code=norm(g("t-code").value),out=g("t-res");
-    if(!id||!code){out.textContent="กรอก ID และรหัสก่อน";return}
+    const code=norm(g("t-code").value),out=g("t-res");
+    if(!code){out.textContent="กรอกรหัสก่อน";return}
     out.textContent="กำลังตรวจ…";
     try{
-      const {data}=await readFile(),e=data.codes.find(c=>c.id===id);
-      if(!e){out.textContent="❌ ไม่พบ ID นี้ในระบบ";return}
-      if(!e.exp){out.textContent="❌ รายการนี้เป็นรูปแบบเก่า (ไม่มีวันหมดอายุ) — ให้ออกรหัสใหม่";return}
-      const h=await hashCode(id,code,e.exp);
-      out.textContent=e.h!==h?"❌ รหัสไม่ตรงกับ ID นี้":Date.now()>=e.exp?`⌛ รหัสถูกต้องแต่หมดอายุแล้ว (${dateStr(e.exp)}) — ปลดล็อคไม่ได้`:`✅ ตรงกัน — ปลดล็อคได้ ${e.days||"-"} วัน เหลือ ${fmtLeft(e.exp-Date.now())} (เจ้าของ: ${e.owner||"-"})`;
+      const {data}=await readFile();let hit=null;
+      for(const e of data.codes){if(e.id||!e.exp)continue;if(await hashCode(code,e.exp)===e.h){hit=e;break}}
+      if(!hit){out.textContent="❌ รหัสไม่ถูกต้อง หรือไม่พบในระบบ";return}
+      out.textContent=Date.now()>=hit.exp?`⌛ รหัสถูกต้องแต่หมดอายุแล้ว (${dateStr(hit.exp)}) — ปลดล็อค Service ไม่ได้`:`✅ ตรงกัน — ปลดล็อค Service ได้ ${hit.days||"-"} วัน เหลือ ${fmtLeft(hit.exp-Date.now())} (เจ้าของ: ${hit.owner||"-"})`;
     }catch(x){out.textContent="❌ "+x.message}
   };
 
