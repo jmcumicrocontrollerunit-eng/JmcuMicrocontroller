@@ -14,19 +14,9 @@
     "enabled": true,
     "dir": "firmware-medreminder"
   },
-  "bitkubbot": {
-    "name": "Bitkub Bot",
-    "enabled": true,
-    "dir": "firmware-bitkubbot"
-  },
   "gulftide": {
     "name": "ตารางน้ำขึ้น/น้ำลง",
     "enabled": true,
     "dir": "firmware-gulftide"
-  },
-  "motogauge": {
-    "name": "เกจมอเตอร์ไซค์",
-    "enabled": true,
-    "dir": "firmware-motogauge"
   }
 }
