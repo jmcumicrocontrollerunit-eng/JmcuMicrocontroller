@@ -15,13 +15,13 @@
       "files": [
         {
           "kind": "bl",
-          "name": "Giorno.ino.bootloader.bin",
+          "name": "gulf_tide.ino.bootloader.bin",
           "address": "0x1000",
-          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-motogauge/ST7789/Giorno.ino.bootloader.bin",
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-motogauge/ST7789/gulf_tide.ino.bootloader.bin",
           "size": 24992,
           "sha256": "47bbbfca119fe87190f63a67af9d85adff6433bcf3812ec92a9b9c9416a53ad1",
-          "path": "firmware-motogauge/ST7789/Giorno.ino.bootloader.bin",
-          "ts": 1794977020859
+          "path": "firmware-motogauge/ST7789/gulf_tide.ino.bootloader.bin",
+          "ts": 1795732419373
         },
         {
           "kind": "part",
