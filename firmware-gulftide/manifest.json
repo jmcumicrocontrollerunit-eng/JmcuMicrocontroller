@@ -54,6 +54,28 @@
           "ts": 1795733256887
         }
       ]
+    },
+    {
+      "chip": "ILI9341",
+      "label": "ILI9341",
+      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-gulftide/ILI9341/gulf_tide.ino.bin",
+      "size": 1329856,
+      "sha256": "426ced9550f503110eb0e1bce563b1ba6d6adc73bfd221715beb2bd7f85a8a60",
+      "name": "gulf_tide.ino.bin",
+      "path": "firmware-gulftide/ILI9341/gulf_tide.ino.bin",
+      "ts": 1795733285562,
+      "files": [
+        {
+          "kind": "main",
+          "name": "gulf_tide.ino.bin",
+          "address": "0x10000",
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-gulftide/ILI9341/gulf_tide.ino.bin",
+          "size": 1329856,
+          "sha256": "426ced9550f503110eb0e1bce563b1ba6d6adc73bfd221715beb2bd7f85a8a60",
+          "path": "firmware-gulftide/ILI9341/gulf_tide.ino.bin",
+          "ts": 1795733285562
+        }
+      ]
     }
   ]
 }
