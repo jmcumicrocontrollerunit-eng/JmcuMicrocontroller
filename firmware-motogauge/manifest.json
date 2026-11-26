@@ -58,12 +58,12 @@
     {
       "chip": "ILI9341",
       "label": "ILI9341",
-      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-motogauge/ILI9341/Giorno.ino.bin",
-      "size": 1214688,
-      "sha256": "27a0f93683accd71ef6a22ee7a9112c76b4db849fb70a3ed5cc9ea812a199920",
-      "name": "Giorno.ino.bin",
-      "path": "firmware-motogauge/ILI9341/Giorno.ino.bin",
-      "ts": 1794977054197,
+      "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-motogauge/ILI9341/gulf_tide.ino.bin",
+      "size": 1329856,
+      "sha256": "426ced9550f503110eb0e1bce563b1ba6d6adc73bfd221715beb2bd7f85a8a60",
+      "name": "gulf_tide.ino.bin",
+      "path": "firmware-motogauge/ILI9341/gulf_tide.ino.bin",
+      "ts": 1795732430733,
       "files": [
         {
           "kind": "bl",
@@ -97,13 +97,13 @@
         },
         {
           "kind": "main",
-          "name": "Giorno.ino.bin",
+          "name": "gulf_tide.ino.bin",
           "address": "0x10000",
-          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-motogauge/ILI9341/Giorno.ino.bin",
-          "size": 1214688,
-          "sha256": "27a0f93683accd71ef6a22ee7a9112c76b4db849fb70a3ed5cc9ea812a199920",
-          "path": "firmware-motogauge/ILI9341/Giorno.ino.bin",
-          "ts": 1794977054197
+          "url": "https://raw.githubusercontent.com/jmcumicrocontrollerunit-eng/JmcuMicrocontroller/main/firmware-motogauge/ILI9341/gulf_tide.ino.bin",
+          "size": 1329856,
+          "sha256": "426ced9550f503110eb0e1bce563b1ba6d6adc73bfd221715beb2bd7f85a8a60",
+          "path": "firmware-motogauge/ILI9341/gulf_tide.ino.bin",
+          "ts": 1795732430733
         }
       ]
     }
