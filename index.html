@@ -126,10 +126,10 @@ summary{cursor:pointer;font-weight:700;font-size:15px}
 
   <div class="tabs">
     <button type="button" class="tab on" data-tab="main">📦 smartgauge</button>
-    <button type="button" class="tab" data-tab="test">🧪 ราคาหุ้นไทย ทองคำ และคริปโต </button>
+    <button type="button" class="tab" data-tab="test">💹 ราคาหุ้นไทย ทองคำ และคริปโต </button>
     <button type="button" class="tab" data-tab="medreminder">💊 ระบบเตือนกินยา</button>
-    <button type="button" class="tab" data-tab="bitkubbot">🪙 BitkubBot</button>
-    <button type="button" class="tab" data-tab="motogauge">🏍️ เกจมอเตอร์ไซค์</button>
+    <button type="button" class="tab" data-tab="bitkubbot">🪙 BKB</button>
+    <button type="button" class="tab" data-tab="motogauge">🐳 ตารางน้ำขึ้น-ลง</button>
     <button type="button" class="tab" data-tab="installer">💾 Installer</button>
     <button type="button" class="tab" data-tab="codes">🔑 รหัสยืนยันแพ็คเกจ</button>
   </div>
@@ -235,10 +235,10 @@ const OTA_DEF="0x2B0000";
 /* แต่ละ channel มีโฟลเดอร์ไฟล์และ manifest เป็นของตัวเอง ไม่ปนกัน */
 const CHANNELS=[
   {id:"main",ota:true,kinds:["main","ota"],dir:"firmware",     man:"firmware/manifest.json",     channel:null,   verLabel:"🏷️ เวอร์ชัน SmartGauge (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest SmartGauge สำหรับ MCU",manLinkTitle:"ลิงก์ manifest SmartGauge (ให้ ESP32 CYD ดึงลิงก์นี้ลิงก์เดียว)"},
-  {id:"test",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-test",man:"firmware-test/manifest.json",channel:"test",verLabel:"🏷️ เวอร์ชันระบบตรวจสอบเลขไมล์ (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest ระบบตรวจสอบเลขไมล์",manLinkTitle:"ลิงก์ manifest ระบบตรวจสอบเลขไมล์ (แยกจาก SmartGauge)",tag:"เลขไมล์",pkgTitle:"🗜️ ชุดโปรเจ็คระบบตรวจสอบเลขไมล์ (.zip)",pkgFile:"dashtron_test.zip",banner:"🧪 ชุดนี้เป็นไฟล์ระบบตรวจสอบเลขไมล์ เก็บแยกในโฟลเดอร์"},
+  {id:"test",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-test",man:"firmware-test/manifest.json",channel:"test",verLabel:"🏷️ เวอร์ชันหุ้นไทย ทองคำ และคลิปโต (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest หุ้นไทย ทองคำ และคลิปโต",manLinkTitle:"ลิงก์ manifest หุ้นไทย ทองคำ และคลิปโต (แยกจาก SmartGauge)",tag:"หุ้นไทย",pkgTitle:"🗜️ ชุดโปรเจ็คหุ้นไทย ทองคำ และคลิปโต (.zip)",pkgFile:"dashtron_test.zip",banner:"🧪 ชุดนี้เป็นไฟล์หุ้นไทย ทองคำ และคลิปโต เก็บแยกในโฟลเดอร์"},
   {id:"medreminder",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-medreminder",man:"firmware-medreminder/manifest.json",channel:"medreminder",verLabel:"🏷️ เวอร์ชันระบบเตือนกินยา (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest ระบบเตือนกินยา",manLinkTitle:"ลิงก์ manifest ระบบเตือนกินยา (แยกจากชุดอื่น)",tag:"เตือนกินยา",pkgTitle:"🗜️ ชุดโปรเจ็คระบบเตือนกินยา (.zip)",pkgFile:"dashtron_medreminder.zip",banner:"💊 ชุดนี้เป็นไฟล์ระบบเตือนกินยา เก็บแยกในโฟลเดอร์"},
   {id:"bitkubbot",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-bitkubbot",man:"firmware-bitkubbot/manifest.json",channel:"bitkubbot",verLabel:"🏷️ เวอร์ชัน BitkubBot (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest BitkubBot",manLinkTitle:"ลิงก์ manifest BitkubBot (แยกจากชุดอื่น)",tag:"BitkubBot",pkgTitle:"🗜️ ชุดโปรเจ็ค BitkubBot (.zip)",pkgFile:"dashtron_bitkubbot.zip",banner:"🪙 ชุดนี้เป็นไฟล์ BitkubBot เก็บแยกในโฟลเดอร์"},
-  {id:"motogauge",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-motogauge",man:"firmware-motogauge/manifest.json",channel:"motogauge",verLabel:"🏷️ เวอร์ชันเกจมอเตอร์ไซค์ (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest เกจมอเตอร์ไซค์",manLinkTitle:"ลิงก์ manifest เกจมอเตอร์ไซค์ (แยกจากชุดอื่น)",tag:"เกจมอเตอร์ไซค์",pkgTitle:"🗜️ ชุดโปรเจ็คเกจมอเตอร์ไซค์ (.zip)",pkgFile:"dashtron_motogauge.zip",banner:"🏍️ ชุดนี้เป็นไฟล์เกจมอเตอร์ไซค์ เก็บแยกในโฟลเดอร์"},
+  {id:"motogauge",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-motogauge",man:"firmware-motogauge/manifest.json",channel:"motogauge",verLabel:"🏷️ เวอร์ชั่น ตารางน้ำขึ้น-ลง (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest ตารางน้ำขึ้น-ลง",manLinkTitle:"ลิงก์ manifest ตารางน้ำขึ้น-ลง (แยกจากชุดอื่น)",tag:"ตารางน้ำขึ้น-ลง",pkgTitle:"🗜️ ชุดโปรเจ็คตารางน้ำขึ้น-ลง (.zip)",pkgFile:"dashtron_motogauge.zip",banner:" ชุดนี้เป็นไฟล์ตารางน้ำขึ้น-ลง เก็บแยกในโฟลเดอร์"},
   {id:"installer",ota:false,pkg:true,kinds:["main","part","boot0","bl"],dir:"firmware-installer",man:"firmware-installer/manifest.json",channel:"installer",verLabel:"🏷️ เวอร์ชัน Installer (ใช้ร่วมกันทั้ง 2 ชิป)",manTitle:"🧾 Manifest Installer",manLinkTitle:"ลิงก์ manifest Installer (แยกจาก SmartGauge, ระบบตรวจสอบเลขไมล์, ระบบเตือนกินยา, BitkubBot และเกจมอเตอร์ไซค์)",tag:"Installer",pkgTitle:"🗜️ ชุด Installer (.zip)",pkgFile:"dashtron_installer.zip",banner:"💾 ชุดนี้เป็นไฟล์ Installer เก็บแยกในโฟลเดอร์"}
 ];
 const cleanAddr=v=>{const m=String(v||"").trim().match(/^(?:0x)?([0-9a-f]+)$/i);return m?"0x"+m[1].toUpperCase():""};
